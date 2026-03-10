@@ -1,0 +1,99 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Kohan & Campos palette */
+  --navy-deep: #0F1D35;
+  --navy-primary: #1B2A4A;
+  --navy-light: #243354;
+  --gold: #C9B99A;
+  --gold-light: #E8DCC8;
+  --white: #FFFFFF;
+  --text-muted-kc: rgba(255, 255, 255, 0.6);
+
+  /* Shadcn design tokens mapped to K&C palette */
+  --background: #0F1D35;
+  --foreground: #FFFFFF;
+  --card: #243354;
+  --card-foreground: #FFFFFF;
+  --popover: #1B2A4A;
+  --popover-foreground: #FFFFFF;
+  --primary: #C9B99A;
+  --primary-foreground: #0F1D35;
+  --secondary: #1B2A4A;
+  --secondary-foreground: #FFFFFF;
+  --muted: #243354;
+  --muted-foreground: rgba(255, 255, 255, 0.6);
+  --accent: #C9B99A;
+  --accent-foreground: #0F1D35;
+  --destructive: #dc2626;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(201, 185, 154, 0.2);
+  --input: rgba(201, 185, 154, 0.2);
+  --ring: #C9B99A;
+  --radius: 2px;
+}
+
+@theme inline {
+  /* Font: Goodly — replace @font-face src with your licensed Goodly files */
+  --font-sans: var(--font-nunito), 'Goodly', 'Nunito', sans-serif;
+  --font-mono: 'Geist Mono', monospace;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius));
+  --radius-md: calc(var(--radius) + 2px);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
+
+  /* K&C custom colors */
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-primary: var(--navy-primary);
+  --color-navy-light: var(--navy-light);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-kc-white: var(--white);
+  --color-text-muted-kc: var(--text-muted-kc);
+}
+
+/* Noise grain overlay for hero */
+.grain-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
