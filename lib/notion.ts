@@ -3,19 +3,15 @@ import { Client } from "@notionhq/client"
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
-
 function getTitle(prop: any): string {
   return prop?.title?.map((r: any) => r.plain_text).join("") ?? ""
 }
-
 function getRichText(prop: any): string {
   return prop?.rich_text?.map((r: any) => r.plain_text).join("") ?? ""
 }
-
 function getSelect(prop: any): string {
   return prop?.select?.name ?? ""
 }
-
 function getFileUrl(prop: any): string | null {
   const files: any[] = prop?.files ?? []
   if (files.length === 0) return null
@@ -26,7 +22,6 @@ function getFileUrl(prop: any): string | null {
 }
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-
 export type ProyectoPozo = {
   id: string
   nombre: string
@@ -52,14 +47,13 @@ export type PropiedadTerminada = {
 }
 
 // ─── Fetch functions ──────────────────────────────────────────────────────────
-
 export async function getProyectosEnPozo(): Promise<ProyectoPozo[]> {
-  const result = await notion.dataSources.query({
-    data_source_id: process.env.NOTION_DATASOURCE_POZO!,
+  const result = await notion.databases.query({
+    database_id: process.env.NOTION_DATABASE_POZO!,
     filter: {
       property: "PublicadoEnWeb",
       checkbox: { equals: true },
-    } as any,
+    },
   })
 
   return result.results
@@ -80,12 +74,12 @@ export async function getProyectosEnPozo(): Promise<ProyectoPozo[]> {
 }
 
 export async function getPropiedadesTerminadas(): Promise<PropiedadTerminada[]> {
-  const result = await notion.dataSources.query({
-    data_source_id: process.env.NOTION_DATASOURCE_TERMINADAS!,
+  const result = await notion.databases.query({
+    database_id: process.env.NOTION_DATABASE_TERMINADAS!,
     filter: {
       property: "PublicadoEnWeb",
       checkbox: { equals: true },
-    } as any,
+    },
   })
 
   return result.results
