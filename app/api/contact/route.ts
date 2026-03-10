@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN
-const AIRTABLE_BASE = "appSftLb7yqcBIhUv"
-const AIRTABLE_TABLE = "tbldOAV7WDiChjaP2"
+const AIRTABLE_BASE = process.env.AIRTABLE_BASE
+const AIRTABLE_TABLE = process.env.AIRTABLE_TABLE
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY
-const FROM_EMAIL = "info@kohancampos.com.py"
-const GUIDE_URL = "https://yourfiles.cloud/uploads/676ad2e9874688f2c9818f071ed0e4dc/Guia-del-Inversor%20%20Kohan%20%26%20Campos.pdf"
+const FROM_EMAIL = process.env.FROM_EMAIL
+const GUIDE_URL = process.env.GUIDE_URL
 
 
 
