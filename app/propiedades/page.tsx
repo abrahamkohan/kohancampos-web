@@ -1,7 +1,8 @@
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { PozoCard, TerminadaCard } from "@/components/property-card"
-import { getProyectosEnPozo, getPropiedadesTerminadas } from "@/lib/notion"
+import { getProyectosEnPozo } from "@/lib/notion"
+import { getPropiedadesPublicadas } from "@/lib/supabase-properties"
 import { PropertiesTabs } from "@/components/properties-tabs"
 
 export const revalidate = 60 // ISR: refresca cada 60 segundos
@@ -9,7 +10,7 @@ export const revalidate = 60 // ISR: refresca cada 60 segundos
 export default async function PropiedadesPage() {
   const [enPozo, terminadas] = await Promise.all([
     getProyectosEnPozo(),
-    getPropiedadesTerminadas(),
+    getPropiedadesPublicadas(),
   ])
 
   return (
