@@ -9,6 +9,7 @@ const nextConfig = {
       { protocol: "https", hostname: "**.amazonaws.com" },
       // Notion CDN
       { protocol: "https", hostname: "**.notion.so" },
+      { protocol: "https", hostname: "**.supabase.co" },
     ],
   },
 }
