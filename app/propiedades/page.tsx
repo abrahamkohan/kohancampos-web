@@ -9,7 +9,7 @@ export const revalidate = 60 // ISR: refresca cada 60 segundos
 
 export default async function PropiedadesPage() {
   const [enPozo, terminadas] = await Promise.all([
-    getProyectosEnPozo(),
+    getProyectosEnPozo().catch(() => []),
     getPropiedadesPublicadas(),
   ])
 
