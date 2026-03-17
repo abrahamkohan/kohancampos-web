@@ -3,7 +3,7 @@ import { Footer } from "@/components/footer"
 import { getPropiedadesPublicadas } from "@/lib/supabase-properties"
 import { PropiedadesGrid } from "@/components/propiedades-grid"
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 export default async function PropiedadesPage() {
   const propiedades = await getPropiedadesPublicadas()
