@@ -46,7 +46,7 @@ export async function getPropiedadesPublicadas(): Promise<PropiedadTerminada[]> 
     {
       headers: {
         apikey: SUPABASE_KEY,
-        Authorization: "Bearer " + SUPABASE_KEY,
+        Prefer: "return=representation",
       },
       next: { revalidate: 60 },
     }
