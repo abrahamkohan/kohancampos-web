@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { TerminadaCard } from "@/components/property-card"
 import { getPropiedadesPublicadas } from "@/lib/supabase-properties"
+import { PropiedadesGrid } from "@/components/propiedades-grid"
 
 export const revalidate = 60
 
@@ -25,28 +25,9 @@ export default async function PropiedadesPage() {
             </p>
           </div>
         </section>
-
         <section className="px-6 pb-24">
           <div className="mx-auto max-w-[1200px]">
-            {propiedades.length > 0 ? (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {propiedades.map((p) => (
-                  <TerminadaCard key={p.id} p={p} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-24 text-center">
-                <p className="font-sans text-base font-[300] text-kc-white/30">
-                  No hay propiedades publicadas por el momento.
-                </p>
-                <a
-                  href="/#contacto"
-                  className="mt-8 bg-gold px-8 py-3 font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-navy-deep transition-all hover:bg-gold-light"
-                >
-                  Consultanos
-                </a>
-              </div>
-            )}
+            <PropiedadesGrid propiedades={propiedades} />
           </div>
         </section>
       </main>

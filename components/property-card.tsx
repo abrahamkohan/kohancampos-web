@@ -116,7 +116,7 @@ export function TerminadaCard({ p }: { p: PropiedadTerminada }) {
 
   return (
     <div className="group flex flex-col border border-gold/15 bg-navy-light/50 transition-all hover:border-gold/35 hover:shadow-[0_0_30px_rgba(201,185,154,0.07)]">
-      <a href={`/propiedades/${p.id}`} className="relative h-52 overflow-hidden block">
+      <div className="relative h-52 overflow-hidden">
         <PropertyImage src={p.imagen} alt={p.nombre} />
         {p.estadoComercial && (
           <div className="absolute left-4 top-4">
@@ -130,7 +130,7 @@ export function TerminadaCard({ p }: { p: PropiedadTerminada }) {
             </span>
           </div>
         )}
-      </a>
+      </div>
 
       <div className="flex flex-1 flex-col p-6">
         {p.tipologia && (
