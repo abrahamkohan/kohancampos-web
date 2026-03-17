@@ -53,8 +53,14 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
 
   const whatsappUrl = `https://wa.me/595982000808?text=${encodeURIComponent("Hola, me interesa: " + titulo)}`
 
-  function prev() { setPhotoIndex(i => i === 0 ? allPhotos.length - 1 : i - 1) }
-  function next() { setPhotoIndex(i => i === allPhotos.length - 1 ? 0 : i + 1) }
+  function prev(e: React.MouseEvent) {
+    e.stopPropagation()
+    setPhotoIndex(i => i === 0 ? allPhotos.length - 1 : i - 1)
+  }
+  function next(e: React.MouseEvent) {
+    e.stopPropagation()
+    setPhotoIndex(i => i === allPhotos.length - 1 ? 0 : i + 1)
+  }
 
   const chips = property ? [
     property.dormitorios != null && { icon: "bed", label: property.dormitorios === 0 ? "Monoambiente" : property.dormitorios + " dorm." },
@@ -72,37 +78,38 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/80 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="relative w-full h-[92vh] md:h-auto md:max-h-[90vh] md:max-w-[1000px] rounded-t-2xl md:rounded-2xl bg-white overflow-hidden flex flex-col"
+        className="relative w-full h-[94vh] md:h-auto md:max-h-[88vh] md:max-w-[1000px] rounded-t-2xl md:rounded-2xl overflow-hidden flex flex-col"
+        style={{ background: "#0B1C2C" }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Close */}
+        {/* ── Close button ── */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-colors text-white"
+          className="absolute top-4 right-4 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 transition-colors text-white/80 hover:text-white"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
-        {/* Scrollable area */}
+        {/* ── Scrollable content ── */}
         <div className="overflow-y-auto flex-1">
 
           {/* Loading */}
           {isLoading && (
-            <div className="flex items-center justify-center py-32">
-              <div className="w-8 h-8 border-2 border-gray-200 border-t-gray-900 rounded-full animate-spin" />
+            <div className="flex items-center justify-center h-64">
+              <div className="w-7 h-7 border-2 border-white/10 border-t-white/60 rounded-full animate-spin" />
             </div>
           )}
 
           {!isLoading && property && (
             <>
-              {/* Gallery */}
-              {allPhotos.length > 0 && (
-                <div>
-                  <div className="relative h-64 md:h-[380px] bg-gray-100">
+              {/* ── Galería ── */}
+              <div className="relative h-64 md:h-[360px] bg-white/5 flex-shrink-0">
+                {allPhotos.length > 0 ? (
+                  <>
                     <Image
                       src={allPhotos[photoIndex]}
                       alt={titulo}
@@ -111,104 +118,136 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
                       sizes="(max-width: 768px) 100vw, 1000px"
                       priority
                     />
-                    {allPhotos.length > 1 && (
-                      <>
-                        <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transition-colors">
-                          <ChevronLeft className="w-5 h-5" />
-                        </button>
-                        <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/50 text-white transition-colors">
-                          <ChevronRight className="w-5 h-5" />
-                        </button>
-                        <span className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2.5 py-1 rounded-full">
-                          {photoIndex + 1} / {allPhotos.length}
-                        </span>
-                      </>
-                    )}
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B1C2C]/80 via-transparent to-transparent" />
+                  </>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-white/20 text-sm font-sans font-[300]">Sin fotos</span>
                   </div>
-                  {allPhotos.length > 1 && (
-                    <div className="flex gap-2 px-4 py-3 overflow-x-auto bg-gray-50">
-                      {allPhotos.map((url, i) => (
-                        <button
-                          key={i}
-                          onClick={() => setPhotoIndex(i)}
-                          className={`relative flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === photoIndex ? "border-gray-900 opacity-100" : "border-transparent opacity-50 hover:opacity-80"}`}
-                        >
-                          <Image src={url} alt="" fill className="object-cover" sizes="64px" />
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                )}
+
+                {/* Flechas */}
+                {allPhotos.length > 1 && (
+                  <>
+                    <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white transition-colors backdrop-blur-sm">
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/30 hover:bg-black/60 text-white transition-colors backdrop-blur-sm">
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                    <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-white/60 font-sans font-[300]">
+                      {photoIndex + 1} / {allPhotos.length}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* Miniaturas */}
+              {allPhotos.length > 1 && (
+                <div className="flex gap-2 px-5 py-3 overflow-x-auto" style={{ background: "#0a1929" }}>
+                  {allPhotos.map((url, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setPhotoIndex(i)}
+                      className={`relative flex-shrink-0 w-14 h-10 rounded-lg overflow-hidden border transition-all ${
+                        i === photoIndex ? "border-[#C9B99A] opacity-100" : "border-white/10 opacity-40 hover:opacity-70"
+                      }`}
+                    >
+                      <Image src={url} alt="" fill className="object-cover" sizes="56px" />
+                    </button>
+                  ))}
                 </div>
               )}
 
-              {/* Content */}
-              <div className="p-5 md:p-8 pb-28 md:pb-8">
+              {/* ── Contenido ── */}
+              <div className="p-6 md:p-8 pb-28 md:pb-8">
+
+                {/* Header */}
+                <div className="mb-6">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="inline-block px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-[#0B1C2C]" style={{ background: "#C9B99A" }}>
+                      {property.operacion === "venta" ? "En Venta" : "En Alquiler"}
+                    </span>
+                    <span className="inline-block px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-white/60 border border-white/15">
+                      {TIPO_LABEL[property.tipo] ?? property.tipo}
+                    </span>
+                  </div>
+
+                  <h2 className="font-sans text-2xl md:text-3xl font-[200] leading-snug text-white mb-2">
+                    {titulo}
+                  </h2>
+
+                  {(property.zona || property.direccion) && (
+                    <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/40">
+                      <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-[#C9B99A]/60" />
+                      {[property.zona, property.direccion].filter(Boolean).join(", ")}
+                    </p>
+                  )}
+                </div>
+
+                {/* Chips de características */}
+                {chips.length > 0 && (
+                  <div className="flex flex-wrap gap-3 pb-6 mb-6 border-b border-white/8">
+                    {chips.map((c, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 px-4 py-2.5 font-sans text-sm font-[300] text-white/70 border border-white/10"
+                        style={{ background: "#11263A", borderRadius: 10 }}
+                      >
+                        {c.icon === "bed" && <Bed className="w-4 h-4 text-[#C9B99A]/60" />}
+                        {c.icon === "bath" && <Bath className="w-4 h-4 text-[#C9B99A]/60" />}
+                        {c.icon === "m2" && <Maximize2 className="w-4 h-4 text-[#C9B99A]/60" />}
+                        {c.icon === "car" && <Car className="w-4 h-4 text-[#C9B99A]/60" />}
+                        {c.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 2 columnas */}
                 <div className="flex flex-col md:flex-row gap-8">
 
-                  {/* Left */}
-                  <div className="flex-1 flex flex-col gap-6">
-                    {/* Header */}
-                    <div>
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-900 text-white">
-                          {property.operacion === "venta" ? "En Venta" : "En Alquiler"}
-                        </span>
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
-                          {TIPO_LABEL[property.tipo] ?? property.tipo}
-                        </span>
-                      </div>
-                      <h2 className="text-2xl font-semibold text-gray-900 leading-snug mb-2">{titulo}</h2>
-                      {(property.zona || property.direccion) && (
-                        <p className="flex items-center gap-1.5 text-sm text-gray-400">
-                          <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
-                          {[property.zona, property.direccion].filter(Boolean).join(", ")}
-                        </p>
-                      )}
-                    </div>
+                  {/* Izquierda: descripción + detalles + mapa */}
+                  <div className="flex-1 flex flex-col gap-7">
 
-                    {/* Chips */}
-                    {chips.length > 0 && (
-                      <div className="flex flex-wrap gap-3 pb-6 border-b border-gray-100">
-                        {chips.map((c, i) => (
-                          <div key={i} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-100 text-sm font-medium text-gray-700">
-                            {c.icon === "bed" && <Bed className="w-4 h-4 text-gray-400" />}
-                            {c.icon === "bath" && <Bath className="w-4 h-4 text-gray-400" />}
-                            {c.icon === "m2" && <Maximize2 className="w-4 h-4 text-gray-400" />}
-                            {c.icon === "car" && <Car className="w-4 h-4 text-gray-400" />}
-                            {c.label}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Description */}
                     {property.descripcion && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Descripción</p>
-                        <p className="text-sm text-gray-600 leading-7 whitespace-pre-line">{property.descripcion}</p>
+                        <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/60 mb-4">
+                          Descripción
+                        </p>
+                        <p className="font-sans text-sm font-[300] leading-7 text-white/60 whitespace-pre-line">
+                          {property.descripcion}
+                        </p>
                       </div>
                     )}
 
-                    {/* Detalles */}
                     {detalles.length > 0 && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Detalles</p>
+                        <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/60 mb-4">
+                          Detalles
+                        </p>
                         <div className="grid grid-cols-2 gap-2">
                           {detalles.map(d => (
-                            <div key={d.label} className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-100 text-sm">
-                              <span className="text-gray-500">{d.label}</span>
-                              <span className="font-medium text-gray-800">{d.value}</span>
+                            <div
+                              key={d.label}
+                              className="flex items-center justify-between px-4 py-3 border border-white/8"
+                              style={{ background: "#11263A", borderRadius: 10 }}
+                            >
+                              <span className="font-sans text-xs font-[300] text-white/40">{d.label}</span>
+                              <span className="font-sans text-xs font-[400] text-white/80">{d.value}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
 
-                    {/* Map */}
                     {property.latitud && property.longitud && (
                       <div>
-                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Ubicación</p>
-                        <div className="rounded-xl overflow-hidden h-52 border border-gray-100">
+                        <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/60 mb-4">
+                          Ubicación
+                        </p>
+                        <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 200 }}>
                           <iframe
                             src={`https://www.openstreetmap.org/export/embed.html?bbox=${property.longitud - 0.008},${property.latitud - 0.008},${property.longitud + 0.008},${property.latitud + 0.008}&layer=mapnik&marker=${property.latitud},${property.longitud}`}
                             className="w-full h-full border-0"
@@ -219,45 +258,54 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
                     )}
                   </div>
 
-                  {/* Right sidebar — desktop */}
-                  <div className="hidden md:block w-72 flex-shrink-0">
-                    <div className="border border-gray-100 rounded-2xl p-5 sticky top-4">
-                      {precio && (
-                        <>
-                          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Precio</p>
-                          <p className="text-3xl font-bold text-gray-900 tracking-tight mb-6">{precio}</p>
-                        </>
-                      )}
+                  {/* Derecha: precio + CTA — desktop */}
+                  <div className="hidden md:block w-64 flex-shrink-0">
+                    <div
+                      className="p-6 border border-white/10 sticky top-4"
+                      style={{ background: "#11263A", borderRadius: 16 }}
+                    >
+                      <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-[#C9B99A]/60 mb-2">
+                        Precio
+                      </p>
+                      <p className="font-sans text-3xl font-[200] text-white mb-8 leading-none">
+                        {precio ?? "Consultar"}
+                      </p>
                       <a
                         href={whatsappUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-gray-900 text-white font-medium hover:bg-gray-700 transition-colors text-sm"
+                        className="block w-full py-3.5 text-center font-sans text-[11px] font-[600] uppercase tracking-[0.2em] transition-all"
+                        style={{ background: "#C9B99A", color: "#0B1C2C", borderRadius: 8 }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "#d4c5aa")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "#C9B99A")}
                       >
-                        Consultar por esta propiedad
+                        Consultar
                       </a>
                     </div>
                   </div>
+
                 </div>
               </div>
             </>
           )}
         </div>
 
-        {/* Mobile sticky bottom bar */}
+        {/* ── Mobile sticky CTA ── */}
         {!isLoading && property && (
-          <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-t border-gray-100">
-            {precio && (
-              <div className="flex-1">
-                <p className="text-xs text-gray-400">Precio</p>
-                <p className="font-bold text-gray-900 text-sm">{precio}</p>
-              </div>
-            )}
+          <div
+            className="md:hidden flex items-center gap-4 px-5 py-4 border-t border-white/10"
+            style={{ background: "#0a1929" }}
+          >
+            <div className="flex-1">
+              <p className="font-sans text-[10px] font-[300] text-white/40 uppercase tracking-wider">Precio</p>
+              <p className="font-sans text-lg font-[300] text-white leading-tight">{precio ?? "Consultar"}</p>
+            </div>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gray-900 text-white font-medium text-sm hover:bg-gray-700 transition-colors"
+              className="px-6 py-3 font-sans text-[11px] font-[600] uppercase tracking-[0.15em] transition-all"
+              style={{ background: "#C9B99A", color: "#0B1C2C", borderRadius: 8 }}
             >
               Consultar
             </a>
