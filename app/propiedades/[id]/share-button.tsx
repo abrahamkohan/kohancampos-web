@@ -21,10 +21,10 @@ export function ShareButton({ titulo, propertyId }: { titulo: string; propertyId
   return (
     <button
       onClick={handleShare}
-      className="relative flex items-center gap-2 border border-gold/20 px-4 py-2 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] text-gold/60 transition-colors hover:border-gold/50 hover:text-gold"
+      title="Compartir"
+      className="relative w-8 h-8 flex items-center justify-center text-kc-white/30 hover:text-gold/80 transition-colors"
     >
-      <Share2 size={13} />
-      Compartir
+      <Share2 size={15} />
       {msg && (
         <span className="absolute -bottom-8 right-0 whitespace-nowrap border border-gold/20 bg-navy-deep px-3 py-1 font-sans text-[10px] normal-case tracking-normal text-gold">
           {msg}

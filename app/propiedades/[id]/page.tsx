@@ -257,12 +257,17 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
             </div>
 
             {/* ════════ Sidebar sticky ════════ */}
-            <div className="lg:sticky lg:top-24 space-y-3">
+            <div className="lg:sticky lg:top-24">
 
-              {/* Card principal */}
-              <div className="bg-[#13293d] border border-gold/15 p-6">
+              <div className="relative bg-[#13293d] border border-gold/20 p-6 shadow-[0_4px_24px_rgba(0,0,0,0.35)]">
+
+                {/* Share icon — esquina superior derecha */}
+                <div className="absolute top-4 right-4">
+                  <ShareButton titulo={titulo} propertyId={id} />
+                </div>
+
                 {/* Empresa */}
-                <div className="mb-5 pb-4 border-b border-gold/15">
+                <div className="mb-5 pb-4 border-b border-gold/15 pr-8">
                   <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] text-gold/70 mb-0.5">
                     Kohan &amp; Campos
                   </p>
@@ -285,20 +290,11 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full bg-gold py-3.5 text-center font-sans text-[10px] font-[600] uppercase tracking-[0.22em] text-navy-deep transition-all hover:bg-gold-light mb-3"
+                  className="block w-full bg-gold py-3.5 text-center font-sans text-[10px] font-[600] uppercase tracking-[0.22em] text-navy-deep transition-all hover:bg-gold-light"
                 >
                   Consultar por WhatsApp
                 </a>
 
-                {/* Teléfono */}
-                <p className="font-sans text-sm font-[300] text-kc-white/35 text-center">
-                  +595 982 000 808
-                </p>
-              </div>
-
-              {/* Card compartir */}
-              <div className="bg-[#13293d] border border-gold/10 p-4">
-                <ShareButton titulo={titulo} propertyId={id} />
               </div>
 
             </div>
