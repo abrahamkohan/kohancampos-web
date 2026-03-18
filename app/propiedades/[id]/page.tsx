@@ -30,13 +30,21 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   }
 }
 
+function SectionBlock({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-8 bg-[#13293d] border border-gold/10 p-6">
+      {children}
+    </div>
+  )
+}
+
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-8 mb-4">
-      <h2 className="font-sans text-xs font-[600] uppercase tracking-[0.2em] text-kc-white/50 mb-3">
+    <div className="flex items-center gap-3 mb-5">
+      <span className="w-[2px] h-[14px] bg-gold/60 flex-shrink-0" />
+      <h2 className="font-sans text-[11px] font-[600] uppercase tracking-[0.28em] text-kc-white/80">
         {children}
       </h2>
-      <hr className="border-gold/25" />
     </div>
   )
 }
@@ -123,122 +131,128 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
             {/* ════════ Columna izquierda ════════ */}
             <div>
-              {/* Badges */}
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] bg-gold/15 text-gold">
-                  {p.operacion === "venta" ? "En Venta" : "En Alquiler"}
-                </span>
-                <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] border border-gold/20 text-kc-white/50">
-                  {TIPO_LABEL[p.tipo] ?? p.tipo}
-                </span>
+
+              {/* ── Hero: badges + título + ubicación + chips + precio ── */}
+              <div className="mb-2">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.18em] bg-gold/15 text-gold">
+                    {p.operacion === "venta" ? "En Venta" : "En Alquiler"}
+                  </span>
+                  <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.18em] border border-gold/20 text-kc-white/50">
+                    {TIPO_LABEL[p.tipo] ?? p.tipo}
+                  </span>
+                </div>
+
+                <h1 className="font-sans text-3xl sm:text-4xl font-[200] leading-snug text-kc-white mb-3">
+                  {titulo}
+                </h1>
+
+                {(p.zona || p.direccion) && (
+                  <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-kc-white/40 mb-5">
+                    <MapPin size={13} className="text-gold/50 flex-shrink-0" />
+                    {[p.zona, p.direccion].filter(Boolean).join(", ")}
+                  </p>
+                )}
+
+                {chips.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-5">
+                    {chips.map((c, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 bg-[#13293d] border border-gold/15 px-4 py-2.5 font-sans text-sm font-[300] text-kc-white/70"
+                      >
+                        {c.icon === "bed" && <Bed size={14} className="text-gold/50" />}
+                        {c.icon === "bath" && <Bath size={14} className="text-gold/50" />}
+                        {c.icon === "m2" && <Maximize2 size={14} className="text-gold/50" />}
+                        {c.icon === "car" && <Car size={14} className="text-gold/50" />}
+                        {c.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {precio && (
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-sans text-2xl font-[300] text-kc-white">{precio}</span>
+                    {precioM2 && (
+                      <span className="font-sans text-sm font-[300] text-kc-white/30">{precioM2}</span>
+                    )}
+                  </div>
+                )}
               </div>
-
-              {/* Título */}
-              <h1 className="font-sans text-3xl font-[200] leading-snug text-kc-white mb-2">
-                {titulo}
-              </h1>
-
-              {/* Ubicación */}
-              {(p.zona || p.direccion) && (
-                <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-kc-white/45 mb-4">
-                  <MapPin size={14} className="text-gold/50 flex-shrink-0" />
-                  {[p.zona, p.direccion].filter(Boolean).join(", ")}
-                </p>
-              )}
-
-              {/* Chips */}
-              {chips.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {chips.map((c, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2 border border-gold/15 px-3 py-2 font-sans text-sm font-[300] text-kc-white/65"
-                    >
-                      {c.icon === "bed" && <Bed size={14} className="text-gold/50" />}
-                      {c.icon === "bath" && <Bath size={14} className="text-gold/50" />}
-                      {c.icon === "m2" && <Maximize2 size={14} className="text-gold/50" />}
-                      {c.icon === "car" && <Car size={14} className="text-gold/50" />}
-                      {c.label}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Precio (compacto, en columna izquierda) */}
-              {precio && (
-                <div className="flex items-baseline gap-3 mb-2">
-                  <span className="font-sans text-2xl font-[300] text-kc-white">{precio}</span>
-                  {precioM2 && (
-                    <span className="font-sans text-sm font-[300] text-kc-white/35">{precioM2}</span>
-                  )}
-                </div>
-              )}
 
               {/* ── Detalles ── */}
               {detalles.length > 0 && (
-                <section>
+                <SectionBlock>
                   <SectionHeader>Detalles de la propiedad</SectionHeader>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-0">
                     {detalles.map(d => (
-                      <div key={d.label} className="flex items-center justify-between py-2 border-b border-gold/15">
+                      <div key={d.label} className="flex items-center justify-between py-3 border-b border-gold/10">
                         <span className="font-sans text-sm font-[300] text-kc-white/40">{d.label}</span>
                         <span className="font-sans text-sm font-[400] text-kc-white/80">{d.value}</span>
                       </div>
                     ))}
                   </div>
-                </section>
+                </SectionBlock>
               )}
 
               {/* ── Comodidades ── */}
               {amenities.length > 0 && (
-                <section>
+                <SectionBlock>
                   <SectionHeader>Comodidades de la propiedad</SectionHeader>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                     {amenities.map((item, i) => (
-                      <div key={i} className="flex items-center gap-2.5">
-                        <Check size={14} className="text-gold/60 flex-shrink-0" />
+                      <div key={i} className="flex items-start gap-2.5">
+                        <Check size={13} className="text-gold/60 flex-shrink-0 mt-0.5" />
                         <span className="font-sans text-sm font-[300] text-kc-white/65">{item}</span>
                       </div>
                     ))}
                   </div>
-                </section>
+                </SectionBlock>
               )}
 
               {/* ── Descripción ── */}
               {descIntro && (
-                <section>
+                <SectionBlock>
                   <SectionHeader>Descripción</SectionHeader>
-                  <p className="font-sans text-sm font-[300] leading-[1.9] text-kc-white/65 whitespace-pre-line">
+                  <p className="font-sans text-sm font-[300] leading-[1.95] text-kc-white/60 whitespace-pre-line">
                     {descIntro}
                   </p>
-                </section>
+                </SectionBlock>
               )}
 
               {/* ── Ubicación + mapa ── */}
               {(p.latitud || p.direccion) && (
-                <section>
-                  <div className="mt-8 mb-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <MapPin size={14} className="text-gold/50" />
-                      <span className="font-sans text-xs font-[600] uppercase tracking-[0.2em] text-kc-white/50">
-                        {p.zona ?? p.direccion ?? "Ubicación"}
-                      </span>
+                <SectionBlock>
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-3">
+                      <span className="w-[2px] h-[14px] bg-gold/60 flex-shrink-0" />
+                      <h2 className="font-sans text-[11px] font-[600] uppercase tracking-[0.28em] text-kc-white/80">
+                        Ubicación
+                      </h2>
                     </div>
                     {mapsUrl && (
                       <a
                         href={mapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 font-sans text-xs font-[300] text-kc-white/35 hover:text-gold transition-colors"
+                        className="flex items-center gap-1.5 font-sans text-[11px] font-[300] text-kc-white/35 hover:text-gold transition-colors"
                       >
-                        <ExternalLink size={12} />
+                        <ExternalLink size={11} />
                         Abrir en Google Maps
                       </a>
                     )}
                   </div>
-                  <hr className="border-gold/25 mb-4" />
+
+                  {(p.zona || p.direccion) && (
+                    <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-kc-white/45 mb-4">
+                      <MapPin size={13} className="text-gold/50 flex-shrink-0" />
+                      {[p.zona, p.direccion].filter(Boolean).join(", ")}
+                    </p>
+                  )}
+
                   {p.latitud && p.longitud && (
-                    <div className="overflow-hidden border border-gold/25 rounded-lg" style={{ height: 280 }}>
+                    <div className="overflow-hidden border border-gold/20 rounded" style={{ height: 280 }}>
                       <iframe
                         src={`https://maps.google.com/maps?q=${p.latitud},${p.longitud}&z=16&output=embed`}
                         className="w-full h-full border-0"
@@ -247,28 +261,30 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                       />
                     </div>
                   )}
-                </section>
+                </SectionBlock>
               )}
             </div>
 
             {/* ════════ Sidebar sticky ════════ */}
-            <div className="lg:sticky lg:top-24">
-              <div className="border border-gold/15 p-6 bg-navy-light/30">
+            <div className="lg:sticky lg:top-24 space-y-3">
+
+              {/* Card principal */}
+              <div className="bg-[#13293d] border border-gold/15 p-6">
                 {/* Empresa */}
-                <div className="mb-5 pb-5 border-b border-gold/25">
-                  <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-gold/70 mb-0.5">
+                <div className="mb-5 pb-4 border-b border-gold/15">
+                  <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] text-gold/70 mb-0.5">
                     Kohan &amp; Campos
                   </p>
-                  <p className="font-sans text-sm font-[200] text-kc-white/60">Real Estate</p>
+                  <p className="font-sans text-xs font-[300] text-kc-white/40 tracking-[0.1em]">Real Estate · Paraguay</p>
                 </div>
 
-                {/* Precio resumido */}
+                {/* Precio */}
                 {precio && (
-                  <div className="mb-5">
-                    <p className="font-sans text-[10px] uppercase tracking-[0.15em] text-kc-white/30 mb-1">Precio</p>
-                    <p className="font-sans text-lg font-[300] text-kc-white leading-none">{precio}</p>
+                  <div className="mb-6">
+                    <p className="font-sans text-[10px] uppercase tracking-[0.2em] text-kc-white/30 mb-1.5">Precio</p>
+                    <p className="font-sans text-xl font-[300] text-kc-white leading-tight">{precio}</p>
                     {precioM2 && (
-                      <p className="font-sans text-xs text-kc-white/30 mt-0.5">{precioM2}</p>
+                      <p className="font-sans text-xs text-kc-white/25 mt-1">{precioM2}</p>
                     )}
                   </div>
                 )}
@@ -278,21 +294,22 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full bg-gold py-3 text-center font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-navy-deep transition-all hover:bg-gold-light mb-3"
+                  className="block w-full bg-gold py-3.5 text-center font-sans text-[10px] font-[600] uppercase tracking-[0.22em] text-navy-deep transition-all hover:bg-gold-light mb-3"
                 >
                   Consultar por WhatsApp
                 </a>
 
                 {/* Teléfono */}
-                <p className="font-sans text-sm font-[300] text-kc-white/40 text-center mb-4">
+                <p className="font-sans text-sm font-[300] text-kc-white/35 text-center">
                   +595 982 000 808
                 </p>
-
-                {/* Compartir */}
-                <div className="border-t border-gold/25 pt-4">
-                  <ShareButton titulo={titulo} propertyId={id} />
-                </div>
               </div>
+
+              {/* Card compartir */}
+              <div className="bg-[#13293d] border border-gold/10 p-4">
+                <ShareButton titulo={titulo} propertyId={id} />
+              </div>
+
             </div>
 
           </div>
