@@ -70,7 +70,29 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
   const p = await getPropiedadById(id)
   if (!p) notFound()
 
+  // titulo para SEO / metadata / WhatsApp
   const titulo = p.titulo ?? (TIPO_LABEL[p.tipo] ?? p.tipo) + " en " + (p.zona ?? "Sin ubicación")
+
+  // título display — conciso: "Departamento · 1 dorm."
+  const tituloDisplay = p.titulo ?? [
+    TIPO_LABEL[p.tipo] ?? p.tipo,
+    p.dormitorios != null
+      ? (p.dormitorios === 0 ? "monoambiente" : p.dormitorios + " dorm.")
+      : null,
+  ].filter(Boolean).join(" · ")
+
+  // subtítulo — operacion + zona
+  const subtituloDisplay = [
+    p.operacion === "venta" ? "En venta" : "En alquiler",
+    p.zona,
+  ].filter(Boolean).join(" · ")
+
+  // hook badge (data-driven)
+  const HOOK: Record<string, { label: string; cls: string }> = {
+    nuevo:   { label: "Nuevo",       cls: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20" },
+    reventa: { label: "Oportunidad", cls: "bg-amber-500/15 text-amber-400 border border-amber-500/20" },
+  }
+  const hookBadge = p.condicion ? HOOK[p.condicion] ?? null : null
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
   const portadaUrl = p.foto_portada
@@ -131,9 +153,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
           </div>
 
           {/* ── Galería ── */}
-          <div className="rounded-2xl overflow-hidden">
-            <PropertyGallery photos={allPhotos} titulo={titulo} />
-          </div>
+          <PropertyGallery photos={allPhotos} titulo={titulo} />
 
           {/* ── Contenido principal ── */}
           <div className="mt-5 lg:mt-8 grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 lg:gap-12 items-start">
@@ -141,26 +161,28 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
             {/* ════════ Columna izquierda ════════ */}
             <div className="space-y-5 lg:space-y-0">
 
-              {/* ── Hero card (más padding, protagonista) ── */}
+              {/* ── Hero card (protagonista) ── */}
               <Card className="p-6">
-                {/* Badge operación */}
-                <div className="mb-3">
+                {/* Badges — operación + hook */}
+                <div className="flex items-center gap-2 mb-4">
                   <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.2em] bg-gold/15 text-gold rounded-md">
                     {p.operacion === "venta" ? "En Venta" : "En Alquiler"}
                   </span>
+                  {hookBadge && (
+                    <span className={`px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.18em] rounded-md ${hookBadge.cls}`}>
+                      {hookBadge.label}
+                    </span>
+                  )}
                 </div>
 
-                {/* Título — compacto */}
-                <h1 className="font-sans text-xl sm:text-2xl lg:text-4xl font-[300] leading-[1.25] text-white mb-1.5">
-                  {titulo}
+                {/* Título conciso */}
+                <h1 className="font-sans text-xl sm:text-2xl lg:text-4xl font-[300] leading-[1.25] text-white mb-1">
+                  {tituloDisplay}
                 </h1>
 
-                {/* Subtítulo: tipo · zona */}
-                <p className="font-sans text-sm font-[300] text-white/40 mb-4">
-                  {TIPO_LABEL[p.tipo] ?? p.tipo}
-                  {(p.zona || p.direccion) && (
-                    <span> · {[p.zona, p.direccion].filter(Boolean).join(", ")}</span>
-                  )}
+                {/* Subtítulo: operacion · zona */}
+                <p className="font-sans text-sm font-[300] text-white/38 mb-4">
+                  {subtituloDisplay}
                 </p>
 
                 {/* Fila de datos inline */}
@@ -199,11 +221,11 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
               {amenities.length > 0 && (
                 <Card className="lg:mt-6">
                   <SectionLabel>Comodidades</SectionLabel>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3.5">
                     {amenities.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <Check size={12} className="text-gold/60 flex-shrink-0 mt-1" />
-                        <span className="font-sans text-sm font-[300] text-white/60 leading-snug">{item}</span>
+                      <div key={i} className="flex items-start gap-2.5">
+                        <Check size={13} className="text-gold/70 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+                        <span className="font-sans text-sm font-[300] text-white/65 leading-snug">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -222,7 +244,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Ubicación + mapa ── */}
               {(p.latitud || p.direccion) && (
-                <Card className="lg:mt-6">
+                <Card className="lg:mt-6 mb-4 lg:mb-0">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <MapPin size={13} className="text-gold/50" />

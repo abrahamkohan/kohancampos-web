@@ -74,8 +74,8 @@ export function PropertyGallery({ photos, titulo }: Props) {
               sizes="(max-width: 768px) 100vw, 900px"
               priority
             />
-            {/* Gradient overlay — solo mobile, mejora legibilidad */}
-            <div className="md:hidden absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/60 to-transparent pointer-events-none z-10" />
+            {/* Gradient overlay — solo mobile, depth sutil */}
+            <div className="md:hidden absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-10" />
             {photos.length > 1 && (
               <>
                 <button
