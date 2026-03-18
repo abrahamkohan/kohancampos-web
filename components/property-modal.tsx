@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { X, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Maximize2, Car, Check, ExternalLink, Share2 } from "lucide-react"
+import { X, MapPin, Bed, Bath, Maximize2, Car, Check, ExternalLink, Share2, ChevronLeft, ChevronRight } from "lucide-react"
 import type { PropiedadDetalle } from "@/lib/supabase-properties"
 
 const TIPO_LABEL: Record<string, string> = {
@@ -32,14 +32,14 @@ function parseBullets(text: string): { intro: string; bullets: string[] } {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] mb-4" style={{ color: `${GOLD}99` }}>
+    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] mb-3" style={{ color: `${GOLD}99` }}>
       {children}
     </p>
   )
 }
 
 function Divider() {
-  return <div style={{ borderTop: `1px solid ${DIVIDER}`, margin: "28px 0" }} />
+  return <div style={{ borderTop: `1px solid ${DIVIDER}`, margin: "22px 0" }} />
 }
 
 interface Props {
@@ -93,8 +93,14 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
     }
   }
 
-  function prev(e: React.MouseEvent) { e.stopPropagation(); setPhotoIndex(i => (i === 0 ? allPhotos.length - 1 : i - 1)) }
-  function next(e: React.MouseEvent) { e.stopPropagation(); setPhotoIndex(i => (i === allPhotos.length - 1 ? 0 : i + 1)) }
+  function prev(e: React.MouseEvent) {
+    e.stopPropagation()
+    setPhotoIndex(i => i === 0 ? allPhotos.length - 1 : i - 1)
+  }
+  function next(e: React.MouseEvent) {
+    e.stopPropagation()
+    setPhotoIndex(i => i === allPhotos.length - 1 ? 0 : i + 1)
+  }
 
   const chips = property ? [
     property.dormitorios != null && { icon: "bed", label: property.dormitorios === 0 ? "Monoambiente" : property.dormitorios + " dorm." },
@@ -129,7 +135,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
       onClick={onClose}
     >
       <div
-        className="relative w-full h-[96vh] md:h-auto md:max-h-[90vh] md:max-w-[1100px] rounded-t-2xl md:rounded-2xl overflow-hidden flex flex-col"
+        className="relative w-full h-[96vh] md:h-auto md:max-h-[92vh] md:max-w-[920px] rounded-t-2xl md:rounded-2xl overflow-hidden flex flex-col"
         style={{ background: BG_MAIN }}
         onClick={e => e.stopPropagation()}
       >
@@ -169,9 +175,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
 
           {!isLoading && property && (
             <>
-              {/* ════════════════════════════════
-                  MOBILE LAYOUT
-              ════════════════════════════════ */}
+              {/* ════════ MOBILE ════════ */}
 
               {/* Hero mobile */}
               {allPhotos.length > 0 && (
@@ -179,10 +183,12 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                   <Image src={allPhotos[photoIndex]} alt={titulo} fill className="object-cover" sizes="100vw" priority />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0f2233] via-[#0f2233]/20 to-transparent" />
                   <div className="absolute top-4 left-4 flex gap-2 z-10">
-                    <span className="px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em]" style={{ background: GOLD, color: BG_MAIN, borderRadius: 3 }}>
+                    <span className="px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em]"
+                      style={{ background: GOLD, color: BG_MAIN, borderRadius: 3 }}>
                       {property.operacion === "venta" ? "En Venta" : "En Alquiler"}
                     </span>
-                    <span className="px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] text-white/70 bg-black/40 backdrop-blur-sm" style={{ borderRadius: 3 }}>
+                    <span className="px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] text-white/70 bg-black/40 backdrop-blur-sm"
+                      style={{ borderRadius: 3 }}>
                       {TIPO_LABEL[property.tipo] ?? property.tipo}
                     </span>
                   </div>
@@ -212,7 +218,8 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                 {chips.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {chips.map((c, i) => (
-                      <div key={i} className="flex items-center gap-1.5 px-3 py-2 font-sans text-sm font-[300] text-white/70 border border-white/10" style={{ background: BG_CHIP, borderRadius: 8 }}>
+                      <div key={i} className="flex items-center gap-1.5 px-3 py-2 font-sans text-sm font-[300] text-white/70 border border-white/10"
+                        style={{ background: BG_CHIP, borderRadius: 8 }}>
                         <ChipIcon icon={c.icon} />
                         {c.label}
                       </div>
@@ -221,7 +228,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                 )}
               </div>
 
-              {/* Contenido mobile (descripción, comodidades, mapa) */}
+              {/* Contenido mobile */}
               <div className="md:hidden px-4 pb-6 flex flex-col gap-6">
                 {descIntro && (
                   <div>
@@ -249,58 +256,97 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                     <div className="flex items-center justify-between mb-3">
                       <SectionLabel>Ubicación</SectionLabel>
                       {mapsUrl && (
-                        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 font-sans text-xs font-[300] text-white/40 hover:text-white/70 transition-colors">
+                        <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-1 font-sans text-xs font-[300] text-white/40 hover:text-white/70 transition-colors">
                           <ExternalLink className="w-3 h-3" /> Google Maps
                         </a>
                       )}
                     </div>
                     {property.latitud && property.longitud && (
-                      <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 220 }}>
-                        <iframe src={`https://maps.google.com/maps?q=${property.latitud},${property.longitud}&z=16&output=embed`} className="w-full h-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+                      <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 200 }}>
+                        <iframe src={`https://maps.google.com/maps?q=${property.latitud},${property.longitud}&z=16&output=embed`}
+                          className="w-full h-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
                       </div>
                     )}
                   </div>
                 )}
               </div>
 
-              {/* ════════════════════════════════
-                  DESKTOP LAYOUT
-              ════════════════════════════════ */}
+              {/* ════════ DESKTOP ════════ */}
 
-              {/* Galería desktop */}
+              {/* ── Galería desktop ── */}
               {allPhotos.length > 0 && (
                 <div className="hidden md:grid gap-1 rounded-t-2xl overflow-hidden"
-                  style={{ height: 300, gridTemplateColumns: allPhotos.length > 1 ? "1fr 200px" : "1fr" }}>
+                  style={{
+                    height: 360,
+                    gridTemplateColumns: allPhotos.length > 1 ? "1fr 230px" : "1fr",
+                  }}>
+                  {/* Foto principal — cambia con photoIndex */}
                   <div className="relative overflow-hidden">
-                    <Image src={allPhotos[0]} alt={titulo} fill className="object-cover" sizes="900px" priority />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f2233]/40 via-transparent to-transparent" />
+                    <Image
+                      src={allPhotos[photoIndex]}
+                      alt={titulo}
+                      fill
+                      className="object-cover transition-opacity duration-200"
+                      sizes="690px"
+                      priority
+                    />
+                    {allPhotos.length > 1 && (
+                      <>
+                        <button
+                          onClick={prev}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={next}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      </>
+                    )}
+                    <span className="absolute bottom-3 right-3 font-sans text-[11px] text-white/50 bg-black/40 px-2 py-0.5 rounded">
+                      {photoIndex + 1}/{allPhotos.length}
+                    </span>
                   </div>
+
+                  {/* Thumbnails derecha */}
                   {allPhotos.length > 1 && (
-                    <div className="grid gap-1" style={{ gridTemplateRows: allPhotos.length > 2 ? "1fr 1fr" : "1fr" }}>
-                      {allPhotos.slice(1, 3).map((url, i) => (
-                        <div key={i} className="relative overflow-hidden">
-                          <Image src={url} alt="" fill className="object-cover" sizes="200px" />
-                          {i === 1 && allPhotos.length > 3 && (
-                            <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1">
-                              <span className="text-white font-sans text-xl font-[200]">+{allPhotos.length - 3}</span>
-                              <span className="font-sans text-[10px] uppercase tracking-[0.15em] text-white/50">fotos</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                    <div className="grid gap-1" style={{ gridTemplateRows: "1fr 1fr" }}>
+                      {[1, 2].map((offset) => {
+                        const idx = (photoIndex + offset) % allPhotos.length
+                        const isLast = offset === 2 && allPhotos.length > 3
+                        return (
+                          <button
+                            key={offset}
+                            onClick={(e) => { e.stopPropagation(); setPhotoIndex(idx) }}
+                            className="relative overflow-hidden w-full h-full block"
+                          >
+                            <Image src={allPhotos[idx]} alt="" fill className="object-cover" sizes="230px" />
+                            {isLast && (
+                              <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1">
+                                <span className="text-white font-sans text-2xl font-[200]">+{allPhotos.length - 3}</span>
+                                <span className="font-sans text-[10px] uppercase tracking-[0.15em] text-white/60">fotos</span>
+                              </div>
+                            )}
+                          </button>
+                        )
+                      })}
                     </div>
                   )}
                 </div>
               )}
 
-              {/* Desktop: dos columnas */}
-              <div className="hidden md:flex gap-10 px-10 pt-8 pb-10">
+              {/* ── Contenido desktop: dos columnas ── */}
+              <div className="hidden md:flex gap-8 px-8 pt-7 pb-8">
 
-                {/* ── Columna izquierda (65%) ── */}
+                {/* Columna izquierda */}
                 <div className="flex-1 min-w-0">
 
-                  {/* 1. Badges + Título + Ubicación */}
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  {/* Badges + título + ubicación */}
+                  <div className="flex flex-wrap gap-2 mb-3">
                     <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.2em]"
                       style={{ background: GOLD, color: BG_MAIN, borderRadius: 4 }}>
                       {property.operacion === "venta" ? "En Venta" : "En Alquiler"}
@@ -310,7 +356,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                       {TIPO_LABEL[property.tipo] ?? property.tipo}
                     </span>
                   </div>
-                  <h2 className="font-sans text-[30px] font-[200] leading-tight text-white mb-2">{titulo}</h2>
+                  <h2 className="font-sans text-2xl font-[200] leading-snug text-white mb-2">{titulo}</h2>
                   {(property.zona || property.direccion) && (
                     <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/45">
                       <MapPin className="w-3.5 h-3.5 flex-shrink-0" style={{ color: `${GOLD}70` }} />
@@ -318,14 +364,14 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                     </p>
                   )}
 
-                  {/* 2. Chips */}
+                  {/* Chips */}
                   {chips.length > 0 && (
                     <>
                       <Divider />
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex flex-wrap gap-2">
                         {chips.map((c, i) => (
-                          <div key={i} className="flex items-center gap-2 px-4 py-2.5 font-sans text-sm font-[300] text-white/70 border border-white/10"
-                            style={{ background: BG_CHIP, borderRadius: 10 }}>
+                          <div key={i} className="flex items-center gap-2 px-3 py-2 font-sans text-sm font-[300] text-white/70 border border-white/10"
+                            style={{ background: BG_CHIP, borderRadius: 8 }}>
                             <ChipIcon icon={c.icon} />
                             {c.label}
                           </div>
@@ -334,7 +380,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                     </>
                   )}
 
-                  {/* 3. Descripción */}
+                  {/* Descripción */}
                   {descIntro && (
                     <>
                       <Divider />
@@ -343,14 +389,14 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                     </>
                   )}
 
-                  {/* 4. Comodidades */}
+                  {/* Comodidades */}
                   {amenities.length > 0 && (
                     <>
                       <Divider />
                       <SectionLabel>Comodidades</SectionLabel>
-                      <div className="grid grid-cols-2 gap-y-3.5 gap-x-6">
+                      <div className="grid grid-cols-2 gap-y-3 gap-x-4">
                         {amenities.map((item, i) => (
-                          <div key={i} className="flex items-center gap-2.5">
+                          <div key={i} className="flex items-center gap-2">
                             <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
                               style={{ background: `${GOLD}18` }}>
                               <Check className="w-2.5 h-2.5" style={{ color: GOLD }} />
@@ -362,7 +408,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                     </>
                   )}
 
-                  {/* 5. Detalles */}
+                  {/* Detalles */}
                   {detalles.length > 0 && (
                     <>
                       <Divider />
@@ -370,7 +416,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                       <div className="grid grid-cols-2 gap-2">
                         {detalles.map(d => (
                           <div key={d.label} className="flex items-center justify-between px-4 py-3 border border-white/8"
-                            style={{ background: BG_CARD, borderRadius: 10 }}>
+                            style={{ background: BG_CARD, borderRadius: 8 }}>
                             <span className="font-sans text-xs font-[300] text-white/40">{d.label}</span>
                             <span className="font-sans text-xs font-[400] text-white/80">{d.value}</span>
                           </div>
@@ -379,7 +425,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                     </>
                   )}
 
-                  {/* 6. Ubicación + mapa */}
+                  {/* Mapa */}
                   {(property.latitud || property.direccion) && (
                     <>
                       <Divider />
@@ -392,14 +438,14 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                         </div>
                         {mapsUrl && (
                           <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 font-sans text-xs font-[400] text-white/40 hover:text-white/70 transition-colors">
+                            className="flex items-center gap-1.5 font-sans text-xs font-[300] text-white/40 hover:text-white/70 transition-colors">
                             <ExternalLink className="w-3.5 h-3.5" />
                             Abrir en Google Maps
                           </a>
                         )}
                       </div>
                       {property.latitud && property.longitud && (
-                        <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 260 }}>
+                        <div className="overflow-hidden border border-white/10" style={{ borderRadius: 10, height: 240 }}>
                           <iframe
                             src={`https://maps.google.com/maps?q=${property.latitud},${property.longitud}&z=16&output=embed`}
                             className="w-full h-full border-0"
@@ -413,29 +459,29 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
 
                 </div>
 
-                {/* ── Columna derecha (35%) — precio card sticky ── */}
-                <div className="w-72 flex-shrink-0">
-                  <div className="sticky top-6 p-6 border border-white/8"
-                    style={{ background: BG_CARD, borderRadius: 14 }}>
-                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] mb-2"
+                {/* Columna derecha — precio sticky */}
+                <div className="w-60 flex-shrink-0">
+                  <div className="sticky top-6 p-5 border border-white/8"
+                    style={{ background: BG_CARD, borderRadius: 12 }}>
+                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] mb-1"
                       style={{ color: `${GOLD}80` }}>
                       Precio
                     </p>
-                    <p className="font-sans text-3xl font-[200] text-white mb-1 leading-none tracking-tight">
+                    <p className="font-sans text-2xl font-[200] text-white mb-0.5 leading-none tracking-tight">
                       {precio ?? "Consultar"}
                     </p>
                     {property.superficie_m2 && property.precio && (
-                      <p className="font-sans text-xs font-[300] text-white/35 mb-8">
+                      <p className="font-sans text-xs font-[300] text-white/35 mb-6">
                         {(property.moneda === "usd" ? "USD" : "PYG")} {Math.round(property.precio / property.superficie_m2).toLocaleString("es-PY")}/m²
                       </p>
                     )}
-                    {!property.superficie_m2 && <div className="mb-8" />}
+                    {!property.superficie_m2 && <div className="mb-6" />}
                     <a
                       href={whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center justify-center w-full font-sans text-[11px] font-[600] uppercase tracking-[0.2em] transition-all hover:opacity-90 mb-3"
-                      style={{ background: GOLD, color: BG_MAIN, borderRadius: 8, height: 48 }}
+                      style={{ background: GOLD, color: BG_MAIN, borderRadius: 8, height: 44 }}
                     >
                       Consultar
                     </a>
@@ -469,7 +515,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center px-6 font-sans text-[11px] font-[600] uppercase tracking-[0.15em]"
-              style={{ background: GOLD, color: BG_MAIN, borderRadius: 8, height: 48 }}
+              style={{ background: GOLD, color: BG_MAIN, borderRadius: 8, height: 44 }}
             >
               Consultar
             </a>
