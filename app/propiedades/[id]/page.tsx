@@ -73,8 +73,8 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
   // titulo para SEO / metadata / WhatsApp
   const titulo = p.titulo ?? (TIPO_LABEL[p.tipo] ?? p.tipo) + " en " + (p.zona ?? "Sin ubicación")
 
-  // título display — conciso: "Departamento · 1 dorm."
-  const tituloDisplay = p.titulo ?? [
+  // título display — siempre conciso desde componentes (independiente de p.titulo)
+  const tituloDisplay = [
     TIPO_LABEL[p.tipo] ?? p.tipo,
     p.dormitorios != null
       ? (p.dormitorios === 0 ? "monoambiente" : p.dormitorios + " dorm.")
@@ -87,12 +87,17 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
     p.zona,
   ].filter(Boolean).join(" · ")
 
-  // hook badge (data-driven)
+  // hook badge — data-driven + fallback según operacion
   const HOOK: Record<string, { label: string; cls: string }> = {
     nuevo:   { label: "Nuevo",       cls: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/20" },
     reventa: { label: "Oportunidad", cls: "bg-amber-500/15 text-amber-400 border border-amber-500/20" },
+    usado:   { label: "Inversión",   cls: "bg-sky-500/15 text-sky-400 border border-sky-500/20" },
   }
-  const hookBadge = p.condicion ? HOOK[p.condicion] ?? null : null
+  const hookBadge = p.condicion
+    ? (HOOK[p.condicion] ?? null)
+    : (p.operacion === "venta"
+        ? { label: "Inversión", cls: "bg-sky-500/15 text-sky-400 border border-sky-500/20" }
+        : { label: "Disponible", cls: "bg-sky-500/15 text-sky-400 border border-sky-500/20" })
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
   const portadaUrl = p.foto_portada
@@ -163,6 +168,11 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Hero card (protagonista) ── */}
               <Card className="p-6">
+                {/* Trust indicator */}
+                <p className="font-sans text-[9px] font-[600] uppercase tracking-[0.28em] text-gold/55 mb-3">
+                  Kohan &amp; Campos · Real Estate
+                </p>
+
                 {/* Badges — operación + hook */}
                 <div className="flex items-center gap-2 mb-4">
                   <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.2em] bg-gold/15 text-gold rounded-md">
@@ -325,7 +335,9 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
           </div>
         </div>
       </main>
-      <Footer />
+      <div className="hidden lg:block">
+        <Footer />
+      </div>
     </>
   )
 }
