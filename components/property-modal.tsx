@@ -198,9 +198,9 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
                 )}
               </div>
 
-              {/* ── PRECIO + CTA (mobile-only, inmediato) ── */}
+              {/* ── PRECIO + CTA (mobile-only, inmediato) — HIDDEN: sticky bottom lo reemplaza ── */}
               {precio && (
-                <div className="md:hidden mx-4 mb-6 p-4 border border-white/10 flex items-center gap-4" style={{ background: "#11263A", borderRadius: 14 }}>
+                <div className="hidden mx-4 mb-6 p-4 border border-white/10 flex items-center gap-4" style={{ background: "#11263A", borderRadius: 14 }}>
                   <div className="flex-1">
                     <p className="font-sans text-[10px] font-[300] text-[#C9B99A]/60 uppercase tracking-wider mb-0.5">Precio</p>
                     <p className="font-sans text-2xl font-[200] text-white leading-none">{precio}</p>
