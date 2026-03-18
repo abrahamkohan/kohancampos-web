@@ -231,11 +231,11 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
               {amenities.length > 0 && (
                 <Card className="lg:mt-6">
                   <SectionLabel>Comodidades</SectionLabel>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-3.5">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-4">
                     {amenities.map((item, i) => (
                       <div key={i} className="flex items-start gap-2.5">
-                        <Check size={13} className="text-gold/70 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
-                        <span className="font-sans text-sm font-[300] text-white/65 leading-snug">{item}</span>
+                        <Check size={14} className="text-gold/80 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+                        <span className="font-sans text-sm font-[300] text-white/70 leading-snug">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -252,8 +252,8 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                 </Card>
               )}
 
-              {/* ── Ubicación + mapa ── */}
-              {(p.latitud || p.direccion) && (
+              {/* ── Ubicación + mapa — solo si hay coordenadas ── */}
+              {p.latitud && p.longitud && (
                 <Card className="lg:mt-6 mb-4 lg:mb-0">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
@@ -275,16 +275,14 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                     )}
                   </div>
 
-                  {p.latitud && p.longitud && (
-                    <div className="overflow-hidden rounded-xl border border-white/8" style={{ height: 200 }}>
-                      <iframe
-                        src={`https://maps.google.com/maps?q=${p.latitud},${p.longitud}&z=16&output=embed`}
-                        className="w-full h-full border-0"
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      />
-                    </div>
-                  )}
+                  <div className="overflow-hidden rounded-xl border border-white/8" style={{ height: 200 }}>
+                    <iframe
+                      src={`https://maps.google.com/maps?q=${p.latitud},${p.longitud}&z=16&output=embed`}
+                      className="w-full h-full border-0"
+                      loading="eager"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
                 </Card>
               )}
             </div>
