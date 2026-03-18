@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-[#152840] border border-white/8 rounded-2xl p-5 shadow-[0_2px_20px_rgba(0,0,0,0.25)] ${className}`}>
+    <div className={`bg-[#112a3c] border border-white/8 rounded-2xl p-5 shadow-[0_2px_20px_rgba(0,0,0,0.3)] ${className}`}>
       {children}
     </div>
   )
@@ -43,7 +43,7 @@ function Card({ children, className = "" }: { children: React.ReactNode; classNa
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] text-white/40 mb-3">
+    <p className="font-sans text-[11px] font-[600] uppercase tracking-[0.25em] text-white/55 mb-4">
       {children}
     </p>
   )
@@ -117,7 +117,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
       {/* CTA fija mobile */}
       <MobileCTA precio={precio} precioM2={precioM2} whatsappUrl={whatsappUrl} />
 
-      <main className="min-h-screen bg-[#0d1e2e] pt-20 pb-28 lg:pb-16">
+      <main className="min-h-screen bg-[#0b1d2c] pt-20 pb-28 lg:pb-16">
         <div className="mx-auto max-w-[1140px] px-4 sm:px-5">
 
           {/* ── Nav row ── */}
@@ -139,7 +139,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
           <div className="mt-5 lg:mt-8 grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 lg:gap-12 items-start">
 
             {/* ════════ Columna izquierda ════════ */}
-            <div className="space-y-4 lg:space-y-0">
+            <div className="space-y-5 lg:space-y-0">
 
               {/* ── Hero card ── */}
               <Card>
@@ -183,22 +183,9 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                 )}
               </Card>
 
-              {/* ── Precio (solo desktop — mobile usa la barra fija) ── */}
-              {precio && (
-                <div className="hidden lg:block mt-8">
-                  <Card>
-                    <SectionLabel>Precio</SectionLabel>
-                    <p className="font-sans text-2xl font-[300] text-white leading-none">{precio}</p>
-                    {precioM2 && (
-                      <p className="font-sans text-sm text-white/30 mt-1.5">{precioM2}</p>
-                    )}
-                  </Card>
-                </div>
-              )}
-
               {/* ── Detalles ── */}
               {detalles.length > 0 && (
-                <Card className="lg:mt-4">
+                <Card className="lg:mt-6">
                   <SectionLabel>Detalles de la propiedad</SectionLabel>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-0">
                     {detalles.map(d => (
@@ -213,7 +200,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Comodidades ── */}
               {amenities.length > 0 && (
-                <Card>
+                <Card className="lg:mt-6">
                   <SectionLabel>Comodidades</SectionLabel>
                   <div className="grid grid-cols-2 gap-x-4 gap-y-3">
                     {amenities.map((item, i) => (
@@ -228,7 +215,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Descripción ── */}
               {descIntro && (
-                <Card>
+                <Card className="lg:mt-6">
                   <SectionLabel>Descripción</SectionLabel>
                   <p className="font-sans text-sm font-[300] leading-[1.9] text-white/55 whitespace-pre-line">
                     {descIntro}
@@ -238,7 +225,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Ubicación + mapa ── */}
               {(p.latitud || p.direccion) && (
-                <Card>
+                <Card className="lg:mt-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
                       <MapPin size={13} className="text-gold/50" />
