@@ -12,6 +12,12 @@ const CONDICION_LABEL: Record<string, string> = {
   nuevo: "Nuevo", usado: "Usado", reventa: "Reventa",
 }
 
+const BG_MAIN = "#0f2233"
+const BG_CARD = "rgba(255,255,255,0.04)"
+const BG_CHIP = "rgba(255,255,255,0.06)"
+const GOLD = "#C9B99A"
+const DIVIDER = "rgba(255,255,255,0.08)"
+
 function parseBullets(text: string): { intro: string; bullets: string[] } {
   const lines = text.split("\n")
   const bullets: string[] = []
@@ -22,6 +28,18 @@ function parseBullets(text: string): { intro: string; bullets: string[] } {
     else if (t) intro.push(t)
   }
   return { intro: intro.join("\n"), bullets }
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] mb-4" style={{ color: `${GOLD}99` }}>
+      {children}
+    </p>
+  )
+}
+
+function Divider() {
+  return <div style={{ borderTop: `1px solid ${DIVIDER}`, margin: "28px 0" }} />
 }
 
 interface Props {
@@ -59,23 +77,21 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
     ? (property.moneda === "usd" ? "USD" : "PYG") + " " + property.precio.toLocaleString("es-PY")
     : null
   const whatsappUrl = `https://wa.me/595982000808?text=${encodeURIComponent("Hola, me interesa: " + titulo)}`
+  const mapsUrl = property?.latitud && property?.longitud
+    ? `https://www.google.com/maps?q=${property.latitud},${property.longitud}`
+    : property?.direccion ? `https://www.google.com/maps/search/${encodeURIComponent(property.direccion)}` : null
 
   function handleShare() {
     const url = `${window.location.origin}/propiedades/${propertyId}`
-    const shareTitle = titulo || "Propiedad — Kohan & Campos"
     if (navigator.share) {
-      navigator.share({ title: shareTitle, url })
+      navigator.share({ title: titulo || "Propiedad — Kohan & Campos", url })
     } else {
       navigator.clipboard.writeText(url).then(() => {
-        setShareMsg("¡Link copiado!")
+        setShareMsg("Link copiado")
         setTimeout(() => setShareMsg(""), 2000)
       })
     }
   }
-
-  const mapsUrl = property?.latitud && property?.longitud
-    ? `https://www.google.com/maps?q=${property.latitud},${property.longitud}`
-    : property?.direccion ? `https://www.google.com/maps/search/${encodeURIComponent(property.direccion)}` : null
 
   function prev(e: React.MouseEvent) { e.stopPropagation(); setPhotoIndex(i => (i === 0 ? allPhotos.length - 1 : i - 1)) }
   function next(e: React.MouseEvent) { e.stopPropagation(); setPhotoIndex(i => (i === allPhotos.length - 1 ? 0 : i + 1)) }
@@ -99,10 +115,10 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
     : { intro: "", bullets: [] }
 
   function ChipIcon({ icon }: { icon: string }) {
-    if (icon === "bed") return <Bed className="w-4 h-4 text-[#C9B99A]/50" />
-    if (icon === "bath") return <Bath className="w-4 h-4 text-[#C9B99A]/50" />
-    if (icon === "m2") return <Maximize2 className="w-4 h-4 text-[#C9B99A]/50" />
-    if (icon === "car") return <Car className="w-4 h-4 text-[#C9B99A]/50" />
+    if (icon === "bed") return <Bed className="w-4 h-4" style={{ color: `${GOLD}80` }} />
+    if (icon === "bath") return <Bath className="w-4 h-4" style={{ color: `${GOLD}80` }} />
+    if (icon === "m2") return <Maximize2 className="w-4 h-4" style={{ color: `${GOLD}80` }} />
+    if (icon === "car") return <Car className="w-4 h-4" style={{ color: `${GOLD}80` }} />
     return null
   }
 
@@ -113,21 +129,22 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
       onClick={onClose}
     >
       <div
-        className="relative w-full h-[96vh] md:h-auto md:max-h-[90vh] md:max-w-[1060px] rounded-t-2xl md:rounded-2xl overflow-hidden flex flex-col"
-        style={{ background: "#0B1C2C" }}
+        className="relative w-full h-[96vh] md:h-auto md:max-h-[90vh] md:max-w-[1100px] rounded-t-2xl md:rounded-2xl overflow-hidden flex flex-col"
+        style={{ background: BG_MAIN }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Close + Share */}
+        {/* ── Close + Share ── */}
         <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
           {propertyId && (
             <button
               onClick={handleShare}
-              className="relative w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors text-white/80 hover:text-white"
+              className="relative w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors text-white/70 hover:text-white"
               title="Compartir propiedad"
             >
               <Share2 className="w-4 h-4" />
               {shareMsg && (
-                <span className="absolute -bottom-8 right-0 whitespace-nowrap bg-navy-deep border border-gold/30 px-2 py-1 font-sans text-[10px] text-gold">
+                <span className="absolute -bottom-9 right-0 whitespace-nowrap px-2 py-1 font-sans text-[10px]"
+                  style={{ background: BG_MAIN, border: `1px solid ${GOLD}40`, color: GOLD, borderRadius: 4 }}>
                   {shareMsg}
                 </span>
               )}
@@ -135,15 +152,13 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
           )}
           <button
             onClick={onClose}
-            className="w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors text-white/80 hover:text-white"
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors text-white/70 hover:text-white"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* ══════════════════════════════════════════════
-            SCROLLABLE CONTENT
-        ══════════════════════════════════════════════ */}
+        {/* ── SCROLLABLE ── */}
         <div className="overflow-y-auto flex-1">
 
           {isLoading && (
@@ -154,22 +169,23 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
 
           {!isLoading && property && (
             <>
-              {/* ── HERO (mobile) ── */}
+              {/* ════════════════════════════════
+                  MOBILE LAYOUT
+              ════════════════════════════════ */}
+
+              {/* Hero mobile */}
               {allPhotos.length > 0 && (
                 <div className="md:hidden relative overflow-hidden" style={{ height: 260 }}>
                   <Image src={allPhotos[photoIndex]} alt={titulo} fill className="object-cover" sizes="100vw" priority />
-                  {/* Gradient overlay bottom */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B1C2C] via-[#0B1C2C]/20 to-transparent" />
-                  {/* Badges on image */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f2233] via-[#0f2233]/20 to-transparent" />
                   <div className="absolute top-4 left-4 flex gap-2 z-10">
-                    <span className="px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em]" style={{ background: "#C9B99A", color: "#0B1C2C", borderRadius: 3 }}>
+                    <span className="px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em]" style={{ background: GOLD, color: BG_MAIN, borderRadius: 3 }}>
                       {property.operacion === "venta" ? "En Venta" : "En Alquiler"}
                     </span>
                     <span className="px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] text-white/70 bg-black/40 backdrop-blur-sm" style={{ borderRadius: 3 }}>
                       {TIPO_LABEL[property.tipo] ?? property.tipo}
                     </span>
                   </div>
-                  {/* Carousel arrows */}
                   {allPhotos.length > 1 && (
                     <>
                       <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-black/30 text-white">
@@ -184,22 +200,90 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                 </div>
               )}
 
-              {/* ── GALERÍA DESKTOP: mosaic ── */}
+              {/* Header mobile */}
+              <div className="md:hidden px-4 pt-4 pb-3">
+                <h2 className="font-sans text-xl font-[200] leading-snug text-white mb-1">{titulo}</h2>
+                {(property.zona || property.direccion) && (
+                  <p className="flex items-center gap-1.5 font-sans text-xs font-[300] text-white/40 mb-4">
+                    <MapPin className="w-3 h-3 flex-shrink-0" style={{ color: `${GOLD}60` }} />
+                    {[property.zona, property.direccion].filter(Boolean).join(", ")}
+                  </p>
+                )}
+                {chips.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {chips.map((c, i) => (
+                      <div key={i} className="flex items-center gap-1.5 px-3 py-2 font-sans text-sm font-[300] text-white/70 border border-white/10" style={{ background: BG_CHIP, borderRadius: 8 }}>
+                        <ChipIcon icon={c.icon} />
+                        {c.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Contenido mobile (descripción, comodidades, mapa) */}
+              <div className="md:hidden px-4 pb-6 flex flex-col gap-6">
+                {descIntro && (
+                  <div>
+                    <SectionLabel>Descripción</SectionLabel>
+                    <p className="font-sans text-sm font-[300] leading-7 text-white/65 whitespace-pre-line">{descIntro}</p>
+                  </div>
+                )}
+                {amenities.length > 0 && (
+                  <div>
+                    <SectionLabel>Comodidades</SectionLabel>
+                    <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                      {amenities.map((item, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${GOLD}18` }}>
+                            <Check className="w-2.5 h-2.5" style={{ color: GOLD }} />
+                          </div>
+                          <span className="font-sans text-sm font-[300] text-white/65">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {(property.latitud || property.direccion) && (
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <SectionLabel>Ubicación</SectionLabel>
+                      {mapsUrl && (
+                        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 font-sans text-xs font-[300] text-white/40 hover:text-white/70 transition-colors">
+                          <ExternalLink className="w-3 h-3" /> Google Maps
+                        </a>
+                      )}
+                    </div>
+                    {property.latitud && property.longitud && (
+                      <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 220 }}>
+                        <iframe src={`https://maps.google.com/maps?q=${property.latitud},${property.longitud}&z=16&output=embed`} className="w-full h-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* ════════════════════════════════
+                  DESKTOP LAYOUT
+              ════════════════════════════════ */}
+
+              {/* Galería desktop */}
               {allPhotos.length > 0 && (
-                <div className="hidden md:grid gap-1 rounded-t-2xl overflow-hidden" style={{ height: 320, gridTemplateColumns: allPhotos.length > 1 ? "1fr 180px" : "1fr" }}>
+                <div className="hidden md:grid gap-1 rounded-t-2xl overflow-hidden"
+                  style={{ height: 300, gridTemplateColumns: allPhotos.length > 1 ? "1fr 200px" : "1fr" }}>
                   <div className="relative overflow-hidden">
-                    <Image src={allPhotos[0]} alt={titulo} fill className="object-cover" sizes="800px" priority />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B1C2C]/50 via-transparent to-transparent" />
+                    <Image src={allPhotos[0]} alt={titulo} fill className="object-cover" sizes="900px" priority />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f2233]/40 via-transparent to-transparent" />
                   </div>
                   {allPhotos.length > 1 && (
                     <div className="grid gap-1" style={{ gridTemplateRows: allPhotos.length > 2 ? "1fr 1fr" : "1fr" }}>
                       {allPhotos.slice(1, 3).map((url, i) => (
                         <div key={i} className="relative overflow-hidden">
-                          <Image src={url} alt="" fill className="object-cover" sizes="180px" />
+                          <Image src={url} alt="" fill className="object-cover" sizes="200px" />
                           {i === 1 && allPhotos.length > 3 && (
-                            <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
+                            <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center gap-1">
                               <span className="text-white font-sans text-xl font-[200]">+{allPhotos.length - 3}</span>
-                              <span className="text-white/50 font-sans text-[10px] uppercase tracking-[0.15em]">fotos</span>
+                              <span className="font-sans text-[10px] uppercase tracking-[0.15em] text-white/50">fotos</span>
                             </div>
                           )}
                         </div>
@@ -209,142 +293,113 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                 </div>
               )}
 
-              {/* ── HEADER MOBILE: título + chips ── */}
-              <div className="md:hidden px-4 pt-4 pb-3">
-                <h2 className="font-sans text-xl font-[200] leading-snug text-white mb-1">{titulo}</h2>
-                {(property.zona || property.direccion) && (
-                  <p className="flex items-center gap-1.5 font-sans text-xs font-[300] text-white/40 mb-4">
-                    <MapPin className="w-3 h-3 text-[#C9B99A]/50 flex-shrink-0" />
-                    {[property.zona, property.direccion].filter(Boolean).join(", ")}
-                  </p>
-                )}
-                {chips.length > 0 && (
-                  <div className="flex flex-wrap gap-2">
-                    {chips.map((c, i) => (
-                      <div key={i} className="flex items-center gap-1.5 px-3 py-2 font-sans text-sm font-[300] text-white/70 border border-white/10" style={{ background: "#11263A", borderRadius: 8 }}>
-                        <ChipIcon icon={c.icon} />
-                        {c.label}
-                      </div>
-                    ))}
+              {/* Desktop: dos columnas */}
+              <div className="hidden md:flex gap-10 px-10 pt-8 pb-10">
+
+                {/* ── Columna izquierda (65%) ── */}
+                <div className="flex-1 min-w-0">
+
+                  {/* 1. Badges + Título + Ubicación */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.2em]"
+                      style={{ background: GOLD, color: BG_MAIN, borderRadius: 4 }}>
+                      {property.operacion === "venta" ? "En Venta" : "En Alquiler"}
+                    </span>
+                    <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-white/50 border border-white/15"
+                      style={{ borderRadius: 4 }}>
+                      {TIPO_LABEL[property.tipo] ?? property.tipo}
+                    </span>
                   </div>
-                )}
-              </div>
-
-              {/* ── PRECIO + CTA (mobile-only, inmediato) — HIDDEN: sticky bottom lo reemplaza ── */}
-              {precio && (
-                <div className="hidden mx-4 mb-6 p-4 border border-white/10 flex items-center gap-4" style={{ background: "#11263A", borderRadius: 14 }}>
-                  <div className="flex-1">
-                    <p className="font-sans text-[10px] font-[300] text-[#C9B99A]/60 uppercase tracking-wider mb-0.5">Precio</p>
-                    <p className="font-sans text-2xl font-[200] text-white leading-none">{precio}</p>
-                  </div>
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center px-6 font-sans text-[11px] font-[600] uppercase tracking-[0.15em] flex-shrink-0"
-                    style={{ background: "#C9B99A", color: "#0B1C2C", borderRadius: 8, height: 52 }}
-                  >
-                    Consultar
-                  </a>
-                </div>
-              )}
-
-              {/* ── DIVISOR ── */}
-              <div className="mx-4 md:mx-8 border-t border-white/8" />
-
-              {/* ── HEADER DESKTOP: badges + título + chips ── */}
-              <div className="hidden md:block px-8 pt-7 pb-6">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.2em]" style={{ background: "#C9B99A", color: "#0B1C2C", borderRadius: 4 }}>
-                    {property.operacion === "venta" ? "En Venta" : "En Alquiler"}
-                  </span>
-                  <span className="px-3 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-white/50 border border-white/15" style={{ borderRadius: 4 }}>
-                    {TIPO_LABEL[property.tipo] ?? property.tipo}
-                  </span>
-                </div>
-                <h2 className="font-sans text-[28px] font-[200] leading-tight text-white mb-2">{titulo}</h2>
-                {(property.zona || property.direccion) && (
-                  <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/40 mb-5">
-                    <MapPin className="w-3.5 h-3.5 text-[#C9B99A]/50 flex-shrink-0" />
-                    {[property.zona, property.direccion].filter(Boolean).join(", ")}
-                  </p>
-                )}
-                {chips.length > 0 && (
-                  <div className="flex flex-wrap gap-3">
-                    {chips.map((c, i) => (
-                      <div key={i} className="flex items-center gap-2 px-4 py-2.5 font-sans text-sm font-[300] text-white/70 border border-white/10" style={{ background: "#11263A", borderRadius: 10 }}>
-                        <ChipIcon icon={c.icon} />
-                        {c.label}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* ── DIVISOR DESKTOP ── */}
-              <div className="hidden md:block mx-8 border-t border-white/8" />
-
-              {/* ── CONTENIDO PRINCIPAL ── */}
-              <div className="px-4 md:px-8 py-6 pb-6 md:pb-10 flex flex-col md:flex-row gap-6 md:gap-8">
-
-                {/* Columna izquierda */}
-                <div className="flex-1 flex flex-col gap-7 min-w-0">
-
-                  {descIntro && (
-                    <div>
-                      <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/50 mb-4">Descripción</p>
-                      <p className="font-sans text-sm font-[300] leading-7 text-white/60 whitespace-pre-line">{descIntro}</p>
-                    </div>
+                  <h2 className="font-sans text-[30px] font-[200] leading-tight text-white mb-2">{titulo}</h2>
+                  {(property.zona || property.direccion) && (
+                    <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/45">
+                      <MapPin className="w-3.5 h-3.5 flex-shrink-0" style={{ color: `${GOLD}70` }} />
+                      {[property.zona, property.direccion].filter(Boolean).join(", ")}
+                    </p>
                   )}
 
-                  {amenities.length > 0 && (
-                    <div>
-                      <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/50 mb-4">Comodidades</p>
-                      <div className="grid grid-cols-2 gap-y-3 gap-x-4">
-                        {amenities.map((item, i) => (
-                          <div key={i} className="flex items-center gap-2.5">
-                            <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: "#C9B99A20" }}>
-                              <Check className="w-2.5 h-2.5 text-[#C9B99A]" />
-                            </div>
-                            <span className="font-sans text-sm font-[300] text-white/60">{item}</span>
+                  {/* 2. Chips */}
+                  {chips.length > 0 && (
+                    <>
+                      <Divider />
+                      <div className="flex flex-wrap gap-3">
+                        {chips.map((c, i) => (
+                          <div key={i} className="flex items-center gap-2 px-4 py-2.5 font-sans text-sm font-[300] text-white/70 border border-white/10"
+                            style={{ background: BG_CHIP, borderRadius: 10 }}>
+                            <ChipIcon icon={c.icon} />
+                            {c.label}
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </>
                   )}
 
+                  {/* 3. Descripción */}
+                  {descIntro && (
+                    <>
+                      <Divider />
+                      <SectionLabel>Descripción</SectionLabel>
+                      <p className="font-sans text-sm font-[300] leading-[1.9] text-white/65 whitespace-pre-line">{descIntro}</p>
+                    </>
+                  )}
+
+                  {/* 4. Comodidades */}
+                  {amenities.length > 0 && (
+                    <>
+                      <Divider />
+                      <SectionLabel>Comodidades</SectionLabel>
+                      <div className="grid grid-cols-2 gap-y-3.5 gap-x-6">
+                        {amenities.map((item, i) => (
+                          <div key={i} className="flex items-center gap-2.5">
+                            <div className="w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0"
+                              style={{ background: `${GOLD}18` }}>
+                              <Check className="w-2.5 h-2.5" style={{ color: GOLD }} />
+                            </div>
+                            <span className="font-sans text-sm font-[300] text-white/65">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+
+                  {/* 5. Detalles */}
                   {detalles.length > 0 && (
-                    <div>
-                      <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/50 mb-4">Detalles</p>
+                    <>
+                      <Divider />
+                      <SectionLabel>Detalles</SectionLabel>
                       <div className="grid grid-cols-2 gap-2">
                         {detalles.map(d => (
-                          <div key={d.label} className="flex items-center justify-between px-4 py-3 border border-white/8" style={{ background: "#11263A", borderRadius: 10 }}>
+                          <div key={d.label} className="flex items-center justify-between px-4 py-3 border border-white/8"
+                            style={{ background: BG_CARD, borderRadius: 10 }}>
                             <span className="font-sans text-xs font-[300] text-white/40">{d.label}</span>
                             <span className="font-sans text-xs font-[400] text-white/80">{d.value}</span>
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </>
                   )}
 
+                  {/* 6. Ubicación + mapa */}
                   {(property.latitud || property.direccion) && (
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/50">Ubicación</p>
+                    <>
+                      <Divider />
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-3.5 h-3.5 flex-shrink-0" style={{ color: `${GOLD}70` }} />
+                          <span className="font-sans text-sm font-[300] text-white/65">
+                            {[property.zona, property.direccion].filter(Boolean).join(", ") || "Ubicación"}
+                          </span>
+                        </div>
                         {mapsUrl && (
-                          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 font-sans text-xs font-[300] text-white/40 hover:text-[#C9B99A] transition-colors">
-                            <ExternalLink className="w-3 h-3" /> Abrir en Google Maps
+                          <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 font-sans text-xs font-[400] text-white/40 hover:text-white/70 transition-colors">
+                            <ExternalLink className="w-3.5 h-3.5" />
+                            Abrir en Google Maps
                           </a>
                         )}
                       </div>
-                      {(property.zona || property.direccion) && (
-                        <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/50 mb-3">
-                          <MapPin className="w-3.5 h-3.5 text-[#C9B99A]/50 flex-shrink-0" />
-                          {[property.zona, property.direccion].filter(Boolean).join(", ")}
-                        </p>
-                      )}
                       {property.latitud && property.longitud && (
-                        <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 200 }}>
+                        <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 260 }}>
                           <iframe
                             src={`https://maps.google.com/maps?q=${property.latitud},${property.longitud}&z=16&output=embed`}
                             className="w-full h-full border-0"
@@ -353,24 +408,46 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
                           />
                         </div>
                       )}
-                    </div>
+                    </>
                   )}
+
                 </div>
 
-                {/* Columna derecha — precio desktop */}
-                <div className="hidden md:block w-64 flex-shrink-0">
-                  <div className="p-6 border border-white/10 sticky top-6" style={{ background: "#11263A", borderRadius: 16 }}>
-                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-[#C9B99A]/50 mb-2">Precio</p>
-                    <p className="font-sans text-3xl font-[200] text-white mb-8 leading-none tracking-tight">{precio ?? "Consultar"}</p>
+                {/* ── Columna derecha (35%) — precio card sticky ── */}
+                <div className="w-72 flex-shrink-0">
+                  <div className="sticky top-6 p-6 border border-white/8"
+                    style={{ background: BG_CARD, borderRadius: 14 }}>
+                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.28em] mb-2"
+                      style={{ color: `${GOLD}80` }}>
+                      Precio
+                    </p>
+                    <p className="font-sans text-3xl font-[200] text-white mb-1 leading-none tracking-tight">
+                      {precio ?? "Consultar"}
+                    </p>
+                    {property.superficie_m2 && property.precio && (
+                      <p className="font-sans text-xs font-[300] text-white/35 mb-8">
+                        {(property.moneda === "usd" ? "USD" : "PYG")} {Math.round(property.precio / property.superficie_m2).toLocaleString("es-PY")}/m²
+                      </p>
+                    )}
+                    {!property.superficie_m2 && <div className="mb-8" />}
                     <a
                       href={whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center w-full font-sans text-[11px] font-[600] uppercase tracking-[0.2em] transition-all hover:opacity-90"
-                      style={{ background: "#C9B99A", color: "#0B1C2C", borderRadius: 8, height: 48 }}
+                      className="flex items-center justify-center w-full font-sans text-[11px] font-[600] uppercase tracking-[0.2em] transition-all hover:opacity-90 mb-3"
+                      style={{ background: GOLD, color: BG_MAIN, borderRadius: 8, height: 48 }}
                     >
                       Consultar
                     </a>
+                    {propertyId && (
+                      <button
+                        onClick={handleShare}
+                        className="flex items-center justify-center gap-2 w-full font-sans text-[11px] font-[400] text-white/40 hover:text-white/70 transition-colors py-2"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                        Compartir propiedad
+                      </button>
+                    )}
                   </div>
                 </div>
 
@@ -379,12 +456,10 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
           )}
         </div>
 
-        {/* ── STICKY CTA MOBILE (scroll) ── */}
+        {/* ── Sticky bottom mobile ── */}
         {!isLoading && property && (
-          <div
-            className="md:hidden flex items-center gap-4 px-4 py-3 border-t border-white/10 flex-shrink-0"
-            style={{ background: "#0a1929" }}
-          >
+          <div className="md:hidden flex items-center gap-4 px-4 py-3 border-t border-white/10 flex-shrink-0"
+            style={{ background: "#0a1929" }}>
             <div className="flex-1">
               <p className="font-sans text-[10px] text-white/30 uppercase tracking-wider mb-0.5">Precio</p>
               <p className="font-sans text-base font-[200] text-white leading-none">{precio ?? "Consultar"}</p>
@@ -394,7 +469,7 @@ export function PropertyModal({ property, isLoading, propertyId, onClose }: Prop
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center px-6 font-sans text-[11px] font-[600] uppercase tracking-[0.15em]"
-              style={{ background: "#C9B99A", color: "#0B1C2C", borderRadius: 8, height: 48 }}
+              style={{ background: GOLD, color: BG_MAIN, borderRadius: 8, height: 48 }}
             >
               Consultar
             </a>
