@@ -36,7 +36,7 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
       <h2 className="font-sans text-xs font-[600] uppercase tracking-[0.2em] text-kc-white/50 mb-3">
         {children}
       </h2>
-      <hr className="border-gold/10" />
+      <hr className="border-gold/25" />
     </div>
   )
 }
@@ -179,7 +179,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   <SectionHeader>Detalles de la propiedad</SectionHeader>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
                     {detalles.map(d => (
-                      <div key={d.label} className="flex items-center justify-between py-2 border-b border-gold/8">
+                      <div key={d.label} className="flex items-center justify-between py-2 border-b border-gold/15">
                         <span className="font-sans text-sm font-[300] text-kc-white/40">{d.label}</span>
                         <span className="font-sans text-sm font-[400] text-kc-white/80">{d.value}</span>
                       </div>
@@ -235,9 +235,9 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                       </a>
                     )}
                   </div>
-                  <hr className="border-gold/10 mb-4" />
+                  <hr className="border-gold/25 mb-4" />
                   {p.latitud && p.longitud && (
-                    <div className="overflow-hidden border border-gold/10 rounded-lg" style={{ height: 280 }}>
+                    <div className="overflow-hidden border border-gold/25 rounded-lg" style={{ height: 280 }}>
                       <iframe
                         src={`https://maps.google.com/maps?q=${p.latitud},${p.longitud}&z=16&output=embed`}
                         className="w-full h-full border-0"
@@ -254,7 +254,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
             <div className="lg:sticky lg:top-24">
               <div className="border border-gold/15 p-6 bg-navy-light/30">
                 {/* Empresa */}
-                <div className="mb-5 pb-5 border-b border-gold/10">
+                <div className="mb-5 pb-5 border-b border-gold/25">
                   <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-gold/70 mb-0.5">
                     Kohan &amp; Campos
                   </p>
@@ -288,7 +288,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                 </p>
 
                 {/* Compartir */}
-                <div className="border-t border-gold/10 pt-4">
+                <div className="border-t border-gold/25 pt-4">
                   <ShareButton titulo={titulo} propertyId={id} />
                 </div>
               </div>
