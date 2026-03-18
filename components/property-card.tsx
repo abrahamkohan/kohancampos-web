@@ -121,7 +121,7 @@ export function TerminadaCard({ p, onShare }: { p: PropiedadTerminada; onShare?:
         {onShare && (
           <button
             onClick={onShare}
-            className="absolute bottom-3 right-3 z-10 w-8 h-8 rounded-full bg-navy-deep/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-navy-deep"
+            className="absolute bottom-3 right-3 z-10 w-8 h-8 rounded-full bg-navy-deep/70 backdrop-blur-sm flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-navy-deep"
             title="Compartir propiedad"
           >
             <Share2 size={14} className="text-gold" />

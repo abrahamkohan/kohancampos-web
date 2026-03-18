@@ -74,7 +74,7 @@ export async function getPropiedadesPublicadas(): Promise<PropiedadTerminada[]> 
       nombre,
       tipo: p.tipo,
       zona: p.zona ?? "",
-      barrio: p.zona ?? "",
+      barrio: "",
       precio,
       m2,
       tipologia,
