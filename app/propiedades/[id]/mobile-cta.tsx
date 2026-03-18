@@ -19,7 +19,7 @@ export function MobileCTA({ precio, precioM2, whatsappUrl }: Props) {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex-1 text-center bg-gold rounded-lg py-4 font-sans text-[12px] font-[700] uppercase tracking-[0.18em] text-navy-deep shadow-[0_4px_24px_rgba(197,168,100,0.45)] active:scale-[0.97] transition-transform"
+        className="flex-1 text-center bg-gold rounded-lg py-[18px] font-sans text-[12px] font-[700] uppercase tracking-[0.18em] text-navy-deep shadow-[0_4px_24px_rgba(197,168,100,0.5)] active:scale-[0.97] transition-transform"
       >
         Contactar
       </a>

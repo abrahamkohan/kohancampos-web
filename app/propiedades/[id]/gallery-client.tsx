@@ -63,7 +63,7 @@ export function PropertyGallery({ photos, titulo }: Props) {
         >
           {/* Foto principal */}
           <div
-            className="relative overflow-hidden cursor-pointer"
+            className="relative h-full overflow-hidden cursor-pointer"
             onClick={() => openLightbox(active)}
           >
             <Image
@@ -74,8 +74,8 @@ export function PropertyGallery({ photos, titulo }: Props) {
               sizes="(max-width: 768px) 100vw, 900px"
               priority
             />
-            {/* Gradient overlay — mobile, transición suave a card */}
-            <div className="md:hidden absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0b1d2c]/80 to-transparent pointer-events-none z-10" />
+            {/* Gradient — transición suave al fondo */}
+            <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 to-transparent pointer-events-none z-10" />
             {photos.length > 1 && (
               <>
                 <button
@@ -90,7 +90,7 @@ export function PropertyGallery({ photos, titulo }: Props) {
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
-                <span className="absolute bottom-3 left-3 font-sans text-[11px] text-white/70 bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-sm z-10">
+                <span className="absolute bottom-3 left-3 font-sans text-[11px] text-white/80 bg-black/50 px-2.5 py-1 rounded-full backdrop-blur-sm z-20">
                   {active + 1} / {photos.length}
                 </span>
               </>

@@ -164,7 +164,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
           <div className="mt-5 lg:mt-8 grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 lg:gap-12 items-start">
 
             {/* ════════ Columna izquierda ════════ */}
-            <div className="space-y-5 lg:space-y-0">
+            <div className="space-y-6 lg:space-y-0">
 
               {/* ── Hero card (protagonista) ── */}
               <Card className="p-6">
@@ -234,8 +234,8 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   <div className="grid grid-cols-2 gap-x-4 gap-y-4">
                     {amenities.map((item, i) => (
                       <div key={i} className="flex items-start gap-2.5">
-                        <Check size={14} className="text-gold/80 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
-                        <span className="font-sans text-sm font-[300] text-white/70 leading-snug">{item}</span>
+                        <Check size={14} className="text-gold/90 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+                        <span className="font-sans text-sm font-[300] text-white/75 leading-snug">{item}</span>
                       </div>
                     ))}
                   </div>
