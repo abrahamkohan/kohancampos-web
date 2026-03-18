@@ -86,6 +86,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
     p.piso != null && { label: "Piso", value: String(p.piso) },
     p.superficie_cubierta_m2 != null && { label: "Sup. cubierta", value: p.superficie_cubierta_m2 + " m²" },
     p.terreno_m2 != null && { label: "Terreno", value: p.terreno_m2 + " m²" },
+    p.deposito != null && { label: "Depósito", value: p.deposito ? "Sí" : "No" },
   ].filter(Boolean) as { label: string; value: string }[]
 
   const { intro: descIntro, bullets: amenities } = p.descripcion

@@ -29,6 +29,7 @@ export interface PropiedadDetalle {
   garajes: number | null
   piso: number | null
   condicion: string | null
+  deposito: boolean | null
   descripcion: string | null
   operacion: string
   foto_portada: string | null
@@ -87,7 +88,7 @@ export async function getPropiedadesPublicadas(): Promise<PropiedadTerminada[]> 
 export async function getPropiedadById(id: string): Promise<PropiedadDetalle | null> {
   const [propRes, fotosRes] = await Promise.all([
     fetch(
-      SUPABASE_URL + "/rest/v1/properties?id=eq." + id + "&select=id,titulo,tipo,zona,direccion,precio,moneda,superficie_m2,superficie_cubierta_m2,terreno_m2,dormitorios,banos,garajes,piso,condicion,descripcion,operacion,foto_portada,latitud,longitud&limit=1",
+      SUPABASE_URL + "/rest/v1/properties?id=eq." + id + "&select=id,titulo,tipo,zona,direccion,precio,moneda,superficie_m2,superficie_cubierta_m2,terreno_m2,dormitorios,banos,garajes,piso,condicion,deposito,descripcion,operacion,foto_portada,latitud,longitud&limit=1",
       { headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY }, next: { revalidate: 60 } }
     ),
     fetch(
