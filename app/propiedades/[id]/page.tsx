@@ -141,30 +141,27 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
             {/* ════════ Columna izquierda ════════ */}
             <div className="space-y-5 lg:space-y-0">
 
-              {/* ── Hero card ── */}
-              <Card>
-                {/* Badges */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.18em] bg-gold/15 text-gold rounded-md">
+              {/* ── Hero card (más padding, protagonista) ── */}
+              <Card className="p-6">
+                {/* Badge operación */}
+                <div className="mb-3">
+                  <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.2em] bg-gold/15 text-gold rounded-md">
                     {p.operacion === "venta" ? "En Venta" : "En Alquiler"}
-                  </span>
-                  <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.18em] border border-white/15 text-white/45 rounded-md">
-                    {TIPO_LABEL[p.tipo] ?? p.tipo}
                   </span>
                 </div>
 
-                {/* Título */}
-                <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-[200] leading-[1.2] text-white mb-3">
+                {/* Título — compacto */}
+                <h1 className="font-sans text-xl sm:text-2xl lg:text-4xl font-[300] leading-[1.25] text-white mb-1.5">
                   {titulo}
                 </h1>
 
-                {/* Ubicación */}
-                {(p.zona || p.direccion) && (
-                  <p className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/40 mb-4">
-                    <MapPin size={13} className="text-gold/50 flex-shrink-0" />
-                    {[p.zona, p.direccion].filter(Boolean).join(", ")}
-                  </p>
-                )}
+                {/* Subtítulo: tipo · zona */}
+                <p className="font-sans text-sm font-[300] text-white/40 mb-4">
+                  {TIPO_LABEL[p.tipo] ?? p.tipo}
+                  {(p.zona || p.direccion) && (
+                    <span> · {[p.zona, p.direccion].filter(Boolean).join(", ")}</span>
+                  )}
+                </p>
 
                 {/* Fila de datos inline */}
                 {chips.length > 0 && (
@@ -247,7 +244,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   </div>
 
                   {p.latitud && p.longitud && (
-                    <div className="overflow-hidden rounded-xl border border-white/8" style={{ height: 240 }}>
+                    <div className="overflow-hidden rounded-xl border border-white/8" style={{ height: 200 }}>
                       <iframe
                         src={`https://maps.google.com/maps?q=${p.latitud},${p.longitud}&z=16&output=embed`}
                         className="w-full h-full border-0"
