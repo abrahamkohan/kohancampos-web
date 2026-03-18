@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 function SectionBlock({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-8 bg-[#13293d] border border-gold/10 p-6">
+    <div className="mt-8 bg-[#13293d] border border-gold/20 p-7 shadow-[0_4px_24px_rgba(0,0,0,0.35)]">
       {children}
     </div>
   )
@@ -113,14 +113,13 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
         <div className="mx-auto max-w-[1140px] px-4 sm:px-6">
 
           {/* ── Nav row ── */}
-          <div className="flex items-center justify-between mb-5 pt-4">
+          <div className="flex items-center mb-5 pt-4">
             <a
               href="/propiedades"
               className="inline-flex items-center gap-2 font-sans text-xs font-[400] uppercase tracking-[0.15em] text-kc-white/40 hover:text-gold transition-colors"
             >
               <ArrowLeft size={14} /> Propiedades
             </a>
-            <ShareButton titulo={titulo} propertyId={id} />
           </div>
 
           {/* ── Galería ── */}
@@ -143,7 +142,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   </span>
                 </div>
 
-                <h1 className="font-sans text-3xl sm:text-4xl font-[200] leading-snug text-kc-white mb-3">
+                <h1 className="font-sans text-4xl sm:text-5xl font-[200] leading-[1.15] text-kc-white mb-4">
                   {titulo}
                 </h1>
 
@@ -171,14 +170,6 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   </div>
                 )}
 
-                {precio && (
-                  <div className="flex items-baseline gap-3">
-                    <span className="font-sans text-2xl font-[300] text-kc-white">{precio}</span>
-                    {precioM2 && (
-                      <span className="font-sans text-sm font-[300] text-kc-white/30">{precioM2}</span>
-                    )}
-                  </div>
-                )}
               </div>
 
               {/* ── Detalles ── */}
@@ -187,9 +178,9 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   <SectionHeader>Detalles de la propiedad</SectionHeader>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-0">
                     {detalles.map(d => (
-                      <div key={d.label} className="flex items-center justify-between py-3 border-b border-gold/10">
-                        <span className="font-sans text-sm font-[300] text-kc-white/40">{d.label}</span>
-                        <span className="font-sans text-sm font-[400] text-kc-white/80">{d.value}</span>
+                      <div key={d.label} className="flex items-center justify-between py-3.5 border-b border-gold/15">
+                        <span className="font-sans text-sm font-[400] text-kc-white/50">{d.label}</span>
+                        <span className="font-sans text-sm font-[500] text-kc-white/90">{d.value}</span>
                       </div>
                     ))}
                   </div>
