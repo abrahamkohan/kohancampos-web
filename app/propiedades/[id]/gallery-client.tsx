@@ -50,14 +50,18 @@ export function PropertyGallery({ photos, titulo }: Props) {
 
   return (
     <>
-      {/* ── Galería principal ── */}
+      {/* ── Galería principal ──
+          THUMB_SIZE px: el cuadrado de thumbnails mide THUMB_SIZE × THUMB_SIZE
+          (2 cols × 2 rows, cada celda = THUMB_SIZE/2 × THUMB_SIZE/2)
+          La altura total del gallery = THUMB_SIZE para que la grilla quede cuadrada.
+      ── */}
       <div
         className="relative rounded-xl overflow-hidden w-full"
-        style={{ height: "clamp(280px, 46vw, 500px)" }}
+        style={{ height: 380 }}
       >
         <div
           className="grid h-full gap-1"
-          style={{ gridTemplateColumns: photos.length > 1 ? "1fr 220px" : "1fr" }}
+          style={{ gridTemplateColumns: photos.length > 1 ? "1fr 380px" : "1fr" }}
         >
           {/* Foto principal */}
           <div
