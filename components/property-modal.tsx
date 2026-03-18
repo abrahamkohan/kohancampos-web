@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import { X, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Maximize2, Car, Check, ExternalLink } from "lucide-react"
+import { X, ChevronLeft, ChevronRight, MapPin, Bed, Bath, Maximize2, Car, Check, ExternalLink, Share2 } from "lucide-react"
 import type { PropiedadDetalle } from "@/lib/supabase-properties"
 
 const TIPO_LABEL: Record<string, string> = {
@@ -27,11 +27,13 @@ function parseBullets(text: string): { intro: string; bullets: string[] } {
 interface Props {
   property: PropiedadDetalle | null
   isLoading: boolean
+  propertyId: string | null
   onClose: () => void
 }
 
-export function PropertyModal({ property, isLoading, onClose }: Props) {
+export function PropertyModal({ property, isLoading, propertyId, onClose }: Props) {
   const [photoIndex, setPhotoIndex] = useState(0)
+  const [shareMsg, setShareMsg] = useState("")
 
   useEffect(() => { setPhotoIndex(0) }, [property?.id])
   useEffect(() => {
@@ -57,6 +59,20 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
     ? (property.moneda === "usd" ? "USD" : "PYG") + " " + property.precio.toLocaleString("es-PY")
     : null
   const whatsappUrl = `https://wa.me/595982000808?text=${encodeURIComponent("Hola, me interesa: " + titulo)}`
+
+  function handleShare() {
+    const url = `${window.location.origin}/propiedades/${propertyId}`
+    const shareTitle = titulo || "Propiedad — Kohan & Campos"
+    if (navigator.share) {
+      navigator.share({ title: shareTitle, url })
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        setShareMsg("¡Link copiado!")
+        setTimeout(() => setShareMsg(""), 2000)
+      })
+    }
+  }
+
   const mapsUrl = property?.latitud && property?.longitud
     ? `https://www.google.com/maps?q=${property.latitud},${property.longitud}`
     : property?.direccion ? `https://www.google.com/maps/search/${encodeURIComponent(property.direccion)}` : null
@@ -101,13 +117,29 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
         style={{ background: "#0B1C2C" }}
         onClick={e => e.stopPropagation()}
       >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors text-white/80 hover:text-white"
-        >
-          <X className="w-4 h-4" />
-        </button>
+        {/* Close + Share */}
+        <div className="absolute top-4 right-4 z-30 flex items-center gap-2">
+          {propertyId && (
+            <button
+              onClick={handleShare}
+              className="relative w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors text-white/80 hover:text-white"
+              title="Compartir propiedad"
+            >
+              <Share2 className="w-4 h-4" />
+              {shareMsg && (
+                <span className="absolute -bottom-8 right-0 whitespace-nowrap bg-navy-deep border border-gold/30 px-2 py-1 font-sans text-[10px] text-gold">
+                  {shareMsg}
+                </span>
+              )}
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-black/50 hover:bg-black/70 transition-colors text-white/80 hover:text-white"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
         {/* ══════════════════════════════════════════════
             SCROLLABLE CONTENT
@@ -314,9 +346,10 @@ export function PropertyModal({ property, isLoading, onClose }: Props) {
                       {property.latitud && property.longitud && (
                         <div className="overflow-hidden border border-white/10" style={{ borderRadius: 12, height: 200 }}>
                           <iframe
-                            src={`https://www.openstreetmap.org/export/embed.html?bbox=${property.longitud - 0.008},${property.latitud - 0.008},${property.longitud + 0.008},${property.latitud + 0.008}&layer=mapnik&marker=${property.latitud},${property.longitud}`}
+                            src={`https://maps.google.com/maps?q=${property.latitud},${property.longitud}&z=16&output=embed`}
                             className="w-full h-full border-0"
                             loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
                           />
                         </div>
                       )}

@@ -32,12 +32,16 @@ async function fetchDetalle(id: string): Promise<PropiedadDetalle | null> {
 export function PropiedadesGrid({ propiedades }: { propiedades: PropiedadTerminada[] }) {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedProperty, setSelectedProperty] = useState<PropiedadDetalle | null>(null)
+  const [activeId, setActiveId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [shareMsg, setShareMsg] = useState("")
 
-  async function handleCardClick(id: string) {
+  async function openModal(id: string) {
+    setActiveId(id)
     setModalOpen(true)
     setIsLoading(true)
     setSelectedProperty(null)
+    window.history.pushState({}, "", `/propiedades/${id}`)
     const data = await fetchDetalle(id)
     setSelectedProperty(data)
     setIsLoading(false)
@@ -46,6 +50,21 @@ export function PropiedadesGrid({ propiedades }: { propiedades: PropiedadTermina
   function handleClose() {
     setModalOpen(false)
     setSelectedProperty(null)
+    setActiveId(null)
+    window.history.pushState({}, "", "/propiedades")
+  }
+
+  function handleShare(e: React.MouseEvent, id: string) {
+    e.stopPropagation()
+    const url = `${window.location.origin}/propiedades/${id}`
+    if (navigator.share) {
+      navigator.share({ title: "Propiedad — Kohan & Campos", url })
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        setShareMsg(id)
+        setTimeout(() => setShareMsg(""), 2000)
+      })
+    }
   }
 
   if (propiedades.length === 0) {
@@ -66,10 +85,24 @@ export function PropiedadesGrid({ propiedades }: { propiedades: PropiedadTermina
 
   return (
     <>
+      {/* Toast compartir */}
+      {shareMsg && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-navy-deep border border-gold/30 px-5 py-3 font-sans text-sm font-[300] text-gold shadow-xl">
+          Link copiado al portapapeles
+        </div>
+      )}
+
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {propiedades.map(p => (
-          <div key={p.id} onClick={() => handleCardClick(p.id)} className="cursor-pointer">
-            <TerminadaCard p={p} />
+          <div
+            key={p.id}
+            onClick={() => openModal(p.id)}
+            className="cursor-pointer"
+          >
+            <TerminadaCard
+              p={p}
+              onShare={(e) => handleShare(e, p.id)}
+            />
           </div>
         ))}
       </div>
@@ -78,6 +111,7 @@ export function PropiedadesGrid({ propiedades }: { propiedades: PropiedadTermina
         <PropertyModal
           property={selectedProperty}
           isLoading={isLoading}
+          propertyId={activeId}
           onClose={handleClose}
         />
       )}

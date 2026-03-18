@@ -3,9 +3,10 @@ import Image from "next/image"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { getPropiedadById } from "@/lib/supabase-properties"
-import { MapPin, Bed, Bath, Maximize2, Car, ArrowLeft } from "lucide-react"
+import { MapPin, Bed, Bath, Maximize2, Car, ArrowLeft, ExternalLink } from "lucide-react"
+import { ShareButton } from "./share-button"
 
-export const revalidate = 60
+export const dynamic = "force-dynamic"
 
 const TIPO_LABEL: Record<string, string> = {
   departamento: "Departamento", casa: "Casa", terreno: "Terreno", comercial: "Comercial",
@@ -14,8 +15,24 @@ const CONDICION_LABEL: Record<string, string> = {
   nuevo: "Nuevo", usado: "Usado", reventa: "Reventa",
 }
 
-export default async function PropiedadDetallePage({ params }: { params: { id: string } }) {
-  const p = await getPropiedadById(params.id)
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const p = await getPropiedadById(id)
+  if (!p) return { title: "Propiedad — Kohan & Campos" }
+  const titulo = p.titulo ?? `${TIPO_LABEL[p.tipo] ?? p.tipo} en ${p.zona ?? "Paraguay"}`
+  return {
+    title: `${titulo} — Kohan & Campos`,
+    description: p.descripcion?.slice(0, 160) ?? "Propiedad en Paraguay — Kohan & Campos Real Estate.",
+    openGraph: {
+      title: titulo,
+      images: p.fotos[0] ? [{ url: p.fotos[0] }] : [],
+    },
+  }
+}
+
+export default async function PropiedadDetallePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const p = await getPropiedadById(id)
   if (!p) notFound()
 
   const titulo = p.titulo ?? (TIPO_LABEL[p.tipo] ?? p.tipo) + " en " + (p.zona ?? "Sin ubicación")
@@ -33,7 +50,7 @@ export default async function PropiedadDetallePage({ params }: { params: { id: s
     p.dormitorios != null && { icon: "bed", label: p.dormitorios === 0 ? "Monoambiente" : p.dormitorios + " dorm." },
     p.banos != null && { icon: "bath", label: p.banos + " baño" + (p.banos !== 1 ? "s" : "") },
     p.superficie_m2 != null && { icon: "m2", label: p.superficie_m2 + " m²" },
-    p.garajes != null && { icon: "car", label: p.garajes + " garage" + (p.garajes !== 1 ? "s" : "") },
+    p.garajes != null && p.garajes > 0 && { icon: "car", label: p.garajes + " garage" + (p.garajes !== 1 ? "s" : "") },
   ].filter(Boolean) as { icon: string; label: string }[]
 
   const detalles = [
@@ -45,8 +62,10 @@ export default async function PropiedadDetallePage({ params }: { params: { id: s
     p.piso != null && { label: "Piso", value: String(p.piso) },
   ].filter(Boolean) as { label: string; value: string }[]
 
-  const whatsappMsg = encodeURIComponent("Hola, me interesa conocer más sobre: " + titulo)
-  const whatsappUrl = "https://wa.me/595982000808?text=" + whatsappMsg
+  const whatsappUrl = "https://wa.me/595982000808?text=" + encodeURIComponent("Hola, me interesa conocer más sobre: " + titulo)
+  const mapsUrl = p.latitud && p.longitud
+    ? `https://www.google.com/maps?q=${p.latitud},${p.longitud}`
+    : p.direccion ? `https://www.google.com/maps/search/${encodeURIComponent(p.direccion)}` : null
 
   return (
     <>
@@ -54,19 +73,34 @@ export default async function PropiedadDetallePage({ params }: { params: { id: s
       <main className="min-h-screen bg-navy-deep pt-24">
         <div className="mx-auto max-w-[900px] px-6 py-12">
 
-          {/* Back */}
-          <a href="/propiedades" className="mb-8 inline-flex items-center gap-2 font-sans text-xs font-[400] uppercase tracking-[0.15em] text-kc-white/40 transition-colors hover:text-gold">
-            <ArrowLeft size={14} /> Volver
-          </a>
+          {/* Nav */}
+          <div className="mb-8 flex items-center justify-between">
+            <a href="/propiedades" className="inline-flex items-center gap-2 font-sans text-xs font-[400] uppercase tracking-[0.15em] text-kc-white/40 transition-colors hover:text-gold">
+              <ArrowLeft size={14} /> Volver
+            </a>
+            <ShareButton titulo={titulo} propertyId={id} />
+          </div>
 
           {/* Fotos */}
           {allPhotos.length > 0 && (
-            <div className={`mb-8 grid gap-2 ${allPhotos.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
-              {allPhotos.slice(0, 4).map((url, i) => (
-                <div key={i} className={`relative overflow-hidden ${i === 0 && allPhotos.length > 1 ? "col-span-2 h-72" : "h-44"}`}>
-                  <Image src={url} alt={titulo} fill className="object-cover" sizes="900px" />
+            <div className={`mb-8 grid gap-2 ${allPhotos.length === 1 ? "grid-cols-1" : "grid-cols-[1fr_200px]"}`}>
+              <div className="relative overflow-hidden" style={{ height: 340 }}>
+                <Image src={allPhotos[0]} alt={titulo} fill className="object-cover" sizes="700px" priority />
+              </div>
+              {allPhotos.length > 1 && (
+                <div className="grid gap-2" style={{ gridTemplateRows: allPhotos.length > 2 ? "1fr 1fr" : "1fr" }}>
+                  {allPhotos.slice(1, 3).map((url, i) => (
+                    <div key={i} className="relative overflow-hidden">
+                      <Image src={url} alt="" fill className="object-cover" sizes="200px" />
+                      {i === 1 && allPhotos.length > 3 && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/60">
+                          <span className="font-sans text-xl font-[200] text-white">+{allPhotos.length - 3}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           )}
 
@@ -126,6 +160,28 @@ export default async function PropiedadDetallePage({ params }: { params: { id: s
                         <span className="font-sans text-xs font-[400] text-kc-white/80">{d.value}</span>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Mapa Google Maps */}
+              {p.latitud && p.longitud && (
+                <div>
+                  <div className="mb-3 flex items-center justify-between">
+                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold/60">Ubicación</p>
+                    {mapsUrl && (
+                      <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 font-sans text-xs text-kc-white/40 hover:text-gold transition-colors">
+                        <ExternalLink size={12} /> Abrir en Google Maps
+                      </a>
+                    )}
+                  </div>
+                  <div className="overflow-hidden border border-gold/10" style={{ height: 240 }}>
+                    <iframe
+                      src={`https://maps.google.com/maps?q=${p.latitud},${p.longitud}&z=16&output=embed`}
+                      className="w-full h-full border-0"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
                   </div>
                 </div>
               )}
