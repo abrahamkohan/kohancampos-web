@@ -57,7 +57,7 @@ export function PozoCard({ p }: { p: ProyectoPozo }) {
   const location = [p.barrio, p.zona].filter(Boolean).join(" · ")
 
   return (
-    <div className="group flex flex-col min-h-[440px] border border-gold/15 bg-navy-light/50 transition-all hover:border-gold/35 hover:shadow-[0_0_30px_rgba(201,185,154,0.07)]">
+    <div className="group flex flex-col h-full min-h-[440px] border border-gold/15 bg-navy-light/50 transition-all hover:border-gold/35 hover:shadow-[0_0_30px_rgba(201,185,154,0.07)]">
       <div className="relative h-[224px] flex-shrink-0 overflow-hidden">
         <PropertyImage src={p.imagen} alt={p.nombre} />
         {p.estado && (
@@ -103,7 +103,7 @@ export function TerminadaCard({ p, onShare }: { p: PropiedadTerminada; onShare?:
   const location = [p.barrio, p.zona].filter(Boolean).join(" · ")
 
   return (
-    <div className="group flex flex-col min-h-[440px] border border-gold/15 bg-navy-light/50 transition-all hover:border-gold/35 hover:shadow-[0_0_30px_rgba(201,185,154,0.07)]">
+    <div className="group flex flex-col h-full min-h-[440px] border border-gold/15 bg-navy-light/50 transition-all hover:border-gold/35 hover:shadow-[0_0_30px_rgba(201,185,154,0.07)]">
       <div className="relative h-[224px] flex-shrink-0 overflow-hidden">
         <PropertyImage src={p.imagen} alt={p.nombre} />
         {p.estadoComercial && (

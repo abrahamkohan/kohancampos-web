@@ -97,7 +97,7 @@ export function PropiedadesGrid({ propiedades }: { propiedades: PropiedadTermina
           <div
             key={p.id}
             onClick={() => openModal(p.id)}
-            className="cursor-pointer"
+            className="cursor-pointer h-full"
           >
             <TerminadaCard
               p={p}
