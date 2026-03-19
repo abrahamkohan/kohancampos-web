@@ -35,9 +35,15 @@ const BADGE_LABEL: Record<BadgeAnalisis, string> = {
 }
 
 const BADGE_CLS: Record<BadgeAnalisis, string> = {
-  oportunidad: "bg-gold text-navy-deep",
-  estable:     "bg-blue-500/20 text-blue-200",
-  a_evaluar:   "bg-kc-white/10 text-kc-white/60",
+  oportunidad: "bg-gold/90 text-navy-deep",
+  estable:     "bg-blue-400/15 text-blue-300 border border-blue-400/20",
+  a_evaluar:   "bg-kc-white/8 text-kc-white/40 border border-kc-white/10",
+}
+
+const BADGE_DOT: Record<BadgeAnalisis, string> = {
+  oportunidad: "bg-navy-deep/40",
+  estable:     "bg-blue-300",
+  a_evaluar:   "bg-kc-white/40",
 }
 
 // ─── Imagen ───────────────────────────────────────────────────────────────────
@@ -79,24 +85,22 @@ export function ProyectoCard({ p, href }: { p: Proyecto; href?: string }) {
             {ESTADO_LABEL[p.estado]}
           </span>
         </div>
-
-        {/* Análisis badge — bottom strip */}
-        {p.badge_analisis && (
-          <div className="absolute bottom-0 left-0 right-0">
-            <div className={`flex items-center gap-2 px-4 py-2.5 font-sans text-[10px] font-[700] uppercase tracking-[0.2em] ${BADGE_CLS[p.badge_analisis]}`}>
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-current opacity-80" />
-              {BADGE_LABEL[p.badge_analisis]}
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Contenido */}
       <div className="flex flex-1 flex-col p-6">
-        {/* Desarrolladora */}
-        <span className="mb-2 block font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold/60 min-h-[16px]">
-          {p.desarrolladora || "\u00A0"}
-        </span>
+        {/* Desarrolladora + badge en la misma fila */}
+        <div className="mb-3 flex items-center justify-between gap-2 min-h-[20px]">
+          <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold/60 truncate">
+            {p.desarrolladora || "\u00A0"}
+          </span>
+          {p.badge_analisis && (
+            <span className={`inline-flex items-center gap-1.5 flex-shrink-0 rounded-sm px-2.5 py-1 font-sans text-[10px] font-[700] uppercase tracking-[0.15em] ${BADGE_CLS[p.badge_analisis]}`}>
+              <span className={`inline-block w-1.5 h-1.5 rounded-full ${BADGE_DOT[p.badge_analisis]}`} />
+              {BADGE_LABEL[p.badge_analisis]}
+            </span>
+          )}
+        </div>
 
         {/* Nombre */}
         <h3 className="mb-4 font-sans text-xl font-[300] leading-snug text-kc-white line-clamp-2 flex-grow">
