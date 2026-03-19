@@ -14,6 +14,7 @@ export function Navbar() {
     { label: t("nav.quienes"), href: "/#quienes-somos" },
     { label: t("nav.especialidades"), href: "/#especialidades" },
     { label: "Propiedades", href: "/propiedades" },
+    { label: "Proyectos",   href: "/proyectos" },
     { label: t("nav.proceso"), href: "/#proceso" },
     { label: t("nav.contacto"), href: "/#contacto" },
   ]
