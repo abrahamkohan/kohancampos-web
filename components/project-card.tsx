@@ -12,7 +12,7 @@ const PLACEHOLDER =
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 
-// ─── Estado config ────────────────────────────────────────────────────────────
+// ─── Estado config ─────────────────────────────────────────────────────────────
 
 const ESTADO_LABEL: Record<EstadoObra, string> = {
   en_pozo:   "En pozo",
@@ -21,9 +21,9 @@ const ESTADO_LABEL: Record<EstadoObra, string> = {
 }
 
 const ESTADO_CLS: Record<EstadoObra, string> = {
-  en_pozo:   "bg-violet-500/15 text-violet-300",
-  en_obra:   "bg-yellow-500/15 text-yellow-300",
-  terminado: "bg-emerald-500/15 text-emerald-300",
+  en_pozo:   "bg-navy-deep/70 text-violet-300 border border-violet-400/30",
+  en_obra:   "bg-navy-deep/70 text-yellow-300 border border-yellow-400/30",
+  terminado: "bg-navy-deep/70 text-emerald-300 border border-emerald-400/30",
 }
 
 // ─── Análisis badge config ─────────────────────────────────────────────────────
@@ -34,19 +34,14 @@ const BADGE_LABEL: Record<BadgeAnalisis, string> = {
   a_evaluar:   "A evaluar",
 }
 
+// Overlay sobre imagen: fondo oscuro semitransparente + color de texto diferenciado
 const BADGE_CLS: Record<BadgeAnalisis, string> = {
-  oportunidad: "bg-gold/90 text-navy-deep",
-  estable:     "bg-blue-400/15 text-blue-300 border border-blue-400/20",
-  a_evaluar:   "bg-kc-white/8 text-kc-white/40 border border-kc-white/10",
+  oportunidad: "bg-gold text-navy-deep",
+  estable:     "bg-navy-deep/75 text-blue-300 border border-blue-400/50",
+  a_evaluar:   "bg-navy-deep/75 text-kc-white/55 border border-kc-white/20",
 }
 
-const BADGE_DOT: Record<BadgeAnalisis, string> = {
-  oportunidad: "bg-navy-deep/40",
-  estable:     "bg-blue-300",
-  a_evaluar:   "bg-kc-white/40",
-}
-
-// ─── Imagen ───────────────────────────────────────────────────────────────────
+// ─── Imagen ────────────────────────────────────────────────────────────────────
 
 function ProjectImage({ src, alt }: { src: string | null; alt: string }) {
   const [errored, setErrored] = useState(false)
@@ -57,13 +52,13 @@ function ProjectImage({ src, alt }: { src: string | null; alt: string }) {
   return (
     <Image
       src={src} alt={alt} fill sizes={SIZES}
-      className="object-cover transition-transform duration-700 group-hover:scale-105"
+      className="object-cover transition-all duration-500 group-hover:scale-[1.03] group-hover:brightness-110"
       onError={() => setErrored(true)}
     />
   )
 }
 
-// ─── Card ─────────────────────────────────────────────────────────────────────
+// ─── Card ──────────────────────────────────────────────────────────────────────
 
 export function ProyectoCard({ p, href }: { p: Proyecto; href?: string }) {
   const dest = href ?? `https://wa.me/595982000808?text=${encodeURIComponent(`Hola, me interesa conocer más sobre el proyecto ${p.nombre}`)}`
@@ -73,41 +68,41 @@ export function ProyectoCard({ p, href }: { p: Proyecto; href?: string }) {
     <a
       href={dest}
       {...(isExternal ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="group flex flex-col h-full min-h-[460px] border border-gold/15 bg-navy-light/50 transition-all duration-300 hover:border-gold/35 hover:shadow-[0_0_40px_rgba(201,185,154,0.08)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold"
+      className="group flex flex-col h-full min-h-[460px] border border-gold/15 bg-navy-light/50 cursor-pointer transition-all duration-300 hover:border-gold/35 hover:shadow-[0_0_40px_rgba(201,185,154,0.1)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold"
     >
       {/* Imagen */}
       <div className="relative h-[256px] flex-shrink-0 overflow-hidden">
         <ProjectImage src={p.imagen} alt={p.nombre} />
 
-        {/* Estado badge — top-left */}
-        <div className="absolute left-4 top-4">
-          <span className={`inline-block rounded-sm px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] ${ESTADO_CLS[p.estado]}`}>
+        {/* Overlay badges — top row sobre la imagen */}
+        <div className="absolute left-0 right-0 top-0 flex items-start justify-between gap-2 p-4">
+          {/* Estado — top-left */}
+          <span className={`inline-block rounded-sm px-2.5 py-1 font-sans text-[10px] font-[600] uppercase tracking-[0.15em] backdrop-blur-sm ${ESTADO_CLS[p.estado]}`}>
             {ESTADO_LABEL[p.estado]}
           </span>
+
+          {/* Badge análisis — top-right */}
+          {p.badge_analisis && (
+            <span className={`inline-block rounded-sm px-2.5 py-1 font-sans text-[10px] font-[700] uppercase tracking-[0.15em] backdrop-blur-sm ${BADGE_CLS[p.badge_analisis]}`}>
+              {BADGE_LABEL[p.badge_analisis]}
+            </span>
+          )}
         </div>
       </div>
 
       {/* Contenido */}
       <div className="flex flex-1 flex-col p-6">
-        {/* Desarrolladora + badge en la misma fila */}
-        <div className="mb-3 flex items-center justify-between gap-2 min-h-[20px]">
-          <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold/60 truncate">
-            {p.desarrolladora || "\u00A0"}
-          </span>
-          {p.badge_analisis && (
-            <span className={`inline-flex items-center gap-1.5 flex-shrink-0 rounded-sm px-2.5 py-1 font-sans text-[10px] font-[700] uppercase tracking-[0.15em] ${BADGE_CLS[p.badge_analisis]}`}>
-              <span className={`inline-block w-1.5 h-1.5 rounded-full ${BADGE_DOT[p.badge_analisis]}`} />
-              {BADGE_LABEL[p.badge_analisis]}
-            </span>
-          )}
-        </div>
+        {/* Desarrolladora */}
+        <span className="mb-2 block font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold/60 min-h-[16px]">
+          {p.desarrolladora || "\u00A0"}
+        </span>
 
         {/* Nombre */}
         <h3 className="mb-4 font-sans text-xl font-[300] leading-snug text-kc-white line-clamp-2 flex-grow">
           {p.nombre}
         </h3>
 
-        {/* Ubicación */}
+        {/* Ubicación + CTA */}
         <div className="mt-auto border-t border-gold/10 pt-4">
           <div className="flex items-center gap-2 min-h-[20px] mb-5">
             <MapPin size={13} strokeWidth={1.5} className="shrink-0 text-gold/50" />
@@ -116,14 +111,13 @@ export function ProyectoCard({ p, href }: { p: Proyecto; href?: string }) {
             </span>
           </div>
 
-          {/* CTA */}
-          <div className="flex items-center justify-between bg-gold/10 px-4 py-3 transition-all group-hover:bg-gold/20">
+          <div className="flex items-center justify-between bg-gold/10 px-4 py-3 transition-all duration-300 group-hover:bg-gold/20">
             <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold">
-              Ver análisis
+              Ver análisis de inversión
             </span>
             <ArrowRight
               size={14}
-              className="text-gold transition-transform duration-300 group-hover:translate-x-1"
+              className="text-gold transition-transform duration-300 group-hover:translate-x-1.5"
             />
           </div>
         </div>
