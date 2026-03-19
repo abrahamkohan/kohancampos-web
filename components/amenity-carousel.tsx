@@ -94,13 +94,32 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
   )
 }
 
-// ─── Sección completa ─────────────────────────────────────────────────────────
+// ─── Sección completa (agrupada por categoría) ───────────────────────────────
+
+function AmenityGroup({ label, items }: { label: string; items: Amenity[] }) {
+  if (!items.length) return null
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-gold/50">
+        {label}
+      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {items.map(a => (
+          <AmenityCard key={a.id} amenity={a} />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export function AmenitiesSection({ amenities }: { amenities: Amenity[] }) {
   if (!amenities.length) return null
 
+  const interior = amenities.filter(a => a.categoria === "interior")
+  const edificio = amenities.filter(a => a.categoria !== "interior")
+
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex flex-col gap-8">
       {/* Header */}
       <div>
         <span className="block font-sans text-[10px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-2">
@@ -109,17 +128,10 @@ export function AmenitiesSection({ amenities }: { amenities: Amenity[] }) {
         <h2 className="font-sans text-2xl font-[200] text-kc-white">
           Amenities del proyecto
         </h2>
-        <p className="mt-1 font-sans text-sm font-[300] text-kc-white/50">
-          Espacios pensados para uso diario y renta
-        </p>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {amenities.map(a => (
-          <AmenityCard key={a.id} amenity={a} />
-        ))}
-      </div>
+      <AmenityGroup label="Interior" items={interior} />
+      <AmenityGroup label="Edificio" items={edificio} />
     </section>
   )
 }
