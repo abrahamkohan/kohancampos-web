@@ -31,21 +31,6 @@ export default async function ProyectosPage() {
               Analizados con criterio de inversión.
             </p>
 
-            {/* Leyenda de badges */}
-            <div className="mt-8 flex flex-wrap gap-3">
-              {[
-                { label: "Oportunidad", cls: "bg-gold text-navy-deep" },
-                { label: "Estable",     cls: "bg-blue-500/20 text-blue-200" },
-                { label: "A evaluar",   cls: "bg-kc-white/10 text-kc-white/60" },
-              ].map(b => (
-                <span key={b.label}
-                  className={`inline-flex items-center gap-2 rounded-sm px-3 py-1.5 font-sans text-[10px] font-[700] uppercase tracking-[0.2em] ${b.cls}`}
-                >
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-current opacity-80" />
-                  {b.label}
-                </span>
-              ))}
-            </div>
           </div>
         </section>
 
@@ -55,7 +40,7 @@ export default async function ProyectosPage() {
             {proyectos.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
                 <p className="font-sans text-sm font-[300] text-kc-white/40 max-w-sm">
-                  Estamos curating la selección de proyectos. Volvé pronto o consultanos directamente.
+                  Proyectos disponibles próximamente. Consultanos directamente para conocer las opciones actuales.
                 </p>
                 <a
                   href="https://wa.me/595982000808"
@@ -63,7 +48,7 @@ export default async function ProyectosPage() {
                   rel="noopener noreferrer"
                   className="mt-2 border border-gold px-6 py-2.5 font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold transition-all hover:bg-gold hover:text-navy-deep"
                 >
-                  Consultar proyectos
+                  Ver proyectos disponibles
                 </a>
               </div>
             ) : (
