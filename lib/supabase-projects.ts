@@ -40,6 +40,8 @@ function toEstado(s: string | null): EstadoObra {
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
+const MEDIA_BUCKET = "project-media"
+
 export async function getProyectosPublicados(): Promise<Proyecto[]> {
   try {
     const res = await fetch(
@@ -48,7 +50,6 @@ export async function getProyectosPublicados(): Promise<Proyecto[]> {
         "?publicado_en_web=eq.true" +
         "&select=id,name,location,status,developer_name,badge_analisis,project_photos(storage_path)" +
         "&project_photos.order=sort_order.asc" +
-        "&project_photos.limit=1" +
         "&order=created_at.desc",
       {
         headers: { apikey: SUPABASE_KEY, Prefer: "return=representation" },
@@ -67,7 +68,7 @@ export async function getProyectosPublicados(): Promise<Proyecto[]> {
       desarrolladora: p.developer_name ?? "",
       badge_analisis: (p.badge_analisis as BadgeAnalisis) ?? null,
       imagen: p.project_photos?.[0]?.storage_path
-        ? SUPABASE_URL + "/storage/v1/object/public/project-photos/" + p.project_photos[0].storage_path
+        ? `${SUPABASE_URL}/storage/v1/object/public/${MEDIA_BUCKET}/${p.project_photos[0].storage_path}`
         : null,
     }))
   } catch {
