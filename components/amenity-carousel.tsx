@@ -33,7 +33,7 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
     <div className="group flex flex-col gap-0">
       {/* Imagen / carrusel */}
       <div
-        className="relative aspect-[4/3] overflow-hidden rounded-sm bg-navy-primary"
+        className="relative aspect-square overflow-hidden rounded-sm bg-navy-primary"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
