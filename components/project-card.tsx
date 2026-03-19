@@ -61,7 +61,7 @@ function ProjectImage({ src, alt }: { src: string | null; alt: string }) {
 // ─── Card ──────────────────────────────────────────────────────────────────────
 
 export function ProyectoCard({ p, href }: { p: Proyecto; href?: string }) {
-  const dest = href ?? `https://wa.me/595982000808?text=${encodeURIComponent(`Hola, me interesa conocer más sobre el proyecto ${p.nombre}`)}`
+  const dest = href ?? `/proyectos/${p.id}`
   const isExternal = dest.startsWith("http")
 
   return (
