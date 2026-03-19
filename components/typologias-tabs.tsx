@@ -7,6 +7,10 @@ import type { Typology } from "@/lib/supabase-projects"
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 
+function formatUsd(n: number) {
+  return `USD ${n.toLocaleString("es-PY")}`
+}
+
 export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
   const [active, setActive] = useState(0)
   const [planoModal, setPlanoModal] = useState(false)
@@ -36,7 +40,7 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
       {/* Contenido — 2 columnas */}
       <div className="grid md:grid-cols-2 gap-6 items-start">
 
-        {/* Columna izquierda: info */}
+        {/* Columna izquierda: ficha */}
         <div className="flex flex-col gap-4">
 
           {/* Nombre + m2 */}
@@ -47,18 +51,23 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
             )}
           </div>
 
-          {/* Features */}
-          {t.features.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {t.features.map(f => (
-                <span
-                  key={f}
-                  className="px-2.5 py-1 border border-gold/20 font-sans text-[11px] font-[400] text-kc-white/60 tracking-wide"
-                >
-                  {f}
-                </span>
-              ))}
+          {/* Precio */}
+          {t.price_usd != null && t.price_usd > 0 && (
+            <div className="flex flex-col gap-0.5">
+              <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold/60">
+                Precio desde
+              </span>
+              <span className="font-sans text-xl font-[300] text-kc-white">
+                {formatUsd(t.price_usd)}
+              </span>
             </div>
+          )}
+
+          {/* Features inline */}
+          {t.features.length > 0 && (
+            <p className="font-sans text-xs font-[300] text-kc-white/55 leading-relaxed">
+              {t.features.join(" · ")}
+            </p>
           )}
 
           {/* Botón Ver plano */}

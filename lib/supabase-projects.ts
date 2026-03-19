@@ -32,6 +32,8 @@ export interface Typology {
   id:         string
   name:       string
   area_m2:    number
+  price_usd:  number | null
+  price_pyg:  number | null
   features:   string[]
   images:     string[]   // full URLs
   floor_plan: string | null  // full URL
@@ -142,12 +144,14 @@ interface SupabaseAmenity {
 }
 
 interface SupabaseTypology {
-  id:             string
-  name:           string
-  area_m2:        number
-  features:       string[] | null
-  images:         string[] | null
-  floor_plan:     string | null
+  id:              string
+  name:            string
+  area_m2:         number
+  price_usd:       number | null
+  price_pyg:       number | null
+  features:        string[] | null
+  images:          string[] | null
+  floor_plan:      string | null
   floor_plan_path: string | null
 }
 
@@ -187,7 +191,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     const resT = await fetch(
       SUPABASE_URL +
         `/rest/v1/typologies?project_id=eq.${id}` +
-        "&select=id,name,area_m2,features,images,floor_plan,floor_plan_path" +
+        "&select=id,name,area_m2,price_usd,price_pyg,features,images,floor_plan,floor_plan_path" +
         "&order=area_m2.asc",
       { headers: HEADERS, cache: "no-store" }
     )
@@ -199,6 +203,8 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
           id:         t.id,
           name:       t.name,
           area_m2:    t.area_m2,
+          price_usd:  t.price_usd ?? null,
+          price_pyg:  t.price_pyg ?? null,
           features:   t.features ?? [],
           images:     (t.images ?? []).map(path => mediaUrl(path)),
           floor_plan: floorPath ? mediaUrl(floorPath) : null,
