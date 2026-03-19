@@ -107,7 +107,7 @@ export function ProyectoCard({ p, href }: { p: Proyecto; href?: string }) {
           <div className="flex items-center gap-2 min-h-[20px] mb-5">
             <MapPin size={13} strokeWidth={1.5} className="shrink-0 text-gold/50" />
             <span className="font-sans text-xs font-[300] text-kc-white/50">
-              {p.ubicacion || "\u00A0"}
+              {p.zona || "\u00A0"}
             </span>
           </div>
 
