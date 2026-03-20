@@ -285,32 +285,35 @@ export default async function ProyectoDetallePage({
             )}
 
             {/* ── 5. Card: Mapa ── */}
-            {p.direccion && (
-              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
-                <div className="px-6 pt-6 pb-4 border-b border-white/8 flex items-center justify-between">
-                  <div>
-                    <SectionLabel text="Ubicación" />
-                    <h2 className="font-sans text-xl font-[200] text-kc-white">Dónde está</h2>
+            {(p.direccion || ubicacion) && (() => {
+              const mapQuery = encodeURIComponent(p.direccion ?? ubicacion ?? "")
+              return (
+                <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
+                  <div className="px-6 pt-6 pb-4 border-b border-white/8 flex items-center justify-between">
+                    <div>
+                      <SectionLabel text="Ubicación" />
+                      <h2 className="font-sans text-xl font-[200] text-kc-white">Dónde está</h2>
+                    </div>
+                    {p.maps_url && (
+                      <a href={p.maps_url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1 font-sans text-[11px] font-[400] text-kc-white/30 hover:text-gold transition-colors">
+                        <ExternalLink size={11} /> Abrir en Maps
+                      </a>
+                    )}
                   </div>
-                  {p.maps_url && (
-                    <a href={p.maps_url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1 font-sans text-[11px] font-[400] text-kc-white/30 hover:text-gold transition-colors">
-                      <ExternalLink size={11} /> Abrir en Maps
-                    </a>
-                  )}
+                  <div className="overflow-hidden" style={{ height: 350 }}>
+                    <iframe
+                      src={`https://maps.google.com/maps?q=${mapQuery}&output=embed`}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
                 </div>
-                <div className="overflow-hidden" style={{ height: 350 }}>
-                  <iframe
-                    src={`https://maps.google.com/maps?q=${encodeURIComponent(p.direccion)}&output=embed`}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
-              </div>
-            )}
+              )
+            })()}
 
             {/* ── 6. CTA Final ── */}
             <div className="bg-[#112a3c] border border-gold/25 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] overflow-hidden">
