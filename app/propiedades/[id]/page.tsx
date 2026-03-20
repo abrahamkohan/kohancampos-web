@@ -321,8 +321,11 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                     {precioM2 && (
                       <p className="font-sans text-xs text-white/25 mt-1">{precioM2}</p>
                     )}
+                    {p.amoblado && (
+                      <p className="font-sans text-xs font-[500] text-white/60 mt-2">Amoblado</p>
+                    )}
                     {p.financiacion && (
-                      <p className="font-sans text-xs font-[500] text-amber-400/90 mt-2">Consultar financiación</p>
+                      <p className="font-sans text-xs font-[500] text-amber-400/90 mt-1">Consultar financiación</p>
                     )}
                   </div>
                 )}
