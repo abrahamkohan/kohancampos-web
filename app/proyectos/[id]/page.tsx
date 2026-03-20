@@ -6,7 +6,7 @@ import { TypologiasTabs } from "@/components/typologias-tabs"
 import { getProyectoById } from "@/lib/supabase-projects"
 import {
   MapPin, CalendarDays, Building2, MessageCircle,
-  Map, FileText, Eye,
+  Map, FileText, Eye, ExternalLink,
 } from "lucide-react"
 
 export const dynamic = "force-dynamic"
@@ -168,15 +168,18 @@ export default async function ProyectoDetallePage({
           </div>
         </section>
 
-        {/* ── SOBRE EL PROYECTO + LINKS ────────────────────────────────────── */}
-        {(p.direccion || p.descripcion || p.caracteristicas || p.maps_url || p.tour_360_url || p.brochure_url) && (
-          <section className="px-6 py-14">
-            <div className="mx-auto max-w-[1100px]">
-              <div className="mb-6">
-                <SectionLabel text="El proyecto" />
-                <h2 className="font-sans text-xl font-[200] text-kc-white">Sobre el proyecto</h2>
-              </div>
-              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] max-w-2xl overflow-hidden">
+        {/* ── CONTENIDO PRINCIPAL ──────────────────────────────────────────── */}
+        <div className="px-6 py-14">
+          <div className="mx-auto max-w-[1100px] flex flex-col space-y-8">
+
+            {/* ── Card: Sobre el proyecto ── */}
+            {(p.direccion || p.descripcion || p.caracteristicas || p.maps_url || p.tour_360_url || p.brochure_url) && (
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
+                {/* Header */}
+                <div className="px-6 pt-6 pb-4 border-b border-white/8">
+                  <SectionLabel text="El proyecto" />
+                  <h2 className="font-sans text-xl font-[200] text-kc-white">Sobre el proyecto</h2>
+                </div>
 
                 {/* Meta: ubicación, entrega, desarrolladora */}
                 {(ubicacion || p.delivery_date || p.desarrolladora || p.direccion) && (
@@ -220,7 +223,7 @@ export default async function ProyectoDetallePage({
 
                 {/* Características */}
                 {p.caracteristicas && (
-                  <div className="px-6 py-5">
+                  <div className={`px-6 py-5 ${(p.maps_url || p.tour_360_url || p.brochure_url) ? "border-b border-white/8" : ""}`}>
                     <p className="font-sans text-sm font-[300] text-kc-white/55 leading-relaxed border-l border-gold/20 pl-4 whitespace-pre-line">
                       {p.caracteristicas}
                     </p>
@@ -229,54 +232,34 @@ export default async function ProyectoDetallePage({
 
                 {/* Footer: Links */}
                 {(p.maps_url || p.tour_360_url || p.brochure_url) && (
-                  <div className="px-6 py-4 flex flex-wrap gap-2 border-t border-white/8 bg-white/[0.02]">
+                  <div className="px-6 py-4 flex flex-wrap gap-2 bg-white/[0.02]">
                     {p.maps_url && (
-                      <a
-                        href={p.maps_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
-                      >
-                        <Map size={11} />
-                        Google Maps
+                      <a href={p.maps_url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md">
+                        <Map size={11} /> Google Maps
                       </a>
                     )}
                     {p.tour_360_url && (
-                      <a
-                        href={p.tour_360_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
-                      >
-                        <Eye size={11} />
-                        Vista 360°
+                      <a href={p.tour_360_url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md">
+                        <Eye size={11} /> Vista 360°
                       </a>
                     )}
                     {p.brochure_url && (
-                      <a
-                        href={p.brochure_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
-                      >
-                        <FileText size={11} />
-                        Brochure PDF
+                      <a href={p.brochure_url} target="_blank" rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md">
+                        <FileText size={11} /> Brochure PDF
                       </a>
                     )}
                   </div>
                 )}
-
               </div>
-            </div>
-          </section>
-        )}
+            )}
 
-        {/* ── TIPOLOGÍAS ───────────────────────────────────────────────────── */}
-        {p.typologies.length > 0 && (
-          <section className="px-6 py-14">
-            <div className="mx-auto max-w-[1100px]">
-              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] overflow-hidden">
-                <div className="px-6 pt-6 pb-5 border-b border-white/8">
+            {/* ── Card: Tipologías ── */}
+            {p.typologies.length > 0 && (
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-white/8">
                   <SectionLabel text="Tipologías" />
                   <h2 className="font-sans text-xl font-[200] text-kc-white">Unidades disponibles</h2>
                 </div>
@@ -284,45 +267,57 @@ export default async function ProyectoDetallePage({
                   <TypologiasTabs typologies={p.typologies} />
                 </div>
               </div>
-            </div>
-          </section>
-        )}
+            )}
 
-        {/* ── AMENITIES ────────────────────────────────────────────────────── */}
-        {p.amenities.length > 0 && (
-          <section className="px-6 py-14">
-            <div className="mx-auto max-w-[1100px]">
-              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] p-6 md:p-8">
+            {/* ── Card: Amenities ── */}
+            {p.amenities.length > 0 && (
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full p-6">
                 <AmenitiesSection amenities={p.amenities} />
               </div>
-            </div>
-          </section>
-        )}
+            )}
 
-        {/* ── CTA FINAL ────────────────────────────────────────────────────── */}
-        <section className="px-6 py-14">
-          <div className="mx-auto max-w-[1100px]">
-            <div className="border border-gold/20 p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-              <div>
-                <p className="font-sans text-lg font-[200] text-kc-white">
-                  ¿Te interesa este proyecto?
-                </p>
-                <p className="font-sans text-sm font-[300] text-kc-white/50 mt-1">
-                  Analizamos la inversión juntos, sin compromiso.
-                </p>
+            {/* ── Card: Mapa ── */}
+            {p.lat && p.lng && (
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-white/8 flex items-center justify-between">
+                  <div>
+                    <SectionLabel text="Ubicación" />
+                    <h2 className="font-sans text-xl font-[200] text-kc-white">Dónde está</h2>
+                  </div>
+                  {p.maps_url && (
+                    <a href={p.maps_url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-1 font-sans text-[11px] font-[400] text-kc-white/30 hover:text-gold transition-colors">
+                      <ExternalLink size={11} /> Google Maps
+                    </a>
+                  )}
+                </div>
+                <div className="overflow-hidden" style={{ height: 350 }}>
+                  <iframe
+                    src={`https://maps.google.com/maps?q=${p.lat},${p.lng}&z=16&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                </div>
               </div>
-              <a
-                href={waUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-shrink-0 flex items-center gap-2 px-8 py-4 bg-gold text-navy-deep font-sans text-xs font-[700] uppercase tracking-[0.2em] hover:bg-gold-light transition-colors"
-              >
-                <MessageCircle size={14} />
-                Hablar con un asesor
+            )}
+
+            {/* ── CTA Final ── */}
+            <div className="border border-gold/20 p-6 md:p-10 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+              <div>
+                <p className="font-sans text-lg font-[200] text-kc-white">¿Te interesa este proyecto?</p>
+                <p className="font-sans text-sm font-[300] text-kc-white/50 mt-1">Analizamos la inversión juntos, sin compromiso.</p>
+              </div>
+              <a href={waUrl} target="_blank" rel="noopener noreferrer"
+                className="flex-shrink-0 flex items-center gap-2 px-8 py-4 bg-gold text-navy-deep font-sans text-xs font-[700] uppercase tracking-[0.2em] hover:bg-gold-light transition-colors">
+                <MessageCircle size={14} /> Hablar con un asesor
               </a>
             </div>
+
           </div>
-        </section>
+        </div>
 
       </main>
 
