@@ -68,7 +68,7 @@ export default async function ProyectoDetallePage({
   const p = await getProyectoById(id)
   if (!p) notFound()
 
-  const coverUrl = p.fotos[0] ?? null
+  const coverUrl = p.imagen
   const waMsg    = encodeURIComponent(`Hola, me interesa conocer más sobre el proyecto ${p.nombre}`)
   const waUrl    = `https://wa.me/595982000808?text=${waMsg}`
 
