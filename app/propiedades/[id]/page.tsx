@@ -128,7 +128,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
     p.piso != null && { label: "Piso", value: String(p.piso) },
     p.superficie_cubierta_m2 != null && { label: "Sup. cubierta", value: p.superficie_cubierta_m2 + " m²" },
     p.terreno_m2 != null && { label: "Terreno", value: p.terreno_m2 + " m²" },
-    p.deposito != null && { label: "Depósito", value: p.deposito ? "Sí" : "No" },
+    p.deposito != null && { label: "Baulera (Depósito)", value: p.deposito ? "Sí" : "No" },
   ].filter(Boolean) as { label: string; value: string }[]
 
   const { intro: descIntro, bullets: amenities } = p.descripcion
@@ -215,23 +215,31 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                 {detalles.length > 0 && (
                   <>
                     <div className="border-t border-[#1f364d] mb-4" />
-                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.22em] text-white/30 mb-3">
-                      Detalles de la propiedad
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-x-12 border-t border-[#1f364d]">
-                      {detalles.map(d => (
-                        <div
-                          key={d.label}
-                          className={`flex items-baseline justify-between gap-6 py-3 border-b border-[#1f364d] ${d.value.length > 30 ? "md:col-span-2" : ""}`}
-                        >
-                          <span className="font-sans text-sm text-[#7a8ca3] flex-shrink-0">{d.label}</span>
-                          <span className="font-sans text-sm font-[400] text-[#c6a87a] text-right leading-snug">{d.value}</span>
-                        </div>
-                      ))}
-                    </div>
                   </>
                 )}
               </div>
+
+              {/* ── Detalles — card 3 columnas ── */}
+              {detalles.length > 0 && (
+                <div className="bg-[#0f2233] border border-[#1f364d] rounded-2xl p-6 md:p-8 lg:mt-6">
+                  <p className="font-sans text-xs font-[600] uppercase tracking-[0.22em] text-[#7a8ca3] mb-6">
+                    Detalles de la propiedad
+                  </p>
+                  <div className="grid md:grid-cols-3 gap-x-10 gap-y-4">
+                    {detalles.map(d => (
+                      <div
+                        key={d.label}
+                        className={`flex flex-col gap-1 border-b border-[#1f364d] pb-4 ${d.value.length > 30 ? "md:col-span-3" : ""}`}
+                      >
+                        <span className="font-sans text-sm text-[#7a8ca3]">{d.label}</span>
+                        <span className={`font-sans text-[15px] font-[500] leading-snug ${d.label === "Condición" ? "text-[#c6a87a]" : "text-white"}`}>
+                          {d.value}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* ── Comodidades ── */}
               {amenities.length > 0 && (
