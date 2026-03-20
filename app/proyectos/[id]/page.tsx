@@ -170,13 +170,13 @@ export default async function ProyectoDetallePage({
 
         {/* ── SOBRE EL PROYECTO ────────────────────────────────────────────── */}
         {(p.direccion || p.descripcion || p.caracteristicas) && (
-          <section className="px-6 py-12 border-t border-gold/10">
+          <section className="px-6 py-14">
             <div className="mx-auto max-w-[1100px]">
               <div className="mb-6">
                 <SectionLabel text="El proyecto" />
                 <h2 className="font-sans text-xl font-[200] text-kc-white">Sobre el proyecto</h2>
               </div>
-              <div className="flex flex-col gap-6 max-w-2xl">
+              <div className="flex flex-col gap-5 max-w-2xl">
                 {p.direccion && (
                   <div className="flex items-start gap-2">
                     <MapPin size={14} strokeWidth={1.5} className="text-gold/50 shrink-0 mt-0.5" />
@@ -184,12 +184,12 @@ export default async function ProyectoDetallePage({
                   </div>
                 )}
                 {p.descripcion && (
-                  <p className="font-sans text-sm font-[300] text-kc-white/70 leading-relaxed">
+                  <p className="font-sans text-sm font-[300] text-kc-white/70 leading-relaxed whitespace-pre-line">
                     {p.descripcion}
                   </p>
                 )}
                 {p.caracteristicas && (
-                  <p className="font-sans text-sm font-[300] text-kc-white/55 leading-relaxed border-l border-gold/20 pl-4">
+                  <p className="font-sans text-sm font-[300] text-kc-white/55 leading-relaxed border-l border-gold/20 pl-4 whitespace-pre-line">
                     {p.caracteristicas}
                   </p>
                 )}
@@ -200,15 +200,15 @@ export default async function ProyectoDetallePage({
 
         {/* ── LINKS ────────────────────────────────────────────────────────── */}
         {(p.maps_url || p.tour_360_url || p.brochure_url) && (
-          <section className="px-6 pb-10 border-t border-gold/10 pt-10">
+          <section className="px-6 pb-14">
             <div className="mx-auto max-w-[1100px]">
-              <div className="flex flex-wrap gap-2">
+              <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 flex flex-wrap gap-2">
                 {p.maps_url && (
                   <a
                     href={p.maps_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/25 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
                   >
                     <Map size={11} />
                     Google Maps
@@ -219,7 +219,7 @@ export default async function ProyectoDetallePage({
                     href={p.tour_360_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/25 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
                   >
                     <Eye size={11} />
                     Vista 360°
@@ -230,15 +230,11 @@ export default async function ProyectoDetallePage({
                     href={p.brochure_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/25 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all"
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
                   >
                     <FileText size={11} />
                     Brochure PDF
                   </a>
-                )}
-                {p.brochure_url === null && p.tour_360_url === null && p.maps_url === null ? null : (
-                  // Placeholder for future links
-                  null
                 )}
               </div>
             </div>
@@ -247,7 +243,7 @@ export default async function ProyectoDetallePage({
 
         {/* ── TIPOLOGÍAS ───────────────────────────────────────────────────── */}
         {p.typologies.length > 0 && (
-          <section className="px-6 py-12 border-b border-gold/10">
+          <section className="px-6 py-14 bg-white/[0.02] border-y border-white/[0.04]">
             <div className="mx-auto max-w-[1100px]">
               <div className="mb-6">
                 <SectionLabel text="Tipologías" />
@@ -260,9 +256,11 @@ export default async function ProyectoDetallePage({
 
         {/* ── AMENITIES ────────────────────────────────────────────────────── */}
         {p.amenities.length > 0 && (
-          <section className="px-6 py-12 border-b border-gold/10">
+          <section className="px-6 py-14">
             <div className="mx-auto max-w-[1100px]">
-              <AmenitiesSection amenities={p.amenities} />
+              <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-6 md:p-8">
+                <AmenitiesSection amenities={p.amenities} />
+              </div>
             </div>
           </section>
         )}
