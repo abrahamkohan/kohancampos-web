@@ -2,21 +2,14 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { X, FileImage } from "lucide-react"
+import { Maximize2, Bath, Check } from "lucide-react"
 import type { Typology } from "@/lib/supabase-projects"
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-
-function unitLabel(t: Typology): string {
-  const parts: string[] = [`${t.area_m2} m²`]
-  if (t.bathrooms != null && t.bathrooms > 0) {
-    parts.push(`${t.bathrooms} baño${t.bathrooms > 1 ? "s" : ""}`)
-  }
-  return parts.join(" · ")
-}
+const CARD_LABELS = ["Más vendido", "Mejor inversión"]
 
 export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
-  // Group by name
+  // Agrupar por nombre
   const groups: Record<string, Typology[]> = {}
   for (const t of typologies) {
     if (!groups[t.name]) groups[t.name] = []
@@ -25,24 +18,23 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
   const groupNames = Object.keys(groups)
 
   const [activeGroup, setActiveGroup] = useState(0)
-  const [activeUnit,  setActiveUnit]  = useState(0)
-  const [planoModal,  setPlanoModal]  = useState(false)
+  const [selectedId, setSelectedId]   = useState<string | null>(null)
 
   const currentGroup = groups[groupNames[activeGroup]] ?? []
-  const t = currentGroup[activeUnit]
+  const effectiveId  = selectedId ?? (currentGroup[0]?.id ?? null)
+  const selected     = currentGroup.find(t => t.id === effectiveId) ?? currentGroup[0]
 
-  if (!t || groupNames.length === 0) return null
+  if (!selected || groupNames.length === 0) return null
 
   function switchGroup(i: number) {
     setActiveGroup(i)
-    setActiveUnit(0)
-    setPlanoModal(false)
+    setSelectedId(null)
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
 
-      {/* Tabs por nombre */}
+      {/* ── Tabs ── */}
       <div className="flex flex-wrap gap-0 border-b border-gold/10">
         {groupNames.map((name, i) => (
           <button
@@ -60,112 +52,128 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
         ))}
       </div>
 
-      {/* Lista de unidades dentro del grupo (solo si hay más de una) */}
-      {currentGroup.length > 1 && (
-        <div className="flex flex-col gap-1">
-          {currentGroup.map((unit, i) => (
+      {/* ── Grid de cards ── */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {currentGroup.map((t, i) => {
+          const isActive = t.id === effectiveId
+          const thumb    = t.images[0] ?? t.floor_plan ?? null
+          const label    = i < CARD_LABELS.length ? CARD_LABELS[i] : null
+
+          return (
             <button
-              key={unit.id}
+              key={t.id}
               type="button"
-              onClick={() => { setActiveUnit(i); setPlanoModal(false) }}
-              className={`flex items-center gap-3 px-4 py-2.5 text-left transition-all border ${
-                i === activeUnit
-                  ? "border-gold/30 bg-gold/5"
-                  : "border-gold/10 hover:border-gold/20"
+              onClick={() => setSelectedId(t.id)}
+              className={`relative flex flex-col text-left transition-all rounded-xl overflow-hidden border ${
+                isActive
+                  ? "border-gold/50 bg-gold/5 shadow-[0_0_20px_rgba(201,185,154,0.08)]"
+                  : "border-white/8 bg-white/[0.02] hover:border-white/20"
               }`}
             >
-              <span className={`font-sans text-sm font-[300] ${
-                i === activeUnit ? "text-kc-white" : "text-kc-white/50"
-              }`}>
-                {unitLabel(unit)}
-              </span>
+              {/* Label */}
+              {label && (
+                <span className="absolute top-2 left-2 z-10 px-2 py-0.5 bg-gold text-navy-deep font-sans text-[9px] font-[700] uppercase tracking-[0.12em] rounded-sm">
+                  {label}
+                </span>
+              )}
+
+              {/* Preview */}
+              <div className="relative aspect-[4/3] bg-[#0d1f2d] overflow-hidden">
+                {thumb ? (
+                  <Image
+                    src={thumb}
+                    alt={t.name}
+                    fill
+                    sizes={SIZES}
+                    className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="font-sans text-[10px] text-kc-white/15 uppercase tracking-widest">Sin imagen</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Info */}
+              <div className="px-3 py-3 flex flex-col gap-2">
+                <div className="flex items-center gap-3 flex-wrap">
+                  {t.area_m2 && (
+                    <div className="flex items-center gap-1.5">
+                      <Maximize2 size={12} strokeWidth={1.5} className="text-gold/55 shrink-0" />
+                      <span className="font-sans text-xs font-[300] text-kc-white/70">{t.area_m2} m²</span>
+                    </div>
+                  )}
+                  {t.bathrooms != null && t.bathrooms > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <Bath size={12} strokeWidth={1.5} className="text-gold/55 shrink-0" />
+                      <span className="font-sans text-xs font-[300] text-kc-white/70">
+                        {t.bathrooms} baño{t.bathrooms > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                {isActive && (
+                  <div className="flex items-center gap-1">
+                    <Check size={11} strokeWidth={2.5} className="text-gold shrink-0" />
+                    <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.15em] text-gold">
+                      Seleccionada
+                    </span>
+                  </div>
+                )}
+              </div>
             </button>
-          ))}
-        </div>
-      )}
+          )
+        })}
+      </div>
 
-      {/* Detalle de la unidad activa */}
-      <div className="grid md:grid-cols-2 gap-6 items-start">
+      {/* ── Detalle inline ── */}
+      <div className="border-t border-white/8 pt-6 flex flex-col gap-5">
 
-        {/* Ficha */}
-        <div className="flex flex-col gap-4">
-
-          {/* Nombre + datos */}
-          <div className="flex items-baseline gap-3 flex-wrap">
-            <h3 className="font-sans text-lg font-[200] text-kc-white">{t.name}</h3>
-            <span className="font-sans text-sm font-[300] text-kc-white/40">{unitLabel(t)}</span>
-          </div>
-
-          {/* Precio: siempre "Consultar" */}
-          <div className="inline-block border border-gold/20 px-4 py-2.5 w-fit">
-            <span className="block font-sans text-[9px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-0.5">
-              Precio
-            </span>
-            <span className="font-sans text-sm font-[300] text-kc-white/60">
-              Consultar
-            </span>
-          </div>
-
-          {/* Features */}
-          {t.features.length > 0 && (
-            <p className="font-sans text-xs font-[300] text-kc-white/55 leading-relaxed">
-              {t.features.join(" · ")}
-            </p>
-          )}
-
-          {/* Ver plano */}
-          {t.floor_plan && (
-            <button
-              type="button"
-              onClick={() => setPlanoModal(true)}
-              className="flex items-center gap-2 w-fit px-4 py-2 border border-gold/30 text-kc-white/70 hover:border-gold/70 hover:text-kc-white font-sans text-xs font-[500] tracking-wide transition-all"
-            >
-              <FileImage size={13} />
-              Ver plano
-            </button>
-          )}
+        {/* Header */}
+        <div className="flex items-baseline gap-3 flex-wrap">
+          <h3 className="font-sans text-lg font-[200] text-kc-white">{selected.name}</h3>
+          <span className="font-sans text-sm font-[300] text-kc-white/40">
+            {selected.area_m2} m²
+            {selected.bathrooms != null && selected.bathrooms > 0
+              ? ` · ${selected.bathrooms} baño${selected.bathrooms > 1 ? "s" : ""}`
+              : ""}
+          </span>
         </div>
 
-        {/* Imágenes */}
-        {t.images.length > 0 && (
-          <div className={`grid gap-2 ${t.images.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
-            {t.images.slice(0, 4).map((url, i) => (
-              <div key={i} className="relative aspect-square overflow-hidden bg-navy-primary">
-                <Image
-                  src={url}
-                  alt={`${t.name} — ${i + 1}`}
-                  fill
-                  sizes={SIZES}
-                  className="object-cover"
-                />
+        {/* Features */}
+        {selected.features.length > 0 && (
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            {selected.features.map((f, i) => (
+              <div key={i} className="flex items-center gap-1.5">
+                <Check size={12} strokeWidth={2} className="text-gold/60 shrink-0" />
+                <span className="font-sans text-xs font-[300] text-kc-white/60">{f}</span>
               </div>
             ))}
           </div>
         )}
+
+        {/* Plano inline */}
+        {selected.floor_plan && (
+          <div className="w-full rounded-xl overflow-hidden border border-white/6 bg-[#0d1f2d]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={selected.floor_plan}
+              alt={`Plano — ${selected.name}`}
+              className="w-full object-contain max-h-[500px]"
+            />
+          </div>
+        )}
+
+        {/* Precio */}
+        <div className="inline-block border border-gold/20 px-4 py-2.5 w-fit">
+          <span className="block font-sans text-[9px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-0.5">
+            Precio
+          </span>
+          <span className="font-sans text-sm font-[300] text-kc-white/60">Consultar</span>
+        </div>
+
       </div>
 
-      {/* Modal plano */}
-      {planoModal && t.floor_plan && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
-          onClick={() => setPlanoModal(false)}
-        >
-          <button
-            type="button"
-            onClick={() => setPlanoModal(false)}
-            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-navy-deep/80 flex items-center justify-center text-kc-white/70 hover:text-kc-white transition-colors"
-          >
-            <X size={18} />
-          </button>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={t.floor_plan}
-            alt={`Plano — ${t.name}`}
-            className="max-w-full max-h-[90vh] object-contain"
-            onClick={e => e.stopPropagation()}
-          />
-        </div>
-      )}
     </div>
   )
 }
