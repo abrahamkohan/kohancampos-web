@@ -2,12 +2,13 @@
 
 import { useState, useRef, useCallback } from "react"
 import Image from "next/image"
-import { ChevronLeft, ChevronRight, Waves, Dumbbell, Monitor, Users, Building2, Car, Zap, Shield, Wifi, Sun, Leaf, Check } from "lucide-react"
+import { ChevronLeft, ChevronRight, Waves, Dumbbell, Monitor, Users, Building2, Car, Zap, Shield, Wifi, Sun, Leaf, Check, Wind, Flame, Utensils, Archive, ArrowUpDown } from "lucide-react"
 import { mediaUrl } from "@/lib/supabase-projects"
 import type { Amenity } from "@/lib/supabase-projects"
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 
+// Icon map by amenity NAME (fuzzy, Spanish/English)
 const ICON_MAP: Record<string, React.ElementType> = {
   pileta: Waves, piscina: Waves, pool: Waves,
   gimnasio: Dumbbell, gym: Dumbbell,
@@ -21,8 +22,19 @@ const ICON_MAP: Record<string, React.ElementType> = {
   terraza: Sun, jardín: Leaf, jardin: Leaf,
 }
 
-function getAmenityIcon(name: string): React.ElementType {
-  const key = name.toLowerCase().split(/[\s,]/)[0]
+// Icon map by Lucide icon name (from project_amenities.icon field)
+const LUCIDE_ICON_MAP: Record<string, React.ElementType> = {
+  waves: Waves, dumbbell: Dumbbell, wind: Wind, flame: Flame,
+  utensils: Utensils, archive: Archive, sun: Sun, leaf: Leaf,
+  car: Car, shield: Shield, 'arrow-up-down': ArrowUpDown,
+  'building-2': Building2, beef: Flame, 'tree-pine': Leaf,
+  'door-open': Monitor, 'washing-machine': Zap,
+  monitor: Monitor, users: Users, zap: Zap, wifi: Wifi,
+}
+
+function getAmenityIcon(amenity: Amenity): React.ElementType {
+  if (amenity.icon && LUCIDE_ICON_MAP[amenity.icon]) return LUCIDE_ICON_MAP[amenity.icon]
+  const key = amenity.name.toLowerCase().split(/[\s,]/)[0]
   return ICON_MAP[key] ?? Check
 }
 
@@ -46,7 +58,7 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
   }
 
   if (!current) {
-    const Icon = getAmenityIcon(amenity.name)
+    const Icon = getAmenityIcon(amenity)
     return (
       <li className="flex items-center gap-3">
         <div className="w-9 h-9 shrink-0 border border-[#2f4a66] flex items-center justify-center text-[#94a3b8]">

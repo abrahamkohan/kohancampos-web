@@ -24,19 +24,21 @@ export interface Amenity {
   id:         string
   name:       string
   categoria:  string
+  icon:       string | null
   sort_order: number
   images:     AmenityImg[]
 }
 
 export interface Typology {
-  id:         string
-  name:       string
-  area_m2:    number
-  price_usd:  number | null
-  price_pyg:  number | null
-  features:   string[]
-  images:     string[]   // full URLs
-  floor_plan: string | null  // full URL
+  id:              string
+  name:            string
+  area_m2:         number
+  price_usd:       number | null
+  price_pyg:       number | null
+  units_available: number | null
+  features:        string[]
+  images:          string[]   // full URLs
+  floor_plan:      string | null  // full URL
 }
 
 export interface ProjectLink {
@@ -46,15 +48,24 @@ export interface ProjectLink {
 }
 
 export interface ProyectoDetalle extends Proyecto {
-  direccion:      string | null
-  descripcion:    string | null
+  ciudad:          string | null
+  barrio:          string | null
+  direccion:       string | null
+  descripcion:     string | null
   caracteristicas: string | null
-  delivery_date:  string | null
-  tipo_proyecto:  string | null
-  links:          ProjectLink[]
-  fotos:          string[]
-  typologies:     Typology[]
-  amenities:      Amenity[]
+  delivery_date:   string | null
+  tipo_proyecto:   string | null
+  precio_desde:    number | null
+  precio_hasta:    number | null
+  moneda:          string | null
+  maps_url:        string | null
+  tour_360_url:    string | null
+  brochure_url:    string | null
+  /** Derived from dedicated columns for backward compatibility */
+  links:           ProjectLink[]
+  fotos:           string[]
+  typologies:      Typology[]
+  amenities:       Amenity[]
 }
 
 // ─── Tipos Supabase raw ───────────────────────────────────────────────────────
@@ -125,6 +136,8 @@ interface SupabaseProyectoBase {
   id:              string
   name:            string | null
   zona:            string | null
+  ciudad:          string | null
+  barrio:          string | null
   direccion:       string | null
   location:        string | null
   status:          string | null
@@ -134,12 +147,17 @@ interface SupabaseProyectoBase {
   caracteristicas: string | null
   delivery_date:   string | null
   tipo_proyecto:   string | null
-  links:           ProjectLink[] | null
+  precio_desde:    number | null
+  precio_hasta:    number | null
+  moneda:          string | null
+  maps_url:        string | null
+  tour_360_url:    string | null
+  brochure_url:    string | null
   project_photos:  { storage_path: string; sort_order: number }[]
 }
 
 interface SupabaseAmenity {
-  id: string; name: string; categoria: string; sort_order: number
+  id: string; name: string; categoria: string; icon: string | null; sort_order: number
   project_amenity_images: { id: string; storage_path: string; sort_order: number }[]
 }
 
@@ -149,6 +167,7 @@ interface SupabaseTypology {
   area_m2:         number
   price_usd:       number | null
   price_pyg:       number | null
+  units_available: number | null
   features:        string[] | null
   images:          string[] | null
   floor_plan:      string | null
@@ -162,8 +181,9 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     const res = await fetch(
       SUPABASE_URL +
         `/rest/v1/projects?id=eq.${id}&publicado_en_web=eq.true` +
-        "&select=id,name,zona,direccion,location,status,developer_name,badge_analisis" +
-        ",description,caracteristicas,delivery_date,tipo_proyecto,links" +
+        "&select=id,name,zona,ciudad,barrio,direccion,location,status,developer_name,badge_analisis" +
+        ",description,caracteristicas,delivery_date,tipo_proyecto" +
+        ",precio_desde,precio_hasta,moneda,maps_url,tour_360_url,brochure_url" +
         ",project_photos(storage_path,sort_order)" +
         "&project_photos.order=sort_order.asc" +
         "&limit=1",
@@ -191,7 +211,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     const resT = await fetch(
       SUPABASE_URL +
         `/rest/v1/typologies?project_id=eq.${id}` +
-        "&select=id,name,area_m2,price_usd,price_pyg,features,images,floor_plan,floor_plan_path" +
+        "&select=id,name,area_m2,price_usd,price_pyg,units_available,features,images,floor_plan,floor_plan_path" +
         "&order=area_m2.asc",
       { headers: HEADERS, cache: "no-store" }
     )
@@ -200,14 +220,15 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
       typologies = rawT.map(t => {
         const floorPath = t.floor_plan ?? t.floor_plan_path ?? null
         return {
-          id:         t.id,
-          name:       t.name,
-          area_m2:    t.area_m2,
-          price_usd:  t.price_usd ?? null,
-          price_pyg:  t.price_pyg ?? null,
-          features:   t.features ?? [],
-          images:     (t.images ?? []).map(path => mediaUrl(path)),
-          floor_plan: floorPath ? mediaUrl(floorPath) : null,
+          id:              t.id,
+          name:            t.name,
+          area_m2:         t.area_m2,
+          price_usd:       t.price_usd ?? null,
+          price_pyg:       t.price_pyg ?? null,
+          units_available: t.units_available ?? null,
+          features:        t.features ?? [],
+          images:          (t.images ?? []).map(path => mediaUrl(path)),
+          floor_plan:      floorPath ? mediaUrl(floorPath) : null,
         }
       })
     } else {
@@ -223,7 +244,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     const resA = await fetch(
       SUPABASE_URL +
         `/rest/v1/project_amenities?project_id=eq.${id}` +
-        "&select=id,name,categoria,sort_order,project_amenity_images(id,storage_path,sort_order)" +
+        "&select=id,name,categoria,icon,sort_order,project_amenity_images(id,storage_path,sort_order)" +
         "&order=sort_order.asc" +
         "&project_amenity_images.order=sort_order.asc",
       { headers: HEADERS, cache: "no-store" }
@@ -234,6 +255,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
         id:         a.id,
         name:       a.name,
         categoria:  a.categoria ?? "edificio",
+        icon:       a.icon ?? null,
         sort_order: a.sort_order,
         images:     (a.project_amenity_images ?? [])
           .sort((x, y) => x.sort_order - y.sort_order)
@@ -246,9 +268,28 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     console.warn("[getProyectoById] amenities fetch exception:", err)
   }
 
+  // ── Derive precio_desde from typologies if not set ────────────────────────
+  const precioDesde = p.precio_desde ?? (
+    typologies.length > 0
+      ? typologies.reduce<number | null>((min, t) => {
+          if (t.price_usd == null) return min
+          return min === null ? t.price_usd : Math.min(min, t.price_usd)
+        }, null)
+      : null
+  )
+
+  // ── Derive links for backward compatibility ───────────────────────────────
+  const links: ProjectLink[] = [
+    p.maps_url     ? { type: "maps",     name: "Google Maps", url: p.maps_url }     : null,
+    p.tour_360_url ? { type: "vista360", name: "Vista 360°",  url: p.tour_360_url } : null,
+    p.brochure_url ? { type: "brochure", name: "Brochure PDF", url: p.brochure_url } : null,
+  ].filter(Boolean) as ProjectLink[]
+
   return {
     id:              p.id,
     nombre:          p.name ?? "Proyecto sin nombre",
+    ciudad:          p.ciudad ?? null,
+    barrio:          p.barrio ?? null,
     zona:            p.zona ?? p.location ?? null,
     direccion:       p.direccion ?? null,
     estado:          toEstado(p.status),
@@ -259,7 +300,13 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     caracteristicas: p.caracteristicas ?? null,
     delivery_date:   p.delivery_date ?? null,
     tipo_proyecto:   p.tipo_proyecto ?? null,
-    links:           p.links ?? [],
+    precio_desde:    precioDesde,
+    precio_hasta:    p.precio_hasta ?? null,
+    moneda:          p.moneda ?? "USD",
+    maps_url:        p.maps_url ?? null,
+    tour_360_url:    p.tour_360_url ?? null,
+    brochure_url:    p.brochure_url ?? null,
+    links,
     fotos,
     typologies,
     amenities,

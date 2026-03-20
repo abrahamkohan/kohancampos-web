@@ -3,15 +3,28 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { AmenitiesSection } from "@/components/amenity-carousel"
 import { TypologiasTabs } from "@/components/typologias-tabs"
-import { GaleriaSection } from "@/components/galeria-section"
 import { getProyectoById } from "@/lib/supabase-projects"
-import type { ProjectLink } from "@/lib/supabase-projects"
 import {
   MapPin, CalendarDays, Building2, MessageCircle,
-  Map, Globe, FileText, Eye, FolderOpen, ExternalLink,
+  Map, FileText, Eye, ExternalLink,
 } from "lucide-react"
 
 export const dynamic = "force-dynamic"
+
+// ─── Helpers de formato ───────────────────────────────────────────────────────
+
+function formatUsd(n: number) {
+  return `USD ${n.toLocaleString("es-PY")}`
+}
+
+function formatDelivery(dateStr: string) {
+  return new Date(dateStr + "T00:00:00").toLocaleDateString("es-PY", {
+    year:  "numeric",
+    month: "long",
+  })
+}
+
+// ─── Estado / badge ───────────────────────────────────────────────────────────
 
 const ESTADO_LABEL: Record<string, string> = {
   en_pozo:   "En pozo",
@@ -33,75 +46,18 @@ const BADGE_CLS: Record<string, string> = {
   estable:     "bg-navy-deep/75 text-blue-300 border border-blue-400/50",
   a_evaluar:   "bg-navy-deep/75 text-kc-white/55 border border-kc-white/20",
 }
-const TIPO_LABEL: Record<string, string> = {
-  residencial: "Residencial",
-  comercial:   "Comercial",
-  mixto:       "Mixto",
-}
 
-function LinkIcon({ type }: { type: string }) {
-  switch (type.toLowerCase()) {
-    case "maps":     return <Map size={12} />
-    case "web":      return <Globe size={12} />
-    case "brochure": return <FileText size={12} />
-    case "vista360": return <Eye size={12} />
-    case "drive":    return <FolderOpen size={12} />
-    default:         return <ExternalLink size={12} />
-  }
-}
+// ─── Sección label ────────────────────────────────────────────────────────────
 
-function HeroLinks({ links }: { links: ProjectLink[] }) {
-  if (!links.length) return null
+function SectionLabel({ text }: { text: string }) {
   return (
-    <div className="flex flex-wrap gap-2 border-t border-gold/10 pt-3">
-      {links.map((link, i) => (
-        <a
-          key={i}
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-[11px] font-[500] tracking-wide transition-all"
-        >
-          <LinkIcon type={link.type} />
-          {link.name}
-        </a>
-      ))}
-    </div>
+    <span className="block font-sans text-[10px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-1">
+      {text}
+    </span>
   )
 }
 
-function SobreElProyecto({ description, caracteristicas }: { description: string | null; caracteristicas: string | null }) {
-  if (!description && !caracteristicas) return null
-  const bullets = caracteristicas
-    ? caracteristicas.split(/\n|(?<=\.) /).map(s => s.trim()).filter(Boolean)
-    : []
-  return (
-    <section className="px-6 pb-10">
-      <div className="mx-auto max-w-[1100px] border-t border-gold/10 pt-8">
-        <span className="block font-sans text-[10px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-4">
-          Sobre el proyecto
-        </span>
-        <div className="grid md:grid-cols-2 gap-6">
-          {description && (
-            <p className="font-sans text-sm font-[300] text-kc-white/70 leading-relaxed">
-              {description}
-            </p>
-          )}
-          {bullets.length > 0 && (
-            <ul className="flex flex-col gap-1.5">
-              {bullets.map((b, i) => (
-                <li key={i} className="flex items-start gap-2 font-sans text-xs font-[300] text-kc-white/55 leading-relaxed">
-                  <span className="mt-1.5 w-1 h-1 rounded-full bg-gold/40 shrink-0" />
-                  {b}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </section>
-  )
-}
+// ─── Página ───────────────────────────────────────────────────────────────────
 
 export default async function ProyectoDetallePage({
   params,
@@ -112,133 +68,189 @@ export default async function ProyectoDetallePage({
   const p = await getProyectoById(id)
   if (!p) notFound()
 
-  const waMsg    = encodeURIComponent(`Hola, me interesa conocer más sobre el proyecto ${p.nombre}`)
   const coverUrl = p.fotos[0] ?? null
+  const waMsg    = encodeURIComponent(`Hola, me interesa conocer más sobre el proyecto ${p.nombre}`)
+  const waUrl    = `https://wa.me/595982000808?text=${waMsg}`
+
+  // Zona display: barrio + ciudad if available, else zona
+  const ubicacion = [p.barrio, p.ciudad ?? p.zona].filter(Boolean).join(", ") || p.zona
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-navy-deep pt-20">
 
-        {/* ── HERO ──────────────────────────────────────────────────────────── */}
-        <section className="px-6 pt-6 pb-10">
-          <div className="mx-auto max-w-[1100px]">
+      <main className="min-h-screen bg-navy-deep pb-20 md:pb-0">
 
-            <a href="/proyectos"
-              className="inline-flex items-center gap-1.5 font-sans text-xs text-kc-white/40 hover:text-gold transition-colors mb-5"
-            >
-              ← Proyectos
-            </a>
+        {/* ── HERO ─────────────────────────────────────────────────────────── */}
+        <section className="relative w-full border-b border-gold/10" style={{ minHeight: "72vh" }}>
 
-            <div className="grid md:grid-cols-[3fr_2fr] gap-6 items-stretch" style={{ maxHeight: "60vh" }}>
+          {/* Imagen de fondo */}
+          {coverUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={coverUrl}
+              alt={p.nombre}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-navy-primary" />
+          )}
 
-              {/* Imagen */}
-              <div className="relative overflow-hidden bg-navy-primary min-h-[220px]">
-                {coverUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={coverUrl} alt={p.nombre} className="w-full h-full object-cover" style={{ maxHeight: "60vh" }} />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-kc-white/10 min-h-[220px]">
-                    <Building2 size={48} strokeWidth={0.5} />
-                  </div>
-                )}
-                <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2">
+          {/* Gradientes overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-deep/70 via-transparent to-transparent" />
+
+          {/* Contenido */}
+          <div
+            className="relative z-10 flex flex-col justify-end px-6 pb-10 md:pb-16"
+            style={{ minHeight: "72vh" }}
+          >
+            <div className="mx-auto w-full max-w-[1100px]">
+              <div className="max-w-lg">
+
+                {/* Badges */}
+                <div className="flex items-center gap-2 mb-4 flex-wrap">
                   {p.estado && (
-                    <span className={`rounded-sm px-2 py-0.5 font-sans text-[9px] font-[600] uppercase tracking-[0.15em] backdrop-blur-sm ${ESTADO_CLS[p.estado] ?? ""}`}>
+                    <span className={`rounded-sm px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.15em] backdrop-blur-sm ${ESTADO_CLS[p.estado] ?? ""}`}>
                       {ESTADO_LABEL[p.estado] ?? p.estado}
                     </span>
                   )}
                   {p.badge_analisis && (
-                    <span className={`rounded-sm px-2 py-0.5 font-sans text-[9px] font-[700] uppercase tracking-[0.15em] backdrop-blur-sm ${BADGE_CLS[p.badge_analisis] ?? ""}`}>
+                    <span className={`rounded-sm px-2.5 py-1 font-sans text-[9px] font-[700] uppercase tracking-[0.15em] backdrop-blur-sm ${BADGE_CLS[p.badge_analisis] ?? ""}`}>
                       {BADGE_LABEL[p.badge_analisis] ?? p.badge_analisis}
                     </span>
                   )}
                 </div>
-              </div>
 
-              {/* Panel info */}
-              <div className="flex flex-col gap-3 justify-between py-1 overflow-y-auto">
-                <div className="flex flex-col gap-3">
+                {/* Nombre */}
+                <h1 className="font-sans text-3xl md:text-5xl font-[200] leading-tight text-kc-white mb-4">
+                  {p.nombre}
+                </h1>
 
-                  {/* Desarrolladora + tipo */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {p.desarrolladora && (
-                      <span className="font-sans text-[9px] font-[600] uppercase tracking-[0.25em] text-gold/60">
-                        {p.desarrolladora}
+                {/* Meta */}
+                <div className="flex flex-col gap-1.5 mb-6">
+                  {ubicacion && (
+                    <div className="flex items-center gap-2">
+                      <MapPin size={12} strokeWidth={1.5} className="text-gold/60 shrink-0" />
+                      <span className="font-sans text-sm font-[300] text-kc-white/70">{ubicacion}</span>
+                    </div>
+                  )}
+                  {p.delivery_date && (
+                    <div className="flex items-center gap-2">
+                      <CalendarDays size={12} strokeWidth={1.5} className="text-gold/60 shrink-0" />
+                      <span className="font-sans text-sm font-[300] text-kc-white/70">
+                        Entrega: {formatDelivery(p.delivery_date)}
                       </span>
-                    )}
-                    {p.tipo_proyecto && (
-                      <span className="px-2 py-0.5 border border-gold/20 font-sans text-[9px] font-[500] uppercase tracking-[0.1em] text-kc-white/50">
-                        {TIPO_LABEL[p.tipo_proyecto] ?? p.tipo_proyecto}
-                      </span>
-                    )}
-                  </div>
-
-                  <h1 className="font-sans text-2xl md:text-[1.6rem] font-[200] leading-tight text-kc-white">
-                    {p.nombre}
-                  </h1>
-
-                  {/* Meta */}
-                  <div className="flex flex-col gap-1.5 border-t border-gold/10 pt-2.5">
-                    {p.zona && (
-                      <div className="flex items-center gap-2">
-                        <MapPin size={11} strokeWidth={1.5} className="text-gold/50 shrink-0" />
-                        <span className="font-sans text-xs font-[300] text-kc-white/60">{p.zona}</span>
-                      </div>
-                    )}
-                    {p.direccion && (
-                      <div className="flex items-center gap-2">
-                        <MapPin size={11} strokeWidth={1.5} className="text-gold/25 shrink-0" />
-                        <span className="font-sans text-xs font-[300] text-kc-white/40">{p.direccion}</span>
-                      </div>
-                    )}
-                    {p.delivery_date && (
-                      <div className="flex items-center gap-2">
-                        <CalendarDays size={11} strokeWidth={1.5} className="text-gold/50 shrink-0" />
-                        <span className="font-sans text-xs font-[300] text-kc-white/60">
-                          Entrega: {new Date(p.delivery_date).toLocaleDateString("es-PY", { year: "numeric", month: "long" })}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Descripción */}
-                  {p.descripcion && (
-                    <p className="font-sans text-[11px] font-[300] text-kc-white/50 leading-relaxed border-t border-gold/10 pt-2.5">
-                      {p.descripcion}
-                    </p>
+                    </div>
+                  )}
+                  {p.desarrolladora && (
+                    <div className="flex items-center gap-2">
+                      <Building2 size={12} strokeWidth={1.5} className="text-gold/60 shrink-0" />
+                      <span className="font-sans text-sm font-[300] text-kc-white/70">{p.desarrolladora}</span>
+                    </div>
                   )}
                 </div>
 
-                {/* CTA + Links */}
-                <div className="flex flex-col gap-2">
-                  <a
-                    href={`https://wa.me/595982000808?text=${waMsg}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-emerald-600 text-white font-sans text-xs font-[600] uppercase tracking-[0.2em] hover:bg-emerald-500 transition-colors"
-                  >
-                    <MessageCircle size={13} />
-                    Consultar por WhatsApp
-                  </a>
-                  <HeroLinks links={p.links} />
-                </div>
+                {/* Precio desde */}
+                {p.precio_desde != null && (
+                  <div className="inline-block border border-gold/30 px-4 py-3 bg-navy-deep/60 backdrop-blur-sm">
+                    <span className="block font-sans text-[9px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-0.5">
+                      Precio desde
+                    </span>
+                    <span className="font-sans text-2xl md:text-3xl font-[300] text-kc-white">
+                      {formatUsd(p.precio_desde)}
+                    </span>
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── Sobre el proyecto ─────────────────────────────────────────────── */}
-        <SobreElProyecto description={p.descripcion} caracteristicas={p.caracteristicas} />
+        {/* ── SOBRE EL PROYECTO ────────────────────────────────────────────── */}
+        {(p.direccion || p.descripcion || p.caracteristicas) && (
+          <section className="px-6 py-12 border-t border-gold/10">
+            <div className="mx-auto max-w-[1100px]">
+              <div className="mb-6">
+                <SectionLabel text="El proyecto" />
+                <h2 className="font-sans text-xl font-[200] text-kc-white">Sobre el proyecto</h2>
+              </div>
+              <div className="flex flex-col gap-6 max-w-2xl">
+                {p.direccion && (
+                  <div className="flex items-start gap-2">
+                    <MapPin size={14} strokeWidth={1.5} className="text-gold/50 shrink-0 mt-0.5" />
+                    <span className="font-sans text-sm font-[300] text-kc-white/60">{p.direccion}</span>
+                  </div>
+                )}
+                {p.descripcion && (
+                  <p className="font-sans text-sm font-[300] text-kc-white/70 leading-relaxed">
+                    {p.descripcion}
+                  </p>
+                )}
+                {p.caracteristicas && (
+                  <p className="font-sans text-sm font-[300] text-kc-white/55 leading-relaxed border-l border-gold/20 pl-4">
+                    {p.caracteristicas}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
 
-        {/* ── Tipologías ────────────────────────────────────────────────────── */}
+        {/* ── LINKS ────────────────────────────────────────────────────────── */}
+        {(p.maps_url || p.tour_360_url || p.brochure_url) && (
+          <section className="px-6 pb-10 border-t border-gold/10 pt-10">
+            <div className="mx-auto max-w-[1100px]">
+              <div className="flex flex-wrap gap-2">
+                {p.maps_url && (
+                  <a
+                    href={p.maps_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/25 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all"
+                  >
+                    <Map size={11} />
+                    Google Maps
+                  </a>
+                )}
+                {p.tour_360_url && (
+                  <a
+                    href={p.tour_360_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/25 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all"
+                  >
+                    <Eye size={11} />
+                    Vista 360°
+                  </a>
+                )}
+                {p.brochure_url && (
+                  <a
+                    href={p.brochure_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/25 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all"
+                  >
+                    <FileText size={11} />
+                    Brochure PDF
+                  </a>
+                )}
+                {p.brochure_url === null && p.tour_360_url === null && p.maps_url === null ? null : (
+                  // Placeholder for future links
+                  null
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── TIPOLOGÍAS ───────────────────────────────────────────────────── */}
         {p.typologies.length > 0 && (
-          <section className="px-6 pb-10">
-            <div className="mx-auto max-w-[1100px] border-t border-gold/10 pt-8">
-              <div className="mb-5">
-                <span className="block font-sans text-[10px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-1">
-                  Tipologías
-                </span>
+          <section className="px-6 py-12 border-b border-gold/10">
+            <div className="mx-auto max-w-[1100px]">
+              <div className="mb-6">
+                <SectionLabel text="Tipologías" />
                 <h2 className="font-sans text-xl font-[200] text-kc-white">Unidades disponibles</h2>
               </div>
               <TypologiasTabs typologies={p.typologies} />
@@ -246,41 +258,34 @@ export default async function ProyectoDetallePage({
           </section>
         )}
 
-        {/* ── Galería ───────────────────────────────────────────────────────── */}
-        {p.fotos.length > 1 && (
-          <section className="px-6 pb-10">
-            <div className="mx-auto max-w-[1100px] border-t border-gold/10 pt-8">
-              <GaleriaSection fotos={p.fotos} />
-            </div>
-          </section>
-        )}
-
-        {/* ── Amenities ─────────────────────────────────────────────────────── */}
+        {/* ── AMENITIES ────────────────────────────────────────────────────── */}
         {p.amenities.length > 0 && (
-          <section className="px-6 pb-10">
-            <div className="mx-auto max-w-[1100px] border-t border-gold/10 pt-8">
+          <section className="px-6 py-12 border-b border-gold/10">
+            <div className="mx-auto max-w-[1100px]">
               <AmenitiesSection amenities={p.amenities} />
             </div>
           </section>
         )}
 
-        {/* ── CTA final ─────────────────────────────────────────────────────── */}
-        <section className="px-6 pb-14">
+        {/* ── CTA FINAL ────────────────────────────────────────────────────── */}
+        <section className="px-6 py-14">
           <div className="mx-auto max-w-[1100px]">
-            <div className="border border-gold/15 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="border border-gold/20 p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
               <div>
-                <p className="font-sans text-base font-[200] text-kc-white">¿Te interesa este proyecto?</p>
-                <p className="font-sans text-sm font-[300] text-kc-white/50 mt-0.5">
+                <p className="font-sans text-lg font-[200] text-kc-white">
+                  ¿Te interesa este proyecto?
+                </p>
+                <p className="font-sans text-sm font-[300] text-kc-white/50 mt-1">
                   Analizamos la inversión juntos, sin compromiso.
                 </p>
               </div>
               <a
-                href={`https://wa.me/595982000808?text=${waMsg}`}
+                href={waUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-shrink-0 flex items-center gap-2 px-6 py-3 bg-gold text-navy-deep font-sans text-xs font-[700] uppercase tracking-[0.2em] hover:bg-gold-light transition-colors"
+                className="flex-shrink-0 flex items-center gap-2 px-8 py-4 bg-gold text-navy-deep font-sans text-xs font-[700] uppercase tracking-[0.2em] hover:bg-gold-light transition-colors"
               >
-                <MessageCircle size={13} />
+                <MessageCircle size={14} />
                 Hablar con un asesor
               </a>
             </div>
@@ -288,6 +293,20 @@ export default async function ProyectoDetallePage({
         </section>
 
       </main>
+
+      {/* ── STICKY CTA MOBILE ─────────────────────────────────────────────── */}
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-50 p-3 bg-navy-deep border-t border-gold/10">
+        <a
+          href={waUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full py-3.5 bg-emerald-600 text-white font-sans text-sm font-[600] uppercase tracking-[0.2em] hover:bg-emerald-500 transition-colors"
+        >
+          <MessageCircle size={15} />
+          Consultar por WhatsApp
+        </a>
+      </div>
+
       <Footer />
     </>
   )
