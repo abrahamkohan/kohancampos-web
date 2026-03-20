@@ -58,8 +58,6 @@ export interface ProyectoDetalle extends Proyecto {
   precio_desde:    number | null
   precio_hasta:    number | null
   moneda:          string | null
-  lat:             number | null
-  lng:             number | null
   maps_url:        string | null
   tour_360_url:    string | null
   brochure_url:    string | null
@@ -153,8 +151,6 @@ interface SupabaseProyectoBase {
   precio_desde:    number | null
   precio_hasta:    number | null
   moneda:          string | null
-  lat:             number | null
-  lng:             number | null
   maps_url:        string | null
   tour_360_url:    string | null
   brochure_url:    string | null
@@ -201,7 +197,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
         `/rest/v1/projects?id=eq.${id}&publicado_en_web=eq.true` +
         "&select=id,name,zona,ciudad,barrio,direccion,location,status,developer_name,badge_analisis" +
         ",description,caracteristicas,delivery_date,tipo_proyecto" +
-        ",precio_desde,precio_hasta,moneda,lat,lng,maps_url,tour_360_url,brochure_url,hero_image_url" +
+        ",precio_desde,precio_hasta,moneda,maps_url,tour_360_url,brochure_url,hero_image_url" +
         ",project_photos(storage_path,sort_order)" +
         "&project_photos.order=sort_order.asc" +
         "&limit=1",
@@ -314,8 +310,6 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     precio_desde:    precioDesde,
     precio_hasta:    p.precio_hasta ?? null,
     moneda:          p.moneda ?? "USD",
-    lat:             p.lat ?? null,
-    lng:             p.lng ?? null,
     maps_url:        p.maps_url ?? null,
     tour_360_url:    p.tour_360_url ?? null,
     brochure_url:    p.brochure_url ?? null,

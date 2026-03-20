@@ -277,7 +277,7 @@ export default async function ProyectoDetallePage({
             )}
 
             {/* ── Card: Mapa ── */}
-            {p.lat && p.lng && (
+            {p.direccion && (
               <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
                 <div className="px-6 pt-6 pb-4 border-b border-white/8 flex items-center justify-between">
                   <div>
@@ -293,7 +293,7 @@ export default async function ProyectoDetallePage({
                 </div>
                 <div className="overflow-hidden" style={{ height: 350 }}>
                   <iframe
-                    src={`https://maps.google.com/maps?q=${p.lat},${p.lng}&z=16&output=embed`}
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(p.direccion)}&output=embed`}
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
