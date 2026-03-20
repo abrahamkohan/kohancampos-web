@@ -81,10 +81,10 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
       : null,
   ].filter(Boolean).join(" · ")
 
-  // subtítulo — operacion + zona
+  // subtítulo — operacion + ubicacion
   const subtituloDisplay = [
     p.operacion === "venta" ? "En venta" : "En alquiler",
-    p.zona,
+    p.barrio ?? p.zona ?? p.ciudad,
   ].filter(Boolean).join(" · ")
 
   // hook badge — data-driven + fallback según operacion
@@ -121,7 +121,10 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
   const detalles = [
     p.condicion && { label: "Condición", value: CONDICION_LABEL[p.condicion] ?? p.condicion },
+    p.ciudad && { label: "Ciudad", value: p.ciudad },
+    p.barrio && { label: "Barrio", value: p.barrio },
     p.zona && { label: "Zona", value: p.zona },
+    p.direccion && { label: "Dirección", value: p.direccion },
     p.piso != null && { label: "Piso", value: String(p.piso) },
     p.superficie_cubierta_m2 != null && { label: "Sup. cubierta", value: p.superficie_cubierta_m2 + " m²" },
     p.terreno_m2 != null && { label: "Terreno", value: p.terreno_m2 + " m²" },
@@ -259,7 +262,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                     <div className="flex items-center gap-2">
                       <MapPin size={13} className="text-gold/50" />
                       <p className="font-sans text-sm font-[300] text-white/60">
-                        {[p.zona, p.direccion].filter(Boolean).join(", ")}
+                        {[p.barrio ?? p.zona ?? p.ciudad, p.direccion].filter(Boolean).join(", ")}
                       </p>
                     </div>
                     {mapsUrl && (
@@ -312,6 +315,9 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                     <p className="font-sans text-xl font-[300] text-white leading-tight">{precio}</p>
                     {precioM2 && (
                       <p className="font-sans text-xs text-white/25 mt-1">{precioM2}</p>
+                    )}
+                    {p.financiacion && (
+                      <p className="font-sans text-xs font-[500] text-amber-400/90 mt-2">Consultar financiación</p>
                     )}
                   </div>
                 )}
