@@ -192,7 +192,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   {subtituloDisplay}
                 </p>
                 {chips.length > 0 && (
-                  <div className="flex items-center flex-wrap gap-x-3 gap-y-2 py-4 border-t border-white/8">
+                  <div className="flex items-center flex-wrap gap-x-3 gap-y-2 pt-3 pb-2 border-t border-white/8">
                     {chips.map((c, i) => (
                       <div key={i} className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/60">
                         {c.icon === "bed" && <Bed size={13} className="text-gold/50" />}
@@ -208,8 +208,8 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
                 {/* Detalles — dentro de la misma card */}
                 {detalles.length > 0 && (
-                  <div className="mt-6 pt-6 border-t border-white/8">
-                    <p className="font-sans text-xs font-[600] uppercase tracking-[0.22em] text-[#7a8ca3] mb-5">
+                  <div className="mt-4 pt-4 border-t border-white/8">
+                    <p className="font-sans text-xs font-[600] uppercase tracking-[0.22em] text-[#7a8ca3] mb-3">
                       Detalles de la propiedad
                     </p>
                     <div className="grid md:grid-cols-3 gap-x-10 gap-y-4">
