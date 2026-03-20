@@ -129,6 +129,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
     p.superficie_cubierta_m2 != null && { label: "Sup. cubierta", value: p.superficie_cubierta_m2 + " m²" },
     p.terreno_m2 != null && { label: "Terreno", value: p.terreno_m2 + " m²" },
     p.deposito != null && { label: "Baulera (Depósito)", value: p.deposito ? "Sí" : "No" },
+    p.amoblado && { label: "Amoblado", value: "Sí" },
   ].filter(Boolean) as { label: string; value: string }[]
 
   const { intro: descIntro, bullets: amenities } = p.descripcion
@@ -182,6 +183,11 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   {hookBadge && (
                     <span className={`px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.18em] rounded-md ${hookBadge.cls}`}>
                       {hookBadge.label}
+                    </span>
+                  )}
+                  {p.amoblado && (
+                    <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.18em] rounded-md border border-[#c6a87a]/40 text-[#c6a87a]">
+                      Amoblado
                     </span>
                   )}
                 </div>
