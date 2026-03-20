@@ -315,12 +315,12 @@ export default async function ProyectoDetallePage({
               )
             })()}
 
-            {/* ── 6. CTA Final ── */}
-            <div className="bg-[#112a3c] border border-gold/25 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] overflow-hidden">
-              <div className="px-8 py-10 md:px-12 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+            {/* ── 6. CTA Final — solo desktop ── */}
+            <div className="hidden md:block bg-[#112a3c] border border-gold/25 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] overflow-hidden">
+              <div className="px-12 py-14 flex flex-row items-center justify-between gap-8">
                 <div>
                   <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-3">Inversión en real estate</p>
-                  <p className="font-sans text-2xl md:text-3xl font-[200] text-kc-white leading-snug mb-2">
+                  <p className="font-sans text-3xl font-[200] text-kc-white leading-snug mb-2">
                     ¿Te interesa este proyecto?
                   </p>
                   <p className="font-sans text-sm font-[300] text-kc-white/45">
@@ -344,19 +344,21 @@ export default async function ProyectoDetallePage({
       </main>
 
       {/* ── STICKY CTA MOBILE ─────────────────────────────────────────────── */}
-      <div className="md:hidden fixed bottom-0 inset-x-0 z-50 p-3 bg-navy-deep border-t border-gold/10">
+      <div className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-navy-deep/95 backdrop-blur-sm border-t border-gold/15 px-4 py-3">
         <a
           href={waUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-3.5 bg-emerald-600 text-white font-sans text-sm font-[600] uppercase tracking-[0.2em] hover:bg-emerald-500 transition-colors"
+          className="flex items-center justify-center gap-2.5 w-full py-4 bg-gold text-navy-deep font-sans text-xs font-[700] uppercase tracking-[0.2em] hover:bg-gold-light transition-colors rounded-sm shadow-[0_2px_16px_rgba(201,185,154,0.25)]"
         >
-          <MessageCircle size={15} />
-          Consultar por WhatsApp
+          <MessageCircle size={14} />
+          Hablar con un asesor
         </a>
       </div>
 
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </>
   )
 }
