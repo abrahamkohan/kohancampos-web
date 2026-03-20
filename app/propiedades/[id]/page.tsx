@@ -219,9 +219,12 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
               {detalles.length > 0 && (
                 <Card className="lg:mt-6 px-5 py-4">
                   <SectionLabel>Detalles de la propiedad</SectionLabel>
-                  <div className="border-t border-[#1f364d]">
+                  <div className="grid md:grid-cols-2 gap-x-10 border-t border-[#1f364d]">
                     {detalles.map(d => (
-                      <div key={d.label} className="flex items-baseline justify-between gap-6 py-3.5 border-b border-[#1f364d]">
+                      <div
+                        key={d.label}
+                        className={`flex items-baseline justify-between gap-6 py-3.5 border-b border-[#1f364d] ${d.value.length > 30 ? "md:col-span-2" : ""}`}
+                      >
                         <span className="font-sans text-sm text-[#94a3b8] tracking-wide flex-shrink-0">{d.label}</span>
                         <span className="font-sans text-sm font-[500] text-[#c6a87a] text-right leading-snug">{d.value}</span>
                       </div>
