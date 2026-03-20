@@ -6,7 +6,7 @@ import { TypologiasTabs } from "@/components/typologias-tabs"
 import { getProyectoById } from "@/lib/supabase-projects"
 import {
   MapPin, CalendarDays, Building2, MessageCircle,
-  Map, FileText, Eye, ExternalLink,
+  Map, FileText, Eye,
 } from "lucide-react"
 
 export const dynamic = "force-dynamic"
@@ -168,74 +168,104 @@ export default async function ProyectoDetallePage({
           </div>
         </section>
 
-        {/* ── SOBRE EL PROYECTO ────────────────────────────────────────────── */}
-        {(p.direccion || p.descripcion || p.caracteristicas) && (
+        {/* ── SOBRE EL PROYECTO + LINKS ────────────────────────────────────── */}
+        {(p.direccion || p.descripcion || p.caracteristicas || p.maps_url || p.tour_360_url || p.brochure_url) && (
           <section className="px-6 py-14">
             <div className="mx-auto max-w-[1100px]">
               <div className="mb-6">
                 <SectionLabel text="El proyecto" />
                 <h2 className="font-sans text-xl font-[200] text-kc-white">Sobre el proyecto</h2>
               </div>
-              <div className="flex flex-col gap-5 max-w-2xl">
-                {p.direccion && (
-                  <div className="flex items-start gap-2">
-                    <MapPin size={14} strokeWidth={1.5} className="text-gold/50 shrink-0 mt-0.5" />
-                    <span className="font-sans text-sm font-[300] text-kc-white/60">{p.direccion}</span>
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] max-w-2xl overflow-hidden">
+
+                {/* Meta: ubicación, entrega, desarrolladora */}
+                {(ubicacion || p.delivery_date || p.desarrolladora || p.direccion) && (
+                  <div className="px-6 py-5 flex flex-col gap-2.5 border-b border-white/8">
+                    {ubicacion && (
+                      <div className="flex items-start gap-2">
+                        <MapPin size={13} strokeWidth={1.5} className="text-gold/50 shrink-0 mt-0.5" />
+                        <span className="font-sans text-sm font-[300] text-kc-white/60">{ubicacion}</span>
+                      </div>
+                    )}
+                    {p.direccion && (
+                      <div className="flex items-start gap-2 pl-[21px]">
+                        <span className="font-sans text-xs font-[300] text-kc-white/40">{p.direccion}</span>
+                      </div>
+                    )}
+                    {p.delivery_date && (
+                      <div className="flex items-center gap-2">
+                        <CalendarDays size={13} strokeWidth={1.5} className="text-gold/50 shrink-0" />
+                        <span className="font-sans text-sm font-[300] text-kc-white/60">
+                          Entrega: {formatDelivery(p.delivery_date)}
+                        </span>
+                      </div>
+                    )}
+                    {p.desarrolladora && (
+                      <div className="flex items-center gap-2">
+                        <Building2 size={13} strokeWidth={1.5} className="text-gold/50 shrink-0" />
+                        <span className="font-sans text-sm font-[300] text-kc-white/60">{p.desarrolladora}</span>
+                      </div>
+                    )}
                   </div>
                 )}
-                {p.descripcion && (
-                  <p className="font-sans text-sm font-[300] text-kc-white/70 leading-relaxed whitespace-pre-line">
-                    {p.descripcion}
-                  </p>
-                )}
-                {p.caracteristicas && (
-                  <p className="font-sans text-sm font-[300] text-kc-white/55 leading-relaxed border-l border-gold/20 pl-4 whitespace-pre-line">
-                    {p.caracteristicas}
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
-        )}
 
-        {/* ── LINKS ────────────────────────────────────────────────────────── */}
-        {(p.maps_url || p.tour_360_url || p.brochure_url) && (
-          <section className="px-6 pb-14">
-            <div className="mx-auto max-w-[1100px]">
-              <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4 flex flex-wrap gap-2">
-                {p.maps_url && (
-                  <a
-                    href={p.maps_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
-                  >
-                    <Map size={11} />
-                    Google Maps
-                  </a>
+                {/* Descripción */}
+                {p.descripcion && (
+                  <div className={`px-6 py-5 ${p.caracteristicas ? "border-b border-white/8" : ""}`}>
+                    <p className="font-sans text-sm font-[300] text-kc-white/70 leading-relaxed whitespace-pre-line">
+                      {p.descripcion}
+                    </p>
+                  </div>
                 )}
-                {p.tour_360_url && (
-                  <a
-                    href={p.tour_360_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
-                  >
-                    <Eye size={11} />
-                    Vista 360°
-                  </a>
+
+                {/* Características */}
+                {p.caracteristicas && (
+                  <div className="px-6 py-5">
+                    <p className="font-sans text-sm font-[300] text-kc-white/55 leading-relaxed border-l border-gold/20 pl-4 whitespace-pre-line">
+                      {p.caracteristicas}
+                    </p>
+                  </div>
                 )}
-                {p.brochure_url && (
-                  <a
-                    href={p.brochure_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
-                  >
-                    <FileText size={11} />
-                    Brochure PDF
-                  </a>
+
+                {/* Footer: Links */}
+                {(p.maps_url || p.tour_360_url || p.brochure_url) && (
+                  <div className="px-6 py-4 flex flex-wrap gap-2 border-t border-white/8 bg-white/[0.02]">
+                    {p.maps_url && (
+                      <a
+                        href={p.maps_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
+                      >
+                        <Map size={11} />
+                        Google Maps
+                      </a>
+                    )}
+                    {p.tour_360_url && (
+                      <a
+                        href={p.tour_360_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
+                      >
+                        <Eye size={11} />
+                        Vista 360°
+                      </a>
+                    )}
+                    {p.brochure_url && (
+                      <a
+                        href={p.brochure_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md"
+                      >
+                        <FileText size={11} />
+                        Brochure PDF
+                      </a>
+                    )}
+                  </div>
                 )}
+
               </div>
             </div>
           </section>
@@ -243,13 +273,17 @@ export default async function ProyectoDetallePage({
 
         {/* ── TIPOLOGÍAS ───────────────────────────────────────────────────── */}
         {p.typologies.length > 0 && (
-          <section className="px-6 py-14 bg-white/[0.02] border-y border-white/[0.04]">
+          <section className="px-6 py-14">
             <div className="mx-auto max-w-[1100px]">
-              <div className="mb-6">
-                <SectionLabel text="Tipologías" />
-                <h2 className="font-sans text-xl font-[200] text-kc-white">Unidades disponibles</h2>
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] overflow-hidden">
+                <div className="px-6 pt-6 pb-5 border-b border-white/8">
+                  <SectionLabel text="Tipologías" />
+                  <h2 className="font-sans text-xl font-[200] text-kc-white">Unidades disponibles</h2>
+                </div>
+                <div className="px-6 py-6">
+                  <TypologiasTabs typologies={p.typologies} />
+                </div>
               </div>
-              <TypologiasTabs typologies={p.typologies} />
             </div>
           </section>
         )}
@@ -258,7 +292,7 @@ export default async function ProyectoDetallePage({
         {p.amenities.length > 0 && (
           <section className="px-6 py-14">
             <div className="mx-auto max-w-[1100px]">
-              <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-6 md:p-8">
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] p-6 md:p-8">
                 <AmenitiesSection amenities={p.amenities} />
               </div>
             </div>
