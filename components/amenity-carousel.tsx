@@ -2,11 +2,29 @@
 
 import { useState, useRef, useCallback } from "react"
 import Image from "next/image"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Waves, Dumbbell, Monitor, Users, Building2, Car, Zap, Shield, Wifi, Sun, Leaf, Check } from "lucide-react"
 import { mediaUrl } from "@/lib/supabase-projects"
 import type { Amenity } from "@/lib/supabase-projects"
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+
+const ICON_MAP: Record<string, React.ElementType> = {
+  pileta: Waves, piscina: Waves, pool: Waves,
+  gimnasio: Dumbbell, gym: Dumbbell,
+  coworking: Monitor,
+  salón: Users, salon: Users,
+  lobby: Building2,
+  cochera: Car, cocheras: Car, estacionamiento: Car,
+  generador: Zap,
+  seguridad: Shield,
+  wifi: Wifi, internet: Wifi,
+  terraza: Sun, jardín: Leaf, jardin: Leaf,
+}
+
+function getAmenityIcon(name: string): React.ElementType {
+  const key = name.toLowerCase().split(/[\s,]/)[0]
+  return ICON_MAP[key] ?? Check
+}
 
 // ─── Card individual ──────────────────────────────────────────────────────────
 
@@ -27,7 +45,17 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
     touchStartX.current = null
   }
 
-  if (!current) return null
+  if (!current) {
+    const Icon = getAmenityIcon(amenity.name)
+    return (
+      <li className="flex items-center gap-3">
+        <div className="w-9 h-9 shrink-0 border border-[#2f4a66] flex items-center justify-center text-[#94a3b8]">
+          <Icon size={16} strokeWidth={1.5} />
+        </div>
+        <span className="font-sans text-sm font-[400] text-[#cbd5e1]">{amenity.name}</span>
+      </li>
+    )
+  }
 
   return (
     <div className="group flex flex-col gap-0">
@@ -86,7 +114,7 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
 
       {/* Nombre */}
       <div className="pt-3 pb-1 px-0.5">
-        <p className="font-sans text-sm font-[400] text-kc-white/80 tracking-wide">
+        <p className="font-sans text-sm font-[500] text-white/90 tracking-wide">
           {amenity.name}
         </p>
       </div>
@@ -98,16 +126,25 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
 
 function AmenityGroup({ label, items }: { label: string; items: Amenity[] }) {
   if (!items.length) return null
+  const hasImages = items.some(a => a.images.length > 0)
   return (
     <div className="flex flex-col gap-4">
-      <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.25em] text-gold/50">
+      <p className="font-sans text-xs font-[600] uppercase tracking-wider text-[#94a3b8]">
         {label}
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {items.map(a => (
-          <AmenityCard key={a.id} amenity={a} />
-        ))}
-      </div>
+      {hasImages ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map(a => (
+            <AmenityCard key={a.id} amenity={a} />
+          ))}
+        </div>
+      ) : (
+        <ul className="grid grid-cols-2 md:grid-cols-3 gap-6">
+          {items.map(a => (
+            <AmenityCard key={a.id} amenity={a} />
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
@@ -122,10 +159,10 @@ export function AmenitiesSection({ amenities }: { amenities: Amenity[] }) {
     <section className="flex flex-col gap-8">
       {/* Header */}
       <div>
-        <span className="block font-sans text-[10px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-2">
+        <span className="block font-sans text-xs font-[600] uppercase tracking-wider text-[#94a3b8] mb-2">
           Infraestructura
         </span>
-        <h2 className="font-sans text-2xl font-[200] text-kc-white">
+        <h2 className="font-sans text-xl font-semibold text-white">
           Amenities del proyecto
         </h2>
       </div>

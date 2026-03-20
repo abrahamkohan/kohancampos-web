@@ -5,13 +5,18 @@
 
 :root {
   /* Kohan & Campos palette */
-  --navy-deep: #0F1D35;
-  --navy-primary: #1B2A4A;
-  --navy-light: #243354;
+  --navy-deep: #0b1a2b;
+  --navy-primary: #0f2233;
+  --navy-light: #1a3147;
+  /* Landing catalog layers — 3 levels */
+  --navy-surface: #0f2233;
+  --navy-card: #1a3147;
+  --navy-border: #2f4a66;
   --gold: #C9B99A;
   --gold-light: #E8DCC8;
   --white: #FFFFFF;
-  --text-muted-kc: rgba(255, 255, 255, 0.6);
+  --text-muted-kc: #cbd5e1;
+  --text-label-kc: #94a3b8;
 
   /* Shadcn design tokens mapped to K&C palette */
   --background: #0F1D35;
@@ -68,10 +73,14 @@
   --color-navy-deep: var(--navy-deep);
   --color-navy-primary: var(--navy-primary);
   --color-navy-light: var(--navy-light);
+  --color-navy-surface: var(--navy-surface);
+  --color-navy-card: var(--navy-card);
+  --color-navy-border: var(--navy-border);
   --color-gold: var(--gold);
   --color-gold-light: var(--gold-light);
   --color-kc-white: var(--white);
   --color-text-muted-kc: var(--text-muted-kc);
+  --color-text-label-kc: var(--text-label-kc);
 }
 
 /* Noise grain overlay for hero */

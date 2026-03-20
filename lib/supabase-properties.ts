@@ -1,4 +1,26 @@
-import type { PropiedadTerminada } from "./notion"
+export type ProyectoPozo = {
+  id: string
+  nombre: string
+  desarrolladora: string
+  zona: string
+  barrio: string
+  estado: string
+  fechaEntrega: string | null
+  imagen: string | null
+}
+
+export type PropiedadTerminada = {
+  id: string
+  nombre: string
+  tipo: string
+  zona: string
+  barrio: string
+  precio: string
+  m2: string
+  tipologia: string
+  estadoComercial: string
+  imagen: string | null
+}
 
 interface SupabaseProperty {
   id: string
