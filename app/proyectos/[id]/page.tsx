@@ -169,70 +169,50 @@ export default async function ProyectoDetallePage({
         </section>
 
         {/* ── CONTENIDO PRINCIPAL ──────────────────────────────────────────── */}
-        <div className="px-6 py-14">
-          <div className="mx-auto max-w-[1100px] flex flex-col space-y-8">
+        <div className="px-6 py-16">
+          <div className="mx-auto max-w-[1100px] flex flex-col space-y-10">
 
-            {/* ── Card: Sobre el proyecto ── */}
-            {(p.direccion || p.descripcion || p.caracteristicas || p.maps_url || p.tour_360_url || p.brochure_url) && (
+            {/* ── 1. Card: Ficha del proyecto (meta + links) ── */}
+            {(ubicacion || p.delivery_date || p.desarrolladora || p.direccion || p.maps_url || p.tour_360_url || p.brochure_url) && (
               <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
-                {/* Header */}
                 <div className="px-6 pt-6 pb-4 border-b border-white/8">
                   <SectionLabel text="El proyecto" />
-                  <h2 className="font-sans text-xl font-[200] text-kc-white">Sobre el proyecto</h2>
+                  <h2 className="font-sans text-xl font-[200] text-kc-white">Ficha técnica</h2>
                 </div>
-
-                {/* Meta: ubicación, entrega, desarrolladora */}
-                {(ubicacion || p.delivery_date || p.desarrolladora || p.direccion) && (
-                  <div className="px-6 py-5 flex flex-col gap-2.5 border-b border-white/8">
-                    {ubicacion && (
-                      <div className="flex items-start gap-2">
-                        <MapPin size={13} strokeWidth={1.5} className="text-gold/50 shrink-0 mt-0.5" />
-                        <span className="font-sans text-sm font-[300] text-kc-white/60">{ubicacion}</span>
+                <div className="px-6 py-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
+                  {ubicacion && (
+                    <div className="flex flex-col gap-1">
+                      <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-kc-white/30">Ubicación</span>
+                      <div className="flex items-start gap-1.5">
+                        <MapPin size={12} strokeWidth={1.5} className="text-gold/50 shrink-0 mt-0.5" />
+                        <span className="font-sans text-sm font-[300] text-kc-white/75">{ubicacion}</span>
                       </div>
-                    )}
-                    {p.direccion && (
-                      <div className="flex items-start gap-2 pl-[21px]">
-                        <span className="font-sans text-xs font-[300] text-kc-white/40">{p.direccion}</span>
+                      {p.direccion && (
+                        <span className="font-sans text-xs font-[300] text-kc-white/35 mt-0.5">{p.direccion}</span>
+                      )}
+                    </div>
+                  )}
+                  {p.delivery_date && (
+                    <div className="flex flex-col gap-1">
+                      <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-kc-white/30">Entrega</span>
+                      <div className="flex items-center gap-1.5">
+                        <CalendarDays size={12} strokeWidth={1.5} className="text-gold/50 shrink-0" />
+                        <span className="font-sans text-sm font-[300] text-kc-white/75">{formatDelivery(p.delivery_date)}</span>
                       </div>
-                    )}
-                    {p.delivery_date && (
-                      <div className="flex items-center gap-2">
-                        <CalendarDays size={13} strokeWidth={1.5} className="text-gold/50 shrink-0" />
-                        <span className="font-sans text-sm font-[300] text-kc-white/60">
-                          Entrega: {formatDelivery(p.delivery_date)}
-                        </span>
+                    </div>
+                  )}
+                  {p.desarrolladora && (
+                    <div className="flex flex-col gap-1">
+                      <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-kc-white/30">Desarrolladora</span>
+                      <div className="flex items-center gap-1.5">
+                        <Building2 size={12} strokeWidth={1.5} className="text-gold/50 shrink-0" />
+                        <span className="font-sans text-sm font-[300] text-kc-white/75">{p.desarrolladora}</span>
                       </div>
-                    )}
-                    {p.desarrolladora && (
-                      <div className="flex items-center gap-2">
-                        <Building2 size={13} strokeWidth={1.5} className="text-gold/50 shrink-0" />
-                        <span className="font-sans text-sm font-[300] text-kc-white/60">{p.desarrolladora}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Descripción */}
-                {p.descripcion && (
-                  <div className={`px-6 py-5 ${p.caracteristicas ? "border-b border-white/8" : ""}`}>
-                    <p className="font-sans text-sm font-[300] text-kc-white/70 leading-relaxed whitespace-pre-line">
-                      {p.descripcion}
-                    </p>
-                  </div>
-                )}
-
-                {/* Características */}
-                {p.caracteristicas && (
-                  <div className={`px-6 py-5 ${(p.maps_url || p.tour_360_url || p.brochure_url) ? "border-b border-white/8" : ""}`}>
-                    <p className="font-sans text-sm font-[300] text-kc-white/55 leading-relaxed border-l border-gold/20 pl-4 whitespace-pre-line">
-                      {p.caracteristicas}
-                    </p>
-                  </div>
-                )}
-
-                {/* Footer: Links */}
+                    </div>
+                  )}
+                </div>
                 {(p.maps_url || p.tour_360_url || p.brochure_url) && (
-                  <div className="px-6 py-4 flex flex-wrap gap-2 bg-white/[0.02]">
+                  <div className="px-6 py-4 flex flex-wrap gap-2 border-t border-white/8 bg-white/[0.02]">
                     {p.maps_url && (
                       <a href={p.maps_url} target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/20 text-kc-white/60 hover:border-gold/50 hover:text-kc-white font-sans text-xs font-[400] tracking-wide transition-all rounded-md">
@@ -256,7 +236,29 @@ export default async function ProyectoDetallePage({
               </div>
             )}
 
-            {/* ── Card: Tipologías ── */}
+            {/* ── 2. Card: Descripción comercial ── */}
+            {(p.descripcion || p.caracteristicas) && (
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-white/8">
+                  <SectionLabel text="Descripción" />
+                  <h2 className="font-sans text-xl font-[200] text-kc-white">Sobre el proyecto</h2>
+                </div>
+                <div className="px-6 py-8 flex flex-col gap-6">
+                  {p.descripcion && (
+                    <p className="font-sans text-base font-[300] text-kc-white/80 leading-[1.9] whitespace-pre-line">
+                      {p.descripcion}
+                    </p>
+                  )}
+                  {p.caracteristicas && (
+                    <p className="font-sans text-sm font-[300] text-kc-white/50 leading-relaxed border-l-2 border-gold/30 pl-5 whitespace-pre-line">
+                      {p.caracteristicas}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ── 3. Card: Tipologías ── */}
             {p.typologies.length > 0 && (
               <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
                 <div className="px-6 pt-6 pb-4 border-b border-white/8">
@@ -269,14 +271,20 @@ export default async function ProyectoDetallePage({
               </div>
             )}
 
-            {/* ── Card: Amenities ── */}
+            {/* ── 4. Card: Amenities ── */}
             {p.amenities.length > 0 && (
-              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full p-6">
-                <AmenitiesSection amenities={p.amenities} />
+              <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
+                <div className="px-6 pt-6 pb-4 border-b border-white/8">
+                  <SectionLabel text="Amenities" />
+                  <h2 className="font-sans text-xl font-[200] text-kc-white">Equipamiento del proyecto</h2>
+                </div>
+                <div className="p-6">
+                  <AmenitiesSection amenities={p.amenities} />
+                </div>
               </div>
             )}
 
-            {/* ── Card: Mapa ── */}
+            {/* ── 5. Card: Mapa ── */}
             {p.direccion && (
               <div className="bg-[#112a3c] border border-white/8 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] w-full overflow-hidden">
                 <div className="px-6 pt-6 pb-4 border-b border-white/8 flex items-center justify-between">
@@ -287,7 +295,7 @@ export default async function ProyectoDetallePage({
                   {p.maps_url && (
                     <a href={p.maps_url} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-1 font-sans text-[11px] font-[400] text-kc-white/30 hover:text-gold transition-colors">
-                      <ExternalLink size={11} /> Google Maps
+                      <ExternalLink size={11} /> Abrir en Maps
                     </a>
                   )}
                 </div>
@@ -304,16 +312,27 @@ export default async function ProyectoDetallePage({
               </div>
             )}
 
-            {/* ── CTA Final ── */}
-            <div className="border border-gold/20 p-6 md:p-10 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-              <div>
-                <p className="font-sans text-lg font-[200] text-kc-white">¿Te interesa este proyecto?</p>
-                <p className="font-sans text-sm font-[300] text-kc-white/50 mt-1">Analizamos la inversión juntos, sin compromiso.</p>
+            {/* ── 6. CTA Final ── */}
+            <div className="bg-[#112a3c] border border-gold/25 rounded-2xl shadow-[0_2px_20px_rgba(0,0,0,0.3)] overflow-hidden">
+              <div className="px-8 py-10 md:px-12 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+                <div>
+                  <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-3">Inversión en real estate</p>
+                  <p className="font-sans text-2xl md:text-3xl font-[200] text-kc-white leading-snug mb-2">
+                    ¿Te interesa este proyecto?
+                  </p>
+                  <p className="font-sans text-sm font-[300] text-kc-white/45">
+                    Analizamos la inversión juntos, sin compromiso.
+                  </p>
+                </div>
+                <a
+                  href={waUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 flex items-center gap-3 px-10 py-5 bg-gold text-navy-deep font-sans text-xs font-[700] uppercase tracking-[0.22em] hover:bg-gold-light transition-colors shadow-[0_4px_24px_rgba(201,185,154,0.2)]"
+                >
+                  <MessageCircle size={15} /> Hablar con un asesor
+                </a>
               </div>
-              <a href={waUrl} target="_blank" rel="noopener noreferrer"
-                className="flex-shrink-0 flex items-center gap-2 px-8 py-4 bg-gold text-navy-deep font-sans text-xs font-[700] uppercase tracking-[0.2em] hover:bg-gold-light transition-colors">
-                <MessageCircle size={14} /> Hablar con un asesor
-              </a>
             </div>
 
           </div>
