@@ -169,8 +169,9 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
             {/* ════════ Columna izquierda ════════ */}
             <div className="space-y-6 lg:space-y-0">
 
-              {/* ── Hero card ── */}
+              {/* ── Hero + Detalles — una sola card ── */}
               <Card className="p-6">
+                {/* Hero */}
                 <p className="font-sans text-[9px] font-[600] uppercase tracking-[0.28em] text-gold/55 mb-3">
                   Kohan &amp; Campos · Real Estate
                 </p>
@@ -204,29 +205,29 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                     ))}
                   </div>
                 )}
-              </Card>
 
-              {/* ── Detalles — card 3 columnas ── */}
-              {detalles.length > 0 && (
-                <div className="bg-[#0f2233] border border-[#1f364d] rounded-2xl p-6 md:p-8 lg:mt-6">
-                  <p className="font-sans text-xs font-[600] uppercase tracking-[0.22em] text-[#7a8ca3] mb-6">
-                    Detalles de la propiedad
-                  </p>
-                  <div className="grid md:grid-cols-3 gap-x-10 gap-y-4">
-                    {detalles.map(d => (
-                      <div
-                        key={d.label}
-                        className={`flex flex-col gap-1 border-b border-[#1f364d] pb-4 ${d.value.length > 30 ? "md:col-span-3" : ""}`}
-                      >
-                        <span className="font-sans text-sm text-[#7a8ca3]">{d.label}</span>
-                        <span className={`font-sans text-[15px] font-[500] leading-snug ${d.label === "Condición" ? "text-[#c6a87a]" : "text-white"}`}>
-                          {d.value}
-                        </span>
-                      </div>
-                    ))}
+                {/* Detalles — dentro de la misma card */}
+                {detalles.length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-white/8">
+                    <p className="font-sans text-xs font-[600] uppercase tracking-[0.22em] text-[#7a8ca3] mb-5">
+                      Detalles de la propiedad
+                    </p>
+                    <div className="grid md:grid-cols-3 gap-x-10 gap-y-4">
+                      {detalles.map(d => (
+                        <div
+                          key={d.label}
+                          className={`flex flex-col gap-1 border-b border-white/6 pb-4 ${d.value.length > 30 ? "md:col-span-3" : ""}`}
+                        >
+                          <span className="font-sans text-sm text-[#7a8ca3]">{d.label}</span>
+                          <span className={`font-sans text-[15px] font-[500] leading-snug ${d.label === "Condición" ? "text-[#c6a87a]" : "text-white"}`}>
+                            {d.value}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </Card>
 
               {/* ── Comodidades ── */}
               {amenities.length > 0 && (
