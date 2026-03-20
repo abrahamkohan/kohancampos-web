@@ -169,14 +169,12 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
             {/* ════════ Columna izquierda ════════ */}
             <div className="space-y-6 lg:space-y-0">
 
-              {/* ── Hero + Detalles — bloque editorial unificado ── */}
-              <div className="pt-1">
-
-                {/* Trust + badges */}
+              {/* ── Hero card ── */}
+              <Card className="p-6">
                 <p className="font-sans text-[9px] font-[600] uppercase tracking-[0.28em] text-gold/55 mb-3">
                   Kohan &amp; Campos · Real Estate
                 </p>
-                <div className="flex items-center gap-2 mb-5">
+                <div className="flex items-center gap-2 mb-4">
                   <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.2em] bg-gold/15 text-gold rounded-md">
                     {p.operacion === "venta" ? "En Venta" : "En Alquiler"}
                   </span>
@@ -186,38 +184,27 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                     </span>
                   )}
                 </div>
-
-                {/* Título */}
-                <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-[300] leading-[1.2] text-white mb-1">
+                <h1 className="font-sans text-xl sm:text-2xl lg:text-4xl font-[300] leading-[1.25] text-white mb-1">
                   {tituloDisplay}
                 </h1>
-                <p className="font-sans text-sm font-[300] text-white/38 mb-5">
+                <p className="font-sans text-sm font-[300] text-white/38 mb-4">
                   {subtituloDisplay}
                 </p>
-
-                {/* Chips inline */}
                 {chips.length > 0 && (
-                  <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mb-5">
+                  <div className="flex items-center flex-wrap gap-x-3 gap-y-2 py-4 border-t border-white/8">
                     {chips.map((c, i) => (
-                      <div key={i} className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/55">
+                      <div key={i} className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/60">
                         {c.icon === "bed" && <Bed size={13} className="text-gold/50" />}
                         {c.icon === "bath" && <Bath size={13} className="text-gold/50" />}
                         {c.icon === "m2" && <Maximize2 size={13} className="text-gold/50" />}
                         {c.icon === "car" && <Car size={13} className="text-gold/50" />}
                         <span>{c.label}</span>
-                        {i < chips.length - 1 && <span className="text-white/20 ml-3">·</span>}
+                        {i < chips.length - 1 && <span className="text-white/20 ml-1.5">·</span>}
                       </div>
                     ))}
                   </div>
                 )}
-
-                {/* Detalles de la propiedad */}
-                {detalles.length > 0 && (
-                  <>
-                    <div className="border-t border-[#1f364d] mb-4" />
-                  </>
-                )}
-              </div>
+              </Card>
 
               {/* ── Detalles — card 3 columnas ── */}
               {detalles.length > 0 && (
