@@ -35,28 +35,26 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
   return (
     <div className="flex flex-col gap-8">
 
-      {/* ── Tabs — scroll horizontal en mobile ── */}
-      <div className="overflow-x-auto -mx-6 px-6 scrollbar-none">
-        <div className="flex gap-0 border-b border-gold/10 min-w-max">
-          {groupNames.map((name, i) => (
-            <button
-              key={name}
-              type="button"
-              onClick={() => switchGroup(i)}
-              className={`px-5 py-2.5 font-sans text-xs font-[600] uppercase tracking-[0.15em] transition-all border-b-2 -mb-px whitespace-nowrap ${
-                i === activeGroup
-                  ? "border-gold text-kc-white"
-                  : "border-transparent text-kc-white/40 hover:text-kc-white/70"
-              }`}
-            >
-              {name}
-            </button>
-          ))}
-        </div>
+      {/* ── Tabs ── */}
+      <div className="flex flex-wrap gap-0 border-b border-gold/10">
+        {groupNames.map((name, i) => (
+          <button
+            key={name}
+            type="button"
+            onClick={() => switchGroup(i)}
+            className={`px-4 py-2.5 font-sans text-xs font-[600] uppercase tracking-[0.15em] transition-all border-b-2 -mb-px ${
+              i === activeGroup
+                ? "border-gold text-kc-white"
+                : "border-transparent text-kc-white/40 hover:text-kc-white/70"
+            }`}
+          >
+            {name}
+          </button>
+        ))}
       </div>
 
-      {/* ── Grid de cards — 1 col mobile, 2 col desktop ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
+      {/* ── Grid de cards — max 2 col, centrado ── */}
+      <div className="grid grid-cols-2 gap-4 max-w-lg">
         {currentGroup.map((t, i) => {
           const isActive = t.id === effectiveId
           const thumb    = t.images[0] ?? t.floor_plan ?? null
@@ -182,13 +180,13 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
 
         {/* Plano con aire */}
         {selected.floor_plan && (
-          <div className="p-4 md:p-8 flex items-center justify-center bg-[#091825]">
+          <div className="p-6 md:p-8 flex items-center justify-center bg-[#091825]">
             <div className="w-full max-w-lg rounded-xl overflow-hidden shadow-[0_4px_32px_rgba(0,0,0,0.4)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={selected.floor_plan}
                 alt={`Plano — ${selected.name}`}
-                className="w-full object-contain max-h-[320px] md:max-h-[460px]"
+                className="w-full object-contain max-h-[460px]"
               />
             </div>
           </div>
