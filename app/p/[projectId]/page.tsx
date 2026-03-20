@@ -162,7 +162,7 @@ export default async function LandingProyectoPage({
         zona={p.zona}
         estado={p.estado}
         badgeAnalisis={p.badge_analisis}
-        coverUrl={p.fotos[0] ?? null}
+        coverUrl={p.imagen}
         minPriceUsd={minPriceUsd}
         deliveryDate={p.delivery_date}
         desarrolladora={p.desarrolladora || null}

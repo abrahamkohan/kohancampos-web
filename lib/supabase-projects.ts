@@ -71,14 +71,15 @@ export interface ProyectoDetalle extends Proyecto {
 // ─── Tipos Supabase raw ───────────────────────────────────────────────────────
 
 interface SupabaseProyecto {
-  id:             string
-  name:           string | null
-  zona:           string | null
-  location:       string | null
-  status:         "en_pozo" | "en_construccion" | "entregado" | null
-  developer_name: string | null
-  badge_analisis: string | null
-  project_photos: { storage_path: string }[]
+  id:              string
+  name:            string | null
+  zona:            string | null
+  location:        string | null
+  status:          "en_pozo" | "en_construccion" | "entregado" | null
+  developer_name:  string | null
+  badge_analisis:  string | null
+  hero_image_url:  string | null
+  project_photos:  { storage_path: string }[]
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -108,7 +109,7 @@ export async function getProyectosPublicados(): Promise<Proyecto[]> {
       SUPABASE_URL +
         "/rest/v1/projects" +
         "?publicado_en_web=eq.true" +
-        "&select=id,name,zona,location,status,developer_name,badge_analisis,project_photos(storage_path)" +
+        "&select=id,name,zona,location,status,developer_name,badge_analisis,hero_image_url,project_photos(storage_path)" +
         "&project_photos.order=sort_order.asc" +
         "&order=created_at.desc",
       { headers: HEADERS, next: { revalidate: 60 } }
@@ -125,7 +126,7 @@ export async function getProyectosPublicados(): Promise<Proyecto[]> {
       estado:         toEstado(p.status),
       desarrolladora: p.developer_name ?? "",
       badge_analisis: (p.badge_analisis as BadgeAnalisis) ?? null,
-      imagen:         p.project_photos?.[0]?.storage_path ? mediaUrl(p.project_photos[0].storage_path) : null,
+      imagen:         p.hero_image_url ?? (p.project_photos?.[0]?.storage_path ? mediaUrl(p.project_photos[0].storage_path) : null),
     }))
   } catch { return [] }
 }
