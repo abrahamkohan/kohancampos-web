@@ -43,7 +43,7 @@ function Card({ children, className = "" }: { children: React.ReactNode; classNa
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-sans text-[11px] font-[600] uppercase tracking-[0.25em] text-white/55 mb-4">
+    <p className="font-sans text-[11px] font-[600] uppercase tracking-[0.25em] text-white/55 mb-2">
       {children}
     </p>
   )
@@ -168,15 +168,15 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
           <div className="mt-5 lg:mt-8 grid grid-cols-1 lg:grid-cols-[1fr_288px] gap-5 lg:gap-12 items-start">
 
             {/* ════════ Columna izquierda ════════ */}
-            <div className="space-y-6 lg:space-y-0">
+            <div className="space-y-3 lg:space-y-0">
 
               {/* ── Hero + Detalles — una sola card ── */}
-              <Card className="p-6">
+              <Card className="p-4 md:p-6">
                 {/* Hero */}
-                <p className="font-sans text-[9px] font-[600] uppercase tracking-[0.28em] text-gold/55 mb-3">
+                <p className="font-sans text-[9px] font-[600] uppercase tracking-[0.28em] text-gold/55 mb-2">
                   Kohan &amp; Campos · Real Estate
                 </p>
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-3">
                   <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.2em] bg-gold/15 text-gold rounded-md">
                     {p.operacion === "venta" ? "En Venta" : "En Alquiler"}
                   </span>
@@ -194,11 +194,11 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                 <h1 className="font-sans text-xl sm:text-2xl lg:text-4xl font-[300] leading-[1.25] text-white mb-1">
                   {tituloDisplay}
                 </h1>
-                <p className="font-sans text-sm font-[300] text-white/38 mb-4">
+                <p className="font-sans text-sm font-[300] text-white/38 mb-2">
                   {subtituloDisplay}
                 </p>
                 {chips.length > 0 && (
-                  <div className="flex items-center flex-wrap gap-x-3 gap-y-2 pt-3 pb-2 border-t border-white/8">
+                  <div className="flex items-center flex-wrap gap-x-3 gap-y-1.5 pt-2 pb-1 border-t border-white/8">
                     {chips.map((c, i) => (
                       <div key={i} className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/60">
                         {c.icon === "bed" && <Bed size={13} className="text-gold/50" />}
@@ -214,18 +214,18 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
                 {/* Detalles — dentro de la misma card */}
                 {detalles.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-white/8">
-                    <p className="font-sans text-xs font-[600] uppercase tracking-[0.22em] text-[#7a8ca3] mb-3">
+                  <div className="mt-3 pt-3 border-t border-white/8">
+                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.22em] text-[#7a8ca3] mb-2">
                       Detalles de la propiedad
                     </p>
-                    <div className="grid md:grid-cols-3 gap-x-10 gap-y-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                       {detalles.map(d => (
                         <div
                           key={d.label}
-                          className={`flex flex-col gap-1 border-b border-white/6 pb-4 ${d.value.length > 30 ? "md:col-span-3" : ""}`}
+                          className={`flex flex-col gap-0.5 border-b border-white/6 pb-2 ${d.value.length > 30 ? "col-span-2 md:col-span-3" : ""}`}
                         >
-                          <span className="font-sans text-sm text-[#7a8ca3]">{d.label}</span>
-                          <span className={`font-sans text-[15px] font-[500] leading-snug ${d.label === "Condición" ? "text-[#c6a87a]" : "text-white"}`}>
+                          <span className="font-sans text-[10px] text-[#7a8ca3]">{d.label}</span>
+                          <span className={`font-sans text-sm font-[500] leading-snug ${d.label === "Condición" ? "text-[#c6a87a]" : "text-white"}`}>
                             {d.value}
                           </span>
                         </div>
@@ -237,9 +237,9 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Comodidades ── */}
               {amenities.length > 0 && (
-                <Card className="lg:mt-6">
+                <Card className="p-4 md:p-5 lg:mt-6">
                   <SectionLabel>Comodidades</SectionLabel>
-                  <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                     {amenities.map((item, i) => (
                       <div key={i} className="flex items-start gap-2.5">
                         <Check size={14} className="text-gold/90 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
@@ -252,7 +252,7 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Descripción ── */}
               {descIntro && (
-                <Card className="lg:mt-6">
+                <Card className="p-4 md:p-5 lg:mt-6">
                   <SectionLabel>Descripción</SectionLabel>
                   <p className="font-sans text-sm font-[300] leading-[1.9] text-white/55 whitespace-pre-line">
                     {descIntro}
@@ -262,8 +262,8 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
 
               {/* ── Ubicación + mapa — solo si hay coordenadas ── */}
               {p.latitud && p.longitud && (
-                <Card className="lg:mt-6 mb-4 lg:mb-0">
-                  <div className="flex items-center justify-between mb-4">
+                <Card className="p-4 md:p-5 lg:mt-6 mb-4 lg:mb-0">
+                  <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <MapPin size={13} className="text-gold/50" />
                       <p className="font-sans text-sm font-[300] text-white/60">
