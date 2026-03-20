@@ -153,6 +153,7 @@ interface SupabaseProyectoBase {
   maps_url:        string | null
   tour_360_url:    string | null
   brochure_url:    string | null
+  hero_image_url:  string | null
   project_photos:  { storage_path: string; sort_order: number }[]
 }
 
@@ -195,7 +196,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
         `/rest/v1/projects?id=eq.${id}&publicado_en_web=eq.true` +
         "&select=id,name,zona,ciudad,barrio,direccion,location,status,developer_name,badge_analisis" +
         ",description,caracteristicas,delivery_date,tipo_proyecto" +
-        ",precio_desde,precio_hasta,moneda,maps_url,tour_360_url,brochure_url" +
+        ",precio_desde,precio_hasta,moneda,maps_url,tour_360_url,brochure_url,hero_image_url" +
         ",project_photos(storage_path,sort_order)" +
         "&project_photos.order=sort_order.asc" +
         "&limit=1",
@@ -300,7 +301,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     estado:          toEstado(p.status),
     desarrolladora:  p.developer_name ?? "",
     badge_analisis:  (p.badge_analisis as BadgeAnalisis) ?? null,
-    imagen:          fotos[0] ?? null,
+    imagen:          p.hero_image_url ?? fotos[0] ?? null,
     descripcion:     p.description ?? null,
     caracteristicas: p.caracteristicas ?? null,
     delivery_date:   p.delivery_date ?? null,
