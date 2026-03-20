@@ -61,8 +61,8 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
     const Icon = getAmenityIcon(amenity)
     return (
       <li className="flex items-center gap-3">
-        <div className="w-9 h-9 shrink-0 border border-[#2f4a66] flex items-center justify-center text-[#94a3b8]">
-          <Icon size={16} strokeWidth={1.5} />
+        <div className="w-10 h-10 shrink-0 border border-[#2f4a66] flex items-center justify-center text-[#94a3b8]">
+          <Icon size={19} strokeWidth={1.5} />
         </div>
         <span className="font-sans text-sm font-[400] text-[#cbd5e1]">{amenity.name}</span>
       </li>

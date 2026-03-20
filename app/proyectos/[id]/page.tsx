@@ -179,33 +179,33 @@ export default async function ProyectoDetallePage({
                   <SectionLabel text="El proyecto" />
                   <h2 className="font-sans text-xl font-[200] text-kc-white">Ficha técnica</h2>
                 </div>
-                <div className="px-6 py-5 grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <div className="px-6 py-6 grid grid-cols-1 sm:grid-cols-3 gap-6">
                   {ubicacion && (
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-2">
                       <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-kc-white/30">Ubicación</span>
-                      <div className="flex items-start gap-1.5">
-                        <MapPin size={12} strokeWidth={1.5} className="text-gold/50 shrink-0 mt-0.5" />
+                      <div className="flex items-center gap-2.5">
+                        <MapPin size={16} strokeWidth={1.5} className="text-gold/60 shrink-0" />
                         <span className="font-sans text-sm font-[300] text-kc-white/75">{ubicacion}</span>
                       </div>
                       {p.direccion && (
-                        <span className="font-sans text-xs font-[300] text-kc-white/35 mt-0.5">{p.direccion}</span>
+                        <span className="font-sans text-xs font-[300] text-kc-white/35 pl-[26px]">{p.direccion}</span>
                       )}
                     </div>
                   )}
                   {p.delivery_date && (
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-2">
                       <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-kc-white/30">Entrega</span>
-                      <div className="flex items-center gap-1.5">
-                        <CalendarDays size={12} strokeWidth={1.5} className="text-gold/50 shrink-0" />
+                      <div className="flex items-center gap-2.5">
+                        <CalendarDays size={16} strokeWidth={1.5} className="text-gold/60 shrink-0" />
                         <span className="font-sans text-sm font-[300] text-kc-white/75">{formatDelivery(p.delivery_date)}</span>
                       </div>
                     </div>
                   )}
                   {p.desarrolladora && (
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-2">
                       <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-kc-white/30">Desarrolladora</span>
-                      <div className="flex items-center gap-1.5">
-                        <Building2 size={12} strokeWidth={1.5} className="text-gold/50 shrink-0" />
+                      <div className="flex items-center gap-2.5">
+                        <Building2 size={16} strokeWidth={1.5} className="text-gold/60 shrink-0" />
                         <span className="font-sans text-sm font-[300] text-kc-white/75">{p.desarrolladora}</span>
                       </div>
                     </div>
