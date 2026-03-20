@@ -169,15 +169,14 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
             {/* ════════ Columna izquierda ════════ */}
             <div className="space-y-6 lg:space-y-0">
 
-              {/* ── Hero card (protagonista) ── */}
-              <Card className="p-6">
-                {/* Trust indicator */}
+              {/* ── Hero + Detalles — bloque editorial unificado ── */}
+              <div className="pt-1">
+
+                {/* Trust + badges */}
                 <p className="font-sans text-[9px] font-[600] uppercase tracking-[0.28em] text-gold/55 mb-3">
                   Kohan &amp; Campos · Real Estate
                 </p>
-
-                {/* Badges — operación + hook */}
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-5">
                   <span className="px-2.5 py-1 font-sans text-[9px] font-[600] uppercase tracking-[0.2em] bg-gold/15 text-gold rounded-md">
                     {p.operacion === "venta" ? "En Venta" : "En Alquiler"}
                   </span>
@@ -188,50 +187,51 @@ export default async function PropiedadDetallePage({ params }: { params: Promise
                   )}
                 </div>
 
-                {/* Título conciso */}
-                <h1 className="font-sans text-xl sm:text-2xl lg:text-4xl font-[300] leading-[1.25] text-white mb-1">
+                {/* Título */}
+                <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-[300] leading-[1.2] text-white mb-1">
                   {tituloDisplay}
                 </h1>
-
-                {/* Subtítulo: operacion · zona */}
-                <p className="font-sans text-sm font-[300] text-white/38 mb-4">
+                <p className="font-sans text-sm font-[300] text-white/38 mb-5">
                   {subtituloDisplay}
                 </p>
 
-                {/* Fila de datos inline */}
+                {/* Chips inline */}
                 {chips.length > 0 && (
-                  <div className="flex items-center flex-wrap gap-x-3 gap-y-2 py-4 border-t border-white/8">
+                  <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mb-5">
                     {chips.map((c, i) => (
-                      <div key={i} className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/60">
+                      <div key={i} className="flex items-center gap-1.5 font-sans text-sm font-[300] text-white/55">
                         {c.icon === "bed" && <Bed size={13} className="text-gold/50" />}
                         {c.icon === "bath" && <Bath size={13} className="text-gold/50" />}
                         {c.icon === "m2" && <Maximize2 size={13} className="text-gold/50" />}
                         {c.icon === "car" && <Car size={13} className="text-gold/50" />}
                         <span>{c.label}</span>
-                        {i < chips.length - 1 && <span className="text-white/20 ml-1.5">·</span>}
+                        {i < chips.length - 1 && <span className="text-white/20 ml-3">·</span>}
                       </div>
                     ))}
                   </div>
                 )}
-              </Card>
 
-              {/* ── Detalles ── */}
-              {detalles.length > 0 && (
-                <Card className="lg:mt-6 px-5 py-4">
-                  <SectionLabel>Detalles de la propiedad</SectionLabel>
-                  <div className="grid md:grid-cols-2 gap-x-10 border-t border-[#1f364d]">
-                    {detalles.map(d => (
-                      <div
-                        key={d.label}
-                        className={`flex items-baseline justify-between gap-6 py-3.5 border-b border-[#1f364d] ${d.value.length > 30 ? "md:col-span-2" : ""}`}
-                      >
-                        <span className="font-sans text-sm text-[#94a3b8] tracking-wide flex-shrink-0">{d.label}</span>
-                        <span className="font-sans text-sm font-[500] text-[#c6a87a] text-right leading-snug">{d.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              )}
+                {/* Detalles de la propiedad */}
+                {detalles.length > 0 && (
+                  <>
+                    <div className="border-t border-[#1f364d] mb-4" />
+                    <p className="font-sans text-[10px] font-[600] uppercase tracking-[0.22em] text-white/30 mb-3">
+                      Detalles de la propiedad
+                    </p>
+                    <div className="grid md:grid-cols-2 gap-x-12 border-t border-[#1f364d]">
+                      {detalles.map(d => (
+                        <div
+                          key={d.label}
+                          className={`flex items-baseline justify-between gap-6 py-3 border-b border-[#1f364d] ${d.value.length > 30 ? "md:col-span-2" : ""}`}
+                        >
+                          <span className="font-sans text-sm text-[#7a8ca3] flex-shrink-0">{d.label}</span>
+                          <span className="font-sans text-sm font-[400] text-[#c6a87a] text-right leading-snug">{d.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
 
               {/* ── Comodidades ── */}
               {amenities.length > 0 && (
