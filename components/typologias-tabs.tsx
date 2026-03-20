@@ -7,70 +7,113 @@ import type { Typology } from "@/lib/supabase-projects"
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
 
-function formatUsd(n: number) {
-  return `USD ${n.toLocaleString("es-PY")}`
+function unitLabel(t: Typology): string {
+  const parts: string[] = [`${t.area_m2} m²`]
+  if (t.bathrooms != null && t.bathrooms > 0) {
+    parts.push(`${t.bathrooms} baño${t.bathrooms > 1 ? "s" : ""}`)
+  }
+  return parts.join(" · ")
 }
 
 export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
-  const [active, setActive] = useState(0)
-  const [planoModal, setPlanoModal] = useState(false)
-  const t = typologies[active]
+  // Group by name
+  const groups: Record<string, Typology[]> = {}
+  for (const t of typologies) {
+    if (!groups[t.name]) groups[t.name] = []
+    groups[t.name].push(t)
+  }
+  const groupNames = Object.keys(groups)
+
+  const [activeGroup, setActiveGroup] = useState(0)
+  const [activeUnit,  setActiveUnit]  = useState(0)
+  const [planoModal,  setPlanoModal]  = useState(false)
+
+  const currentGroup = groups[groupNames[activeGroup]] ?? []
+  const t = currentGroup[activeUnit]
+
+  if (!t || groupNames.length === 0) return null
+
+  function switchGroup(i: number) {
+    setActiveGroup(i)
+    setActiveUnit(0)
+    setPlanoModal(false)
+  }
 
   return (
     <div className="flex flex-col gap-4">
 
-      {/* Tabs */}
+      {/* Tabs por nombre */}
       <div className="flex flex-wrap gap-0 border-b border-gold/10">
-        {typologies.map((typ, i) => (
+        {groupNames.map((name, i) => (
           <button
-            key={typ.id}
+            key={name}
             type="button"
-            onClick={() => { setActive(i); setPlanoModal(false) }}
+            onClick={() => switchGroup(i)}
             className={`px-4 py-2.5 font-sans text-xs font-[600] uppercase tracking-[0.15em] transition-all border-b-2 -mb-px ${
-              i === active
+              i === activeGroup
                 ? "border-gold text-kc-white"
                 : "border-transparent text-kc-white/40 hover:text-kc-white/70"
             }`}
           >
-            {typ.name}
+            {name}
           </button>
         ))}
       </div>
 
-      {/* Contenido — 2 columnas */}
+      {/* Lista de unidades dentro del grupo (solo si hay más de una) */}
+      {currentGroup.length > 1 && (
+        <div className="flex flex-col gap-1">
+          {currentGroup.map((unit, i) => (
+            <button
+              key={unit.id}
+              type="button"
+              onClick={() => { setActiveUnit(i); setPlanoModal(false) }}
+              className={`flex items-center gap-3 px-4 py-2.5 text-left transition-all border ${
+                i === activeUnit
+                  ? "border-gold/30 bg-gold/5"
+                  : "border-gold/10 hover:border-gold/20"
+              }`}
+            >
+              <span className={`font-sans text-sm font-[300] ${
+                i === activeUnit ? "text-kc-white" : "text-kc-white/50"
+              }`}>
+                {unitLabel(unit)}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Detalle de la unidad activa */}
       <div className="grid md:grid-cols-2 gap-6 items-start">
 
-        {/* Columna izquierda: ficha */}
+        {/* Ficha */}
         <div className="flex flex-col gap-4">
 
-          {/* Nombre + m2 */}
-          <div className="flex items-baseline gap-3">
+          {/* Nombre + datos */}
+          <div className="flex items-baseline gap-3 flex-wrap">
             <h3 className="font-sans text-lg font-[200] text-kc-white">{t.name}</h3>
-            {t.area_m2 > 0 && (
-              <span className="font-sans text-sm font-[300] text-kc-white/40">{t.area_m2} m²</span>
-            )}
+            <span className="font-sans text-sm font-[300] text-kc-white/40">{unitLabel(t)}</span>
           </div>
 
-          {/* Precio */}
-          {t.price_usd != null && t.price_usd > 0 && (
-            <div className="flex flex-col gap-0.5">
-              <span className="font-sans text-[10px] font-[600] uppercase tracking-[0.2em] text-gold/60">
-                Precio desde
-              </span>
-              <span className="font-sans text-xl font-[300] text-kc-white">
-                {formatUsd(t.price_usd)}
-              </span>
-            </div>
-          )}
+          {/* Precio: siempre "Consultar" */}
+          <div className="inline-block border border-gold/20 px-4 py-2.5 w-fit">
+            <span className="block font-sans text-[9px] font-[600] uppercase tracking-[0.3em] text-gold/60 mb-0.5">
+              Precio
+            </span>
+            <span className="font-sans text-sm font-[300] text-kc-white/60">
+              Consultar
+            </span>
+          </div>
 
-          {/* Features inline */}
+          {/* Features */}
           {t.features.length > 0 && (
             <p className="font-sans text-xs font-[300] text-kc-white/55 leading-relaxed">
               {t.features.join(" · ")}
             </p>
           )}
 
-          {/* Botón Ver plano */}
+          {/* Ver plano */}
           {t.floor_plan && (
             <button
               type="button"
@@ -83,7 +126,7 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
           )}
         </div>
 
-        {/* Columna derecha: imágenes */}
+        {/* Imágenes */}
         {t.images.length > 0 && (
           <div className={`grid gap-2 ${t.images.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
             {t.images.slice(0, 4).map((url, i) => (

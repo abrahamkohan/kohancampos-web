@@ -4,9 +4,6 @@ import { useState } from "react"
 import { X, LayoutGrid } from "lucide-react"
 import type { Typology } from "@/lib/supabase-projects"
 
-function formatUsd(n: number) {
-  return `USD ${n.toLocaleString("es-PY")}`
-}
 
 // ─── Modal plano ──────────────────────────────────────────────────────────────
 
@@ -78,13 +75,11 @@ function TypologiaCard({
           )}
         </div>
 
-        {/* Precio — elemento dominante */}
-        {t.price_usd != null && t.price_usd > 0 && (
-          <div className="border-t border-[#2f4a66] pt-4">
-            <span className="block font-sans text-xs uppercase tracking-wider text-[#94a3b8] mb-1.5">Precio desde</span>
-            <span className="font-sans text-3xl font-semibold text-white leading-none">{formatUsd(t.price_usd)}</span>
-          </div>
-        )}
+        {/* Precio — siempre Consultar */}
+        <div className="border-t border-[#2f4a66] pt-4">
+          <span className="block font-sans text-xs uppercase tracking-wider text-[#94a3b8] mb-1.5">Precio</span>
+          <span className="font-sans text-sm font-[300] text-white/60">Consultar</span>
+        </div>
 
         {/* Features como lista */}
         {t.features.length > 0 && (

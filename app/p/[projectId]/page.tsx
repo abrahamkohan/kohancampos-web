@@ -13,6 +13,8 @@ const MOCK_PROYECTO: ProyectoDetalle = {
   id: "mock",
   nombre: "Torre Ycuá Bolados",
   zona: "Villa Morra, Asunción",
+  ciudad: "Asunción",
+  barrio: "Villa Morra",
   direccion: "Av. Mcal. López 4455 esq. Tte. Héctor Vera",
   estado: "en_pozo",
   desarrolladora: "Urban Domus S.A.",
@@ -22,6 +24,12 @@ const MOCK_PROYECTO: ProyectoDetalle = {
   caracteristicas: "20 pisos · 2 subsuelos de cocheras · 80 unidades · Losa radiante · Doble vidrio hermético · Sistema domótico · Generador propio · Lobby climatizado con recepcionista",
   delivery_date: "2027-06-01",
   tipo_proyecto: "residencial",
+  precio_desde: null,
+  precio_hasta: null,
+  moneda: "USD",
+  maps_url: null,
+  tour_360_url: null,
+  brochure_url: null,
   links: [
     { type: "maps", name: "Google Maps", url: "#" },
     { type: "360", name: "Vista 360°", url: "#" },
@@ -30,45 +38,36 @@ const MOCK_PROYECTO: ProyectoDetalle = {
   fotos: ["https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1400&q=80"],
   typologies: [
     {
-      id: "t1",
-      name: "1 Dormitorio",
-      area_m2: 52,
-      price_usd: 75000,
-      price_pyg: null,
-      features: ["Balcón", "Cocina integrada", "1 baño completo", "Piso vinílico"],
+      id: "t1", name: "1 Dormitorio", area_m2: 52,
+      bedrooms: 1, bathrooms: 1, units_available: null,
+      features: ["Balcón", "Cocina integrada", "Piso vinílico"],
       images: ["https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80"],
       floor_plan: null,
     },
     {
-      id: "t2",
-      name: "2 Dormitorios",
-      area_m2: 82,
-      price_usd: 118000,
-      price_pyg: null,
-      features: ["Balcón amplio", "Living-comedor", "2 baños", "Walk-in closet", "Lavadero"],
+      id: "t2", name: "2 Dormitorios", area_m2: 82,
+      bedrooms: 2, bathrooms: 2, units_available: null,
+      features: ["Balcón amplio", "Living-comedor", "Walk-in closet", "Lavadero"],
       images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80"],
       floor_plan: null,
     },
     {
-      id: "t3",
-      name: "3 Dormitorios",
-      area_m2: 130,
-      price_usd: 195000,
-      price_pyg: null,
-      features: ["Terraza privada", "Suite principal", "3 baños", "Dependencia de servicio", "Depósito"],
+      id: "t3", name: "3 Dormitorios", area_m2: 130,
+      bedrooms: 3, bathrooms: 3, units_available: null,
+      features: ["Terraza privada", "Suite principal", "Dependencia de servicio"],
       images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80"],
       floor_plan: null,
     },
   ],
   amenities: [
-    { id: "a1", name: "Pileta climatizada", categoria: "interior", sort_order: 1, images: [] },
-    { id: "a2", name: "Gimnasio equipado", categoria: "interior", sort_order: 2, images: [] },
-    { id: "a3", name: "Coworking", categoria: "interior", sort_order: 3, images: [] },
-    { id: "a4", name: "Salón de usos múltiples", categoria: "interior", sort_order: 4, images: [] },
-    { id: "a5", name: "Lobby con recepción 24hs", categoria: "edificio", sort_order: 5, images: [] },
-    { id: "a6", name: "Cocheras en subsuelo", categoria: "edificio", sort_order: 6, images: [] },
-    { id: "a7", name: "Generador eléctrico propio", categoria: "edificio", sort_order: 7, images: [] },
-    { id: "a8", name: "Seguridad con cámaras", categoria: "edificio", sort_order: 8, images: [] },
+    { id: "a1", name: "Pileta climatizada", categoria: "interior", icon: "waves", sort_order: 1, images: [] },
+    { id: "a2", name: "Gimnasio equipado", categoria: "interior", icon: "dumbbell", sort_order: 2, images: [] },
+    { id: "a3", name: "Coworking", categoria: "interior", icon: "building-2", sort_order: 3, images: [] },
+    { id: "a4", name: "Salón de usos múltiples", categoria: "interior", icon: "building-2", sort_order: 4, images: [] },
+    { id: "a5", name: "Lobby con recepción 24hs", categoria: "edificio", icon: "shield", sort_order: 5, images: [] },
+    { id: "a6", name: "Cocheras en subsuelo", categoria: "edificio", icon: "car", sort_order: 6, images: [] },
+    { id: "a7", name: "Generador eléctrico propio", categoria: "edificio", icon: "flame", sort_order: 7, images: [] },
+    { id: "a8", name: "Seguridad con cámaras", categoria: "edificio", icon: "shield", sort_order: 8, images: [] },
   ],
 }
 
@@ -103,11 +102,7 @@ export default async function LandingProyectoPage({
   ])
   if (!p) notFound()
 
-  const minPriceUsd =
-    p.typologies
-      .map(t => t.price_usd)
-      .filter((n): n is number => n != null && n > 0)
-      .sort((a, b) => a - b)[0] ?? null
+  const minPriceUsd = p.precio_desde ?? null
 
   const currentIdx = allProjects.findIndex(pr => pr.id === p.id)
   const prevProject = currentIdx > 0 ? allProjects[currentIdx - 1] : null

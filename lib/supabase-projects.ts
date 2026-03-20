@@ -33,8 +33,8 @@ export interface Typology {
   id:              string
   name:            string
   area_m2:         number
-  price_usd:       number | null
-  price_pyg:       number | null
+  bedrooms:        number | null
+  bathrooms:       number | null
   units_available: number | null
   features:        string[]
   images:          string[]   // full URLs
@@ -165,13 +165,25 @@ interface SupabaseTypology {
   id:              string
   name:            string
   area_m2:         number
-  price_usd:       number | null
-  price_pyg:       number | null
+  unit_type:       string | null
+  bathrooms:       number | null
   units_available: number | null
   features:        string[] | null
   images:          string[] | null
   floor_plan:      string | null
   floor_plan_path: string | null
+}
+
+function parseBedroomsFromUnitType(ut: string | null): number | null {
+  if (!ut) return null
+  const n = parseInt(ut)
+  if (!isNaN(n) && n >= 0) return n
+  if (ut === 'monoambiente' || ut === 'mono') return 0
+  if (ut === '1_dormitorio' || ut === '1dorm') return 1
+  if (ut === '2_dormitorios' || ut === '2dorm') return 2
+  if (ut === '3_dormitorios' || ut === '3dorm') return 3
+  if (ut === '4dorm') return 4
+  return null
 }
 
 export async function getProyectoById(id: string): Promise<ProyectoDetalle | null> {
@@ -211,7 +223,7 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     const resT = await fetch(
       SUPABASE_URL +
         `/rest/v1/typologies?project_id=eq.${id}` +
-        "&select=id,name,area_m2,price_usd,price_pyg,units_available,features,images,floor_plan,floor_plan_path" +
+        "&select=id,name,area_m2,unit_type,bathrooms,units_available,features,images,floor_plan,floor_plan_path" +
         "&order=area_m2.asc",
       { headers: HEADERS, cache: "no-store" }
     )
@@ -223,8 +235,8 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
           id:              t.id,
           name:            t.name,
           area_m2:         t.area_m2,
-          price_usd:       t.price_usd ?? null,
-          price_pyg:       t.price_pyg ?? null,
+          bedrooms:        parseBedroomsFromUnitType(t.unit_type),
+          bathrooms:       t.bathrooms ?? null,
           units_available: t.units_available ?? null,
           features:        t.features ?? [],
           images:          (t.images ?? []).map(path => mediaUrl(path)),
@@ -268,15 +280,8 @@ export async function getProyectoById(id: string): Promise<ProyectoDetalle | nul
     console.warn("[getProyectoById] amenities fetch exception:", err)
   }
 
-  // ── Derive precio_desde from typologies if not set ────────────────────────
-  const precioDesde = p.precio_desde ?? (
-    typologies.length > 0
-      ? typologies.reduce<number | null>((min, t) => {
-          if (t.price_usd == null) return min
-          return min === null ? t.price_usd : Math.min(min, t.price_usd)
-        }, null)
-      : null
-  )
+  // precio_desde: solo del campo manual del proyecto
+  const precioDesde = p.precio_desde ?? null
 
   // ── Derive links for backward compatibility ───────────────────────────────
   const links: ProjectLink[] = [

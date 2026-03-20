@@ -20,13 +20,14 @@ export function CopyButton({ p }: { p: ProyectoDetalle }) {
       lines.push(`Entrega: ${fecha}`)
     }
     if (p.desarrolladora) lines.push(`Desarrolladora: ${p.desarrolladora}`)
+    if (p.precio_desde) lines.push(`Precio desde: ${formatUsd(p.precio_desde)}`)
     if (p.typologies.length > 0) {
       lines.push("")
       lines.push("Tipologías:")
       p.typologies.forEach(t => {
-        const price = t.price_usd ? formatUsd(t.price_usd) : "Consultar"
         const area = t.area_m2 > 0 ? ` — ${t.area_m2} m²` : ""
-        lines.push(`  · ${t.name}${area} — ${price}`)
+        const banos = t.bathrooms ? ` · ${t.bathrooms} baño${t.bathrooms > 1 ? "s" : ""}` : ""
+        lines.push(`  · ${t.name}${area}${banos}`)
       })
     }
     lines.push("")
