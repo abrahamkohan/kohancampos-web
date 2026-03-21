@@ -30,7 +30,7 @@ export function Footer() {
               <a
                 key={link.href}
                 href={link.href}
-                className="font-sans text-[11px] font-[300] tracking-wide text-kc-white/38 hover:text-gold transition-colors"
+                className="font-sans text-[11px] font-[300] tracking-wide text-kc-white/65 hover:text-kc-white transition-colors"
               >
                 {link.label}
               </a>
@@ -38,21 +38,21 @@ export function Footer() {
           </div>
         </div>
 
-        {/* ── Bloque 2: secundario ── */}
-        <div className="w-full border-t border-white/5 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+        {/* ── Bloque 2: secundario — centrado ── */}
+        <div className="w-full border-t border-white/5 pt-5 flex flex-col items-center gap-2">
           <a
             href="https://instagram.com/kohancampos"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-kc-white/30 hover:text-gold transition-colors"
+            className="flex items-center gap-1.5 text-kc-white/60 hover:text-gold transition-colors"
           >
             <Instagram size={13} strokeWidth={1.5} />
             <span className="font-sans text-[10px] font-[300]">@kohancampos</span>
           </a>
-          <p className="font-sans text-[10px] font-[300] text-kc-white/25">
+          <p className="font-sans text-[10px] font-[300] text-kc-white/50">
             {t("footer.copyright")}
           </p>
-          <p className="font-sans text-[10px] font-[300] text-kc-white/18 text-center sm:text-right max-w-xs">
+          <p className="font-sans text-[10px] font-[300] text-kc-white/30 text-center max-w-sm">
             {t("footer.disclaimer")}
           </p>
         </div>
