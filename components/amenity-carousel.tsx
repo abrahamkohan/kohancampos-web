@@ -60,8 +60,8 @@ export function AmenityCard({ amenity }: { amenity: Amenity }) {
   if (!current) {
     const Icon = getAmenityIcon(amenity)
     return (
-      <li className="flex items-center gap-3">
-        <div className="w-10 h-10 shrink-0 border border-[#2f4a66] flex items-center justify-center text-[#94a3b8]">
+      <li className="group flex items-center gap-3">
+        <div className="w-10 h-10 shrink-0 border border-gold/50 flex items-center justify-center text-gold/65 transition-all duration-200 group-hover:border-gold/80 group-hover:text-gold group-hover:shadow-[0_0_10px_rgba(201,185,154,0.15)]">
           <Icon size={19} strokeWidth={1.5} />
         </div>
         <span className="font-sans text-sm font-[400] text-[#cbd5e1]">{amenity.name}</span>
