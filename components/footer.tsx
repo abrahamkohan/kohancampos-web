@@ -14,49 +14,45 @@ export function Footer() {
   ]
 
   return (
-    <footer className="bg-navy-deep border-t border-white/5 px-6 pt-8 pb-6">
-      <div className="mx-auto max-w-[1200px] flex flex-col gap-5">
+    <footer className="bg-navy-deep border-t border-white/5 px-6 pt-10 pb-6">
+      <div className="mx-auto max-w-[1200px] flex flex-col items-center gap-8">
 
-        {/* Logo + social en una fila */}
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex flex-col gap-0.5">
-            <span className="font-sans text-sm font-[200] uppercase tracking-[0.25em] text-kc-white">
-              Kohan &amp; Campos
-            </span>
-            <span className="font-sans text-[10px] font-[300] tracking-[0.2em] text-gold/60">
-              {t("footer.tagline")}
-            </span>
+        {/* ── Bloque 1: marca ── */}
+        <div className="flex flex-col items-center gap-3">
+          <span className="font-sans text-base font-[200] uppercase tracking-[0.3em] text-kc-white">
+            Kohan &amp; Campos
+          </span>
+          <span className="font-sans text-[10px] font-[300] tracking-[0.25em] text-gold/55">
+            {t("footer.tagline")}
+          </span>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1.5 mt-1">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="font-sans text-[11px] font-[300] tracking-wide text-kc-white/38 hover:text-gold transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
+        </div>
+
+        {/* ── Bloque 2: secundario ── */}
+        <div className="w-full border-t border-white/5 pt-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <a
             href="https://instagram.com/kohancampos"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-kc-white/35 hover:text-gold transition-colors"
+            className="flex items-center gap-1.5 text-kc-white/30 hover:text-gold transition-colors"
           >
-            <Instagram size={14} strokeWidth={1.5} />
-            <span className="font-sans text-[11px] font-[300]">@kohancampos</span>
+            <Instagram size={13} strokeWidth={1.5} />
+            <span className="font-sans text-[10px] font-[300]">@kohancampos</span>
           </a>
-        </div>
-
-        {/* Nav links */}
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="font-sans text-[11px] font-[300] tracking-wide text-kc-white/40 hover:text-gold transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-
-        {/* Separador + copyright */}
-        <div className="border-t border-white/5 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <p className="font-sans text-[10px] font-[300] text-kc-white/30">
+          <p className="font-sans text-[10px] font-[300] text-kc-white/25">
             {t("footer.copyright")}
           </p>
-          <p className="font-sans text-[10px] font-[300] text-kc-white/20 text-center sm:text-right max-w-sm">
+          <p className="font-sans text-[10px] font-[300] text-kc-white/18 text-center sm:text-right max-w-xs">
             {t("footer.disclaimer")}
           </p>
         </div>
