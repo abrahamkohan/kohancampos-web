@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
-import { Maximize2, Bath, Check, MessageCircle } from "lucide-react"
+import { Maximize2, Bath, Check, MessageCircle, X, ZoomIn } from "lucide-react"
 import type { Typology } from "@/lib/supabase-projects"
 
 const SIZES = "(max-width: 640px) 100vw, 50vw"
@@ -18,6 +18,16 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
 
   const [activeGroup, setActiveGroup] = useState(0)
   const [selectedId, setSelectedId]   = useState<string | null>(null)
+  const [modalOpen, setModalOpen]     = useState(false)
+
+  const closeModal = useCallback(() => setModalOpen(false), [])
+
+  useEffect(() => {
+    if (!modalOpen) return
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") closeModal() }
+    document.addEventListener("keydown", onKey)
+    return () => document.removeEventListener("keydown", onKey)
+  }, [modalOpen, closeModal])
 
   const currentGroup = groups[groupNames[activeGroup]] ?? []
   const effectiveId  = selectedId ?? (currentGroup[0]?.id ?? null)
@@ -178,18 +188,57 @@ export function TypologiasTabs({ typologies }: { typologies: Typology[] }) {
           </div>
         )}
 
-        {/* Plano con aire */}
+        {/* Plano con aire — clickable */}
         {selected.floor_plan && (
-          <div className="p-6 md:p-8 flex items-center justify-center bg-[#091825]">
-            <div className="w-full max-w-lg rounded-xl overflow-hidden shadow-[0_4px_32px_rgba(0,0,0,0.4)]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={selected.floor_plan}
-                alt={`Plano — ${selected.name}`}
-                className="w-full object-contain max-h-[460px]"
-              />
-            </div>
-          </div>
+          <>
+            <button
+              type="button"
+              onClick={() => setModalOpen(true)}
+              className="group relative p-6 md:p-8 flex items-center justify-center bg-[#091825] w-full text-left cursor-zoom-in"
+            >
+              <div className="relative w-full max-w-lg rounded-xl overflow-hidden shadow-[0_4px_32px_rgba(0,0,0,0.4)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={selected.floor_plan}
+                  alt={`Plano — ${selected.name}`}
+                  className="w-full object-contain max-h-[460px] group-hover:brightness-90 transition-all duration-200"
+                />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="bg-black/50 backdrop-blur-sm rounded-full p-3">
+                    <ZoomIn size={22} className="text-white" />
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            {/* Modal */}
+            {modalOpen && (
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+                onClick={closeModal}
+              >
+                <div
+                  className="relative max-w-5xl w-full"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    className="absolute -top-10 right-0 flex items-center gap-1.5 text-white/70 hover:text-white transition-colors"
+                  >
+                    <X size={18} />
+                    <span className="font-sans text-xs font-[300]">Cerrar</span>
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={selected.floor_plan}
+                    alt={`Plano — ${selected.name}`}
+                    className="w-full object-contain max-h-[85vh] rounded-xl shadow-[0_8px_64px_rgba(0,0,0,0.6)]"
+                  />
+                </div>
+              </div>
+            )}
+          </>
         )}
 
       </div>
