@@ -19,10 +19,10 @@ export function Footer() {
 
         {/* ── Bloque 1: marca ── */}
         <div className="flex flex-col items-center gap-3">
-          <span className="font-sans text-base font-[200] uppercase tracking-[0.3em] text-kc-white">
+          <span className="font-sans text-base font-[200] uppercase tracking-[0.38em] text-white/90">
             Kohan &amp; Campos
           </span>
-          <span className="font-sans text-[10px] font-[300] tracking-[0.25em] text-gold/55">
+          <span className="font-sans text-[10px] font-[300] tracking-[0.25em] text-white/60">
             {t("footer.tagline")}
           </span>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1.5 mt-1">
@@ -30,7 +30,7 @@ export function Footer() {
               <a
                 key={link.href}
                 href={link.href}
-                className="font-sans text-[11px] font-[300] tracking-wide text-kc-white/65 hover:text-kc-white transition-colors"
+                className="font-sans text-[11px] font-[300] tracking-wide text-white/70 hover:text-white transition-colors"
               >
                 {link.label}
               </a>
@@ -39,20 +39,20 @@ export function Footer() {
         </div>
 
         {/* ── Bloque 2: secundario — centrado ── */}
-        <div className="w-full border-t border-white/5 pt-5 flex flex-col items-center gap-2">
+        <div className="w-full border-t border-white/5 pt-4 flex flex-col items-center gap-1">
           <a
             href="https://instagram.com/kohancampos"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-kc-white/60 hover:text-gold transition-colors"
+            className="flex items-center gap-1.5 text-white/60 hover:text-gold transition-colors"
           >
             <Instagram size={13} strokeWidth={1.5} />
             <span className="font-sans text-[10px] font-[300]">@kohancampos</span>
           </a>
-          <p className="font-sans text-[10px] font-[300] text-kc-white/50">
+          <p className="font-sans text-[10px] font-[300] text-white/50">
             {t("footer.copyright")}
           </p>
-          <p className="font-sans text-[10px] font-[300] text-kc-white/30 text-center max-w-sm">
+          <p className="font-sans text-[9px] font-[300] text-white/30 text-center max-w-sm">
             {t("footer.disclaimer")}
           </p>
         </div>
